@@ -1,0 +1,20 @@
+This directory contains the directory 'libpfm' and 'pfm_view'. The
+directory 'libpfm' contains the C source code of the pfm-library
+(pfm.h, pfm.c), the directory 'pfm_view' contains the C++ source code
+of a simple Qt-based pfm-viewer.
+
+In order to compile a platform specific version of both, the library
+and the viewer, type:
+
+> mkdir x86_64
+> cd x86_64
+> qmake -spec linux-g++-64 ../pfm.pro
+> make
+
+Replace linux-g++-64 with your plattform specific parameter. 
+
+If you want to use the pfm library in other project, copy the header
+file pfm.h and the library libpfm.a (both in libpfm) to places, where
+your compiler/linker is able to locate them. You can create the library
+without Qt's qmake by calling make -f Makefile.orig in the libpfm
+directory.
