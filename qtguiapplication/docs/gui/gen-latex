@@ -1,0 +1,144 @@
+#!/bin/sh
+
+GenLatex()
+{
+
+  cat $f | awk '\
+  function Buf(section,str)
+    {
+      buffer[section]=buffer[section] str;
+    }
+
+  function EndLine()
+    {
+      if (inline==1)
+	Buf(section,sprintf("\\\\\n\\hline\n"));
+      inline=0;
+    }
+  function EndTable()
+    {
+      EndLine();
+      if (intable==1) Buf(section,sprintf("\\end{tabularx}\n\n"));
+      intable=0;
+    }
+
+  function StartTable()
+    {
+      EndLine();
+      if (intable==0) 
+        Buf(section,
+            sprintf("\\begin{tabularx}{\\textwidth}{|l|X|}\n\\hline\n")); 
+      intable=1;
+    }
+
+  function FlushArgsKomma()
+    {
+      for (i=2; i<NF; i++) Buf(section,sprintf("%s, ",$i));
+      if (NF>1) Buf(section,sprintf("%s\n",$NF)); 
+      else Buf(section,sprintf("\n"));
+    }
+
+  function FlushArgs()
+    {
+      for (i=2; i<NF; i++) Buf(section,sprintf("%s ",$i));
+      if (NF>1) Buf(section,sprintf("%s\n",$NF)); 
+      else Buf(section,sprintf("\n"));
+    }
+
+
+
+  BEGIN{insection=0;intable=0;inline=0;section="none";}
+  /^\?subnode:/ { EndTable();section="subnode";
+                 nodename=$2;
+                 Buf(section,sprintf("\\subsection{%s}\n",$2));
+                Buf(section,sprintf("\\subsubsection{Format:}\n"));
+                Buf(section,sprintf("\\texttt{<%s \\emph{Attribute}> \\emph{Objekte} \\ldots </%s>}\n\n",$2,$2)); 
+                next} 
+  /^\?node:/ { EndTable();section="node";nodename=$2;
+               Buf(section,sprintf("\\subsection{%s}\n",$2));
+                Buf(section,sprintf("\\subsubsection{Format:}\n"));
+                Buf(section,sprintf("\\texttt{<%s \\emph{Attribute}>}\n\n",$2,$2));
+                next}
+  /^\?included:/ { EndTable();section="included";
+                   Buf(section,sprintf("\\subsubsection{Verwendung innerhalb:}"));
+                  FlushArgsKomma();
+                  next;}
+  /^\?objects:/ { EndTable();section="objects";
+                  Buf(section,sprintf("\\subsubsection{Objekte innerhalb von %s: }",nodename));
+                  FlushArgsKomma();
+                  next;}
+  /^\?desc:/ { EndTable();section="desc";
+               Buf(section,sprintf("\\subsubsection{Beschreibung: }")); 
+                FlushArgs();next;}
+  /^\?signals:/ { EndTable();
+		  section="signals";
+	           Buf(section,sprintf("\\subsubsection{Signals: }"));
+	           FlushArgs();next;}
+  /^\?slots:/ { section="slots";
+                 EndTable();
+                 Buf(section,sprintf("\\subsubsection{Slots: }")); 
+                 FlushArgs();
+		 next}
+  /^\?example:/ {  EndTable();
+		   section="example";
+                   Buf(section,sprintf("\\subsubsection{Beispiel: }\n"));
+                   FlushArgs();
+		   next}
+  /^\?args:/ { EndTable();
+	        section="args";
+                Buf(section,sprintf("\\subsubsection{Attribute: }")); 
+                FlushArgsKomma();
+		next}
+  /^\?childattr:/ { EndTable();
+            section="childattr"; 
+	    Buf(section,sprintf("\\subsubsection{Attribute für eingeschlossene Elemente: }\n")); 
+	    FlushArgs();
+            next}
+  /^\?attr:/ { EndTable();
+            section="attr";
+	    Buf(section,sprintf("\\subsubsection{Attribute: }\n")); 
+            FlushArgs();
+	    next}
+  /^\?:/ { EndTable(); FlushArgs(); next}
+  /^\#.*/ {next}	     
+  /^\!.*/   { StartTable();
+              inline=1;
+	      split($0,arg,":");
+	      if (split(arg[1],arg2,"=") >1)
+  	        Buf(section,
+                    sprintf("\\textbf{%s}=\\texttt{%s} & ",substr(arg2[1],2),arg2[2]));
+	      else
+  	        Buf(section,
+                    sprintf("\\textbf{%s} & ",substr(arg[1],2)));
+	      Buf(section,
+                  sprintf("%s",substr($0,index($0,":")+1)));
+	      next
+	    }
+  { if (intable==1) Buf(section,sprintf("%s",$0));
+    else Buf(section,sprintf("%s\n",$0));}
+  END{ EndTable();
+       print buffer["subnode"];
+       print buffer["node"];
+       print buffer["args"];
+       print buffer["included"];
+       print buffer["objects"];
+       print buffer["desc"];
+       print buffer["attr"];
+       print buffer["childattr"];
+       print buffer["signals"];
+       print buffer["slots"];
+       print buffer["example"];
+     }
+  
+  '
+}
+
+rm gui.tex
+
+for f in $* 
+do
+  file=`echo $f | sed 's/.gui//'`
+  echo Processing $file
+  GenLatex $f >$file.tex
+  echo "\\input{gui/$file}" >>gui.tex
+done

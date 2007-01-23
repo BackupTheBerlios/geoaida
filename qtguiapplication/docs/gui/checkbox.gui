@@ -1,0 +1,16 @@
+?node: CHECKBOX
+?included: BUTTONGROUP
+?desc: Eine Checkbox ist Teil einer Gruppe von Checkboxes, von
+denen im Gegensatz zu Radiobuttons auch mehrere gleichzeigt gedrückt
+sein können.
+?slots:	enable(), enable(bool), disable(), disable(bool), 
+        show(), show(bool), hide(), hide(bool)
+?attr:
+!name=string: Name der Checkbox zu Referenzierung
+!label=string: Bezeichung
+!varname=string: Name der Variablen, die den Wert des Checkboxs enthält
+!minwidth=num: minimale Breite in Pixel
+!minheight=num: minimale Höhe in Pixel.
+!maxwidth=num: maximale Breite in Pixel.
+!maxheight=num: maximale Höhe in Pixel.
+!id=num: Wert, der der Variablen oder der Variablen der übergeordnete Buttongroup hinzuaddiert oder subtrahiert wird, falls der Button aktiviert bzw. deaktiviert ist.

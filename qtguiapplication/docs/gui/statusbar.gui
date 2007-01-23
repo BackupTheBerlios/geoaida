@@ -1,0 +1,43 @@
+?subnode: STATUSBAR
+?args: name
+?objects: BROWSER BUTTON BUTTONGROUP INPUT LABEL SLIDER WIDGET
+
+?desc: Der Statusbar wird immer in der unteren Zeile des
+Hauptanwendungsfensters dargestellt. Er dient zu Anzeige von Zuständen
+der Anwendung. Im Statusbar können Elemente permanent (Attribut
+\emph{PERMANENT} bei einem GUI-Element des Statusbar) untergebracht
+werden. Diese Elemente sind immer sichtbar und werden an der rechten
+Seite der Zeile dargestellt. Die übrigen Elemente können durch
+kurzfristige Meldungen (Slot: \emph{message()} überlagert werden.
+
+?slots: 
+
+
+!message(QString msg): Die Nachricht \emph{msg} wird in links im
+Statusbar dargestellt bis der Slot \emph{clear()} aktiviert wird.
+
+!message(QString msg, int ms): Die Nachricht \emph{msg} wird für \emph{ms}
+Millisekunden angezeigt.
+
+!clear(): Die mit den beiden vorherigen Slots aktivierte Meldung wird
+gelöscht und das unter der Meldung liegende GUI-Element wieder angezeigt.
+
+?: weiter Slots: enable(), enable(bool), disable(), disable(bool), 
+        show(), show(bool), hide(), hide(bool)
+?example: \begin{verbatim}
+  <statusbar>
+  </statusbar>
+\end{verbatim}
+
+?attr:
+!name=string: Name des Statusbars zu Referenzierung
+#minwidth=num: minimale Breite des Statusbars in Pixel.
+#minheight=num: minimale Höhe des Statusbars in Pixel.
+#maxwidth=num: maximale Breite des Statusbars in Pixel.
+#maxheight=num: maximale Höhe des Statusbars in Pixel.
+
+?childattr:
+!permanent: Das GUI-Element wird permanent dargestellt.
+!stretch=num: Raum, den das GUI-Element im Verhältnis zu anderen GUI-Elementen einnehmen soll.
+
+

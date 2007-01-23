@@ -1,0 +1,23 @@
+?node: SLIDER
+?included: DIALOG TABVIEW
+?desc: Schieberegler
+?signals: valueChanged(int) \emph{(type=int)}, 
+	valueChanged(double) \emph{(type=double)}
+?slots: valueSet(int), valueSet(double), valueSet(QString),
+	enable(), enable(bool), disable(), disable(bool), 
+        show(), show(bool), hide(), hide(bool), setMinMax(int,int)
+?attr:
+!name=string: Name des Dialogs zu Referenzierung
+!x=num: x-Position, wenn das Element innerhalb eines Grid-Layouts verwendet wird.
+!y=num: y-Position, wenn das Element innerhalb eines Grid-Layouts verwendet wird.
+!minwidth=num: minimale Breite
+!maxwidth=num: maximale Breite
+!minheight=num: minimale Höhe
+!maxheight=num: maximale Höhe
+!dir=\texttt{VERTICAL|HORIZONTAL}: Richtung des Schiebereglers
+!type=\texttt{STRING|INT|DOUBLE|PASSWORD}: Typ des Eingabefeldes.
+!tickmarks=\texttt{NOMARKS|ABOVE|LEFT|BELOW|RIGHT|BOTH}: Skaleneinheiten über, links, unter, rechts oder beides (oben und unten bzw. rechts und links).
+!tickinterval=num: Abstand zwischen zwei Skaleneinheiten.
+!minval=num: Minimaler Wert
+!maxval=num: Maximaler Wert
+!val=num: Default-Wert

@@ -1,0 +1,18 @@
+?node: INPUT
+?desc: Eingabefeld
+?signals: 
+!valueChanged(): Signal wird gesendet, wenn sich der Wert ändert.
+!valueChanged(QString): wird bei Typ \texttt{STRING|PASSWORD} gesendet.
+!valueChanged(int): wird bei Typ \texttt{INT} gesendet.
+!valueChanged(double): wird bei \texttt{DOUBLE} gesendet.
+        
+?slots: enable(), enable(bool), disable(), disable(bool), 
+        show(), show(bool), hide(), hide(bool)
+?attr:  
+!name=string: Name des Dialogs zu Referenzierung
+!x=num: x-Position, wenn das Element innerhalb eines Grid-Layouts verwendet wird.
+!y=num: y-Position, wenn das Element innerhalb eines Grid-Layouts verwendet wird.
+!type=\texttt{STRING|INT|DOUBLE|PASSWORD}: Typ des Eingabefeldes.
+!val=string: Defaultwert des Eingabefeldes
+!format=string: Formatstring zu Formatierung des Eingabefeldes
+!update=bool: Jede Änderung im Eingabefeld wird übertragen.

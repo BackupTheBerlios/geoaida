@@ -1,0 +1,3 @@
+?node: SEPARATOR
+?desc: Trennlinie zwischen Menüpunkten in Menüs oder Elementen im Toolbar
+?included: SUBMENU TOOLBAR

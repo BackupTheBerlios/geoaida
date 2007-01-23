@@ -1,0 +1,19 @@
+?subnode: COMBOBOX
+?included: DIALOG TABVIEW LAYOUT
+?objects: ITEM
+?desc: 
+
+?signals: valueChanged(int)
+?slots: valueSet(int), valueSet(double), valueSet(QString),
+        enable(), enable(bool), disable(), disable(bool), 
+        show(), show(bool), hide(), hide(bool)
+?attr:
+!name=string: Name der Buttongroup zu Referenzierung
+!label=string: Titel der Buttongroup
+!x=num: x-Position, wenn das Element innerhalb eines Grid-Layouts verwendet wird.
+!y=num: y-Position, wenn das Element innerhalb eines Grid-Layouts verwendet wird.
+!varname=string: Name der Variablen, den die Buttongroup beeinflussen soll
+!minwidth=num: minimale Breite in Pixel
+!minheight=num: minimale Höhe in Pixel.
+!maxwidth=num: maximale Breite in Pixel.
+!maxheight=num: maximale Höhe in Pixel.

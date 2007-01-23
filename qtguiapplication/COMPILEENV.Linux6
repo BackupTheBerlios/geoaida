@@ -1,0 +1,5 @@
+set-init-environment
+set-uselocal
+#set-usegcc29
+set-usekde2
+set-usegeoaida

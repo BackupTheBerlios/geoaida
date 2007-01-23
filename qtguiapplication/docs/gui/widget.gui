@@ -1,0 +1,13 @@
+?node: WIDGET
+?included: DIALOG TABVIEW
+?desc: externes Widget
+?slots:	enable(), enable(bool), disable(), disable(bool), 
+        show(), show(bool), hide(), hide(bool)
+?attr:	
+!name=string: Name des Widgets zu Referenzierung
+!x=num: x-Position, wenn das Element innerhalb eines Grid-Layouts verwendet wird.
+!y=num: y-Position, wenn das Element innerhalb eines Grid-Layouts verwendet wird.
+!minwidth=num: minimale Breite
+!maxwidth=num: maximale Breite
+!minheight=num: minimale Höhe
+!maxheight=num: maximale Höhe

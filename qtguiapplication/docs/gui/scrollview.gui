@@ -1,0 +1,6 @@
+?subnode: SCROLLVIEW
+?objects: BROWSER BUTTON BUTTONGROUP INPUT LABEL LAYOUT SLIDER TABVIEW WIDGET
+?desc: Scrollview
+?example: \begin{verbatim}
+\end{verbatim}
+

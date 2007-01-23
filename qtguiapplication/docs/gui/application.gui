@@ -1,0 +1,17 @@
+?node: APPLICATION
+?desc: Das Element APPLICATION muss das erste Element eine
+GUI-Beschreibungsdatei sein. Es legt globale Eigenschaften der
+Applikation fest, wie z.B. Titel, Style \ldots
+?example: \verb$<application name=viewer label="3D Viewer" mainwidget=mainwidget>$
+?attr:
+!name=string: Name der Applikation
+!label=string: Titel der Applikation
+!minwidth=num: minimale Breite der Applikation in Pixel
+!minheight=num: minimale Höhe der Applikation in Pixel
+!maxwidth=num: maximale Breite der Applikation in Pixel
+!maxheight=num: maximale Höhe der Applikation in Pixel
+!mainwidget=widget: 
+!style=Windows|Motif:
+!mainwidget=string: Name des Hauptwidgets. Das Widget muss zuvor von
+der Applikation im Class-Dictionary registriert worden sein.
+!connect=string:

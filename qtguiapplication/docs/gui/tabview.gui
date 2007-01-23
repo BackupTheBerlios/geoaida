@@ -1,0 +1,46 @@
+?subnode: TABVIEW
+?objects: BUTTON BUTTONGROUP INPUT SLIDER
+?desc: \tntepspic{gui/tabview}{gui:tabview}{}{Tabview-Dialog}
+
+Tabview
+?slots:	enable(), enable(bool), disable(), disable(bool), 
+        show(), show(bool), hide(), hide(bool)
+?example: \begin{verbatim}
+<tabview name=glidemode label="Mausfunktion" layout=hbox>
+  <buttongroup label="linke Maustaste" 
+               signal=tvslotconnect.setGlideModeLeft(int)>
+    <radiobutton id=0 label="Zoom Turn">
+    <radiobutton id=1 label="Zoom Shift">
+    <radiobutton id=2 label="Elevate Look Ahead">
+    <radiobutton id=3 label="Elevate Look Fixed">
+    <radiobutton id=4 label="Look Around">
+  </buttongroup>
+  <buttongroup label="rechte Maustaste"
+               signal=tvslotconnect.setGlideModeRight(int)>
+    <radiobutton id=0 label="Zoom Turn">
+    <radiobutton id=1 label="Zoom Shift">
+    <radiobutton id=2 label="Elevate Look Ahead">
+    <radiobutton id=3 label="Elevate Look Fixed">
+    <radiobutton id=4 label="Look Around">
+  </buttongroup>
+</tabview>
+\end{verbatim}
+?attr:
+!name=string: Name des Tabviews zur Referenzierung
+!label=string: Titel des Tabviews.
+!minwidth=num: minimale Breite des Tabviews in Pixel.
+!minheight=num: minimale Höhe des Tabviews in Pixel.
+!maxwidth=num: maximale Breite des Tabviews in Pixel.
+!maxheight=num: maximale Höhe des Tabviews in Pixel.
+!layout=\texttt{VBOX|HBOX|GRID}: Tabview-Layout.
+!cols=num: Anzahl Spalten beim Grid-Layout.
+!rows=num: Anzahl Reihen beim Grid-Layout.
+!okbutton=string: Beschriftung für Ok-Button.
+!oksignal=function(): Slot der bei Druck auf den Ok-Button angesprochen werden soll.
+!applybutton=string: Beschriftung für Apply-Button.
+!applysignal=function(): Slot der bei Druck auf den Apply-Button angesprochen werden soll.
+!cancelbutton=string: Beschriftung für Cancel-Button.
+!cancelsignal=function(): Slot der bei Druck auf den Cancel-Button angesprochen werden soll.
+!helpbutton=string: Beschriftung für Help-Button
+!helpsignal=function(): Slot der bei Druck auf den Help-Button angesprochen werden soll.
+

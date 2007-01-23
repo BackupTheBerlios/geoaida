@@ -1,0 +1,11 @@
+?subnode: SUBMENU
+?objects: ITEM SEPARATOR
+?included: SUBMENU
+?desc: Untermenü
+?slots: enable(), enable(bool), disable(), disable(bool), 
+        show(), show(bool), hide(), hide(bool)
+?attr:
+!name=string: Name des Untermenüs zur Referenzierung
+!label=string: Titel des Untermenüs. Soll ein Buchstabe als
+Accelerator dienen, wird im ein \& vorangestellt.
+

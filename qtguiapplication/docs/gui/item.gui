@@ -1,0 +1,38 @@
+?node: ITEM
+?desc: Menüpunkt
+?included: SUBMENU
+?args: label,accel,tip,id,connect
+?signals: 
+!valueChanged(int id): Bei Anwahl des Menüpunktes wird die \emph{id}
+gesendet, falls der Menüpunkt an (Häkchen) ist. Sonst wird die
+\emph{offid} gesendet.
+!valueChanged(bool checked): Bei Anwahl des Menüpunktes wird der neue
+Zustand des Menüs gesendet, d.h. wenn der Menüpunkt vorher nicht
+angewählt war (besitzt kein Häkchen), wird \emph{true} gesendet, sonst
+\emph{false}. Damit ändert sich jedoch nicht automatisch der Zustand
+des Menüs.
+!valueChanged(int id, bool checked): Dies ist Kombination aus den
+beiden vorangegangenen Signalen.
+
+?slots: 
+!valueSet(bool checked): Schaltet den Menüpunkt an (Häckchen) oder
+aus.
+!valueSet(int id): Setzt die \emph{id} des Menüpunktes.
+!valueSet(int id, bool checked): Schaltet den Menüpunkt an, wenn die
+\emph{id} mit der \emph{id} des Menüpunktes übereinstimmt.
+
+?: weitere Slots: enable(), enable(bool), disable(), disable(bool), 
+        show(), show(bool), hide(), hide(bool)
+?example: \begin{verbatim}
+<item label="Load Model" 
+      tip="Load Men Made Objects"
+      signal=tvslotconnect.loadModel()>
+\end{verbatim}
+?attr:
+!label=string: Bezeichnung des Menüpunktes
+!accel=key: Tastenkürzel
+!tip=string: Tooltip
+!id=num: Die \emph{id} des Menüpunktes kann mit dem Signal übergeben werden
+!offid=num: Die \emph{offid} wird übertragen, wenn der Menüpunkt
+ausgeschaltet (kein Häkchen) ist. Wird die \emph{offid} nicht gesetzt,
+so ist gleich der \emph{id}.

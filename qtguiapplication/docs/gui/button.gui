@@ -1,0 +1,21 @@
+?node: BUTTON
+?included: DIALOG TABVIEW
+?desc: \texttt{BUTTON} definiert einen Button.
+?signals: valueChanged() valueChanged(bool) valueChanged(int)
+?slots: enable(), enable(bool), disable(), disable(bool), 
+        show(), show(bool), hide(), hide(bool)
+?attr:	
+!name=string: Name des Button zur Referenzierung
+!label=string: Bezeichnung des Buttons, wenn kein Bild gewählt wird.
+!pixmap=file: Dateiname des Bildes, das auf den Button gelegt werden soll.
+!x=num: x-Position, wenn das Element innerhalb eines Grid-Layouts verwendet wird.
+!y=num: y-Position, wenn das Element innerhalb eines Grid-Layouts verwendet wird.
+!tip=string: Tooltip
+!minwidth=num: minimale Breite
+!maxwidth=num: maximale Breite
+!minheight=num: minimale Höhe
+!maxheight=num: maximale Höhe
+!id=num: id des Buttons wird bei Druck auf diesen übertragen (valueChanged(int))
+!offid=id: id des Buttons wird beim Entriegeln eines Togglebuttons übertragen.
+!toggle: Der Button ist Toggle-Button, d.h. besitzt die Zustände An und Aus.
+!signal=function(): Funktion, die bei Druck auf den Button aufgerufen werden soll.

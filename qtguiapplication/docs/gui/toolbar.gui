@@ -1,0 +1,6 @@
+?subnode: TOOLBAR
+?objects: BUTTON BUTTONGROUP INPUT LABEL SLIDER TABVIEW  
+?desc: \texttt{TOOLBAR} stellt ein Toolbar unterhalb des Menüs zur
+Verfügung. Innerhalb des Toolbars können Toolbuttons untergebracht werden.
+?slots:	enable(), enable(bool), disable(), disable(bool), 
+        show(), show(bool), hide(), hide(bool)

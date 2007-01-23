@@ -1,0 +1,8 @@
+?subnode: MENU
+?objects: SUBMENU
+?desc: Menü
+?slots:	enable(), enable(bool), disable(), disable(bool), 
+        show(), show(bool), hide(), hide(bool)
+
+?attr:
+!name=string: Name des Menüs zur Referenzierung

@@ -1,0 +1,37 @@
+?subnode: DIALOG
+?objects: BROWSER BUTTON BUTTONGROUP INPUT LABEL LAYOUT SLIDER TABVIEW WIDGET
+?desc: Dialog
+?signals:
+!ok(): Signal wird bei Druck auf den Ok-Button gesendet.
+!apply(): Signal wird bei Druck auf den Apply-Button gesendet.
+!cancel(): Signal wird bei Druck auf den Cancel-Button gesendet.
+!help(): Signal wird bei Druck auf den Help-Button gesendet.
+?slots:
+!show(): bringt den Dialog zur Anzeige. Damit verbunden ist auch das
+Übertragen von Variableninhalten in die Elemente des Dialogs und deren 
+Anzeige.
+!show(bool state): Dieser Slot verhält sich wie \emph{show()}, wenn
+\emph{state=true} ist, sonst wie \emph{hide()}.
+!hide(): Der Dialog verschwindet vom Bildschirm. Gleiches geschieht
+auch beim Druck auf einen der Button \emph{Ok} oder \emph{Cancel}.
+!hide(bool): Dieser Slot verhält sich wie \emph{hide()}, wenn
+\emph{state=true} ist, sonst wie \emph{show()}.
+
+weiter Slots: enable(), enable(bool), disable(), disable(bool), 
+?example: \begin{verbatim}
+\end{verbatim}
+?attr:
+!name=string: Name des Dialogs zu Referenzierung
+!label=string: Titel des Dialogs.
+!minwidth=num: minimale Breite des Dialogs in Pixel.
+!minheight=num: minimale Höhe des Dialogs in Pixel.
+!maxwidth=num: maximale Breite des Dialogs in Pixel.
+!maxheight=num: maximale Höhe des Dialogs in Pixel.
+!layout=\texttt{VBOX|HBOX|GRID}: Dialoglayout.
+!cols=num: Anzahl Spalten beim Grid-Layout.
+!rows=num: Anzahl Reihen beim Grid-Layout.
+!okbutton=string: Beschriftung für Ok-Button.
+!applybutton=string: Beschriftung für Apply-Button.
+!cancelbutton=string: Beschriftung für Cancel-Button.
+!helpbutton=string: Beschriftung für Help-Button
+

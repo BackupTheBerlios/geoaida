@@ -1,0 +1,58 @@
+%\documentclass[BCOR1cm,DIV13,a4paper,12pt]{scrbook}
+\documentclass[BCOR5mm,DIV14,headexclude,a4paper,12pt,pdftex]{scrbook}
+%\documentclass[BCOR5mm,DIV14,headexclude,a4paper,12pt]{scrbook}
+\usepackage{times}
+\usepackage{german}
+\usepackage[iso]{umlaute} 
+\usepackage[bibcomment]{tntdasa}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\newcommand{\shortpage}{\enlargethispage{-\baselineskip}}
+\newcommand{\longpage}{\enlargethispage{\baselineskip}}
+\usepackage{thumbpdf}
+
+\begin{document}
+\sloppy
+
+
+\begin{titlepage}
+  \thispagestyle{empty}
+  \setcounter{page}{0}
+  \begin{center}
+    {\large Dokumentation}
+
+  \vfill
+
+    {\Large \textbf{QtGui Handbuch}}
+
+  \vfill
+
+  \vfill
+
+    {\large Bearbeiter: \\
+      Dipl.-Ing. M. Pahl}
+
+  \vfill
+
+\today
+  \vfill
+\end{center}
+
+\vfill
+
+
+
+
+\end{titlepage}
+
+\begin{titlepage} \ 
+  \thispagestyle{empty}
+  \setcounter{page}{0}
+\end{titlepage} 
+
+\pagestyle{tntdasa}
+
+\tableofcontents
+\input{Administrationshandbuch}
+\end{document}
+

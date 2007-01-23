@@ -1,0 +1,26 @@
+?subnode: CENTRALWIDGET
+?objects: BROWSER BUTTON BUTTONGROUP INPUT LABEL SLIDER TABVIEW WIDGET
+?desc: Centralwidget
+?example: \begin{verbatim}
+\end{verbatim}
+?attr:
+!layout=\texttt{VBOX|HBOX|GRID}: layout.
+!cols=num: Anzahl Spalten beim Grid-Layout.
+!rows=num: Anzahl Reihen beim Grid-Layout.
+?childattr:
+Für die verschiedenen Layouttypen sind bei den eingeschlossenen
+Objekten verschiedene Attribute möglich.
+\paragraph{Grid} \ 
+
+!x=num: x-Position des Objekt im Grid-Layout
+!y=num: y-Position des Objekt im Grid-Layout
+!colspan=num: Anzahl der Spalten die das Objekt einnimmt (Grid)
+!rowspan=num: Anzahl der Zeilen die das Objekt einnimmt (Grid)
+!colstretch=num: Streckungsfaktor für die Spalte, in der sich das Objekt befindet (Grid)
+!rowstretch=num: Streckungsfaktor für die Zeile, in der sich das
+Objekt befindet (Grid)
+?:
+\paragraph{VBOX} \ 
+
+\paragraph{HBOX} \ 
+

@@ -1,0 +1,27 @@
+?subnode: BUTTONGROUP
+?included: DIALOG TABVIEW
+?objects: CHECKBOX RADIOBUTTON
+?desc: \tntepspic{gui/buttongroup}{gui:buttongroup}{}{2 Buttongroups mit
+  Radiobuttons als Element}
+
+Eine Buttongroup fasst mehrere Buttons zu einer Gruppe
+zusammen. In der Regel wird sie dazu verwendet, um mehrere
+Radiobuttons oder Checkboxes zu einer Funktion zu integrieren. Die
+integrierten Buttons beeinflussen dann nur noch eine gemeinsame
+Variablen, bei Radiobuttons nach dem Ausschlussprinzip (es kann nur ein
+Knopf gedrückt sein), bei Checkboxes nach dem Vereinigungsprinzip (der
+Gesamtwert ergibt sich aus der Summe der angewählten Knöpfe).
+?signals: valueChanged(int)
+?slots: valueSet(int), valueSet(double), valueSet(QString),
+        enable(), enable(bool), disable(), disable(bool), 
+        show(), show(bool), hide(), hide(bool)
+?attr:
+!name=string: Name der Buttongroup zu Referenzierung
+!label=string: Titel der Buttongroup
+!x=num: x-Position, wenn das Element innerhalb eines Grid-Layouts verwendet wird.
+!y=num: y-Position, wenn das Element innerhalb eines Grid-Layouts verwendet wird.
+!varname=string: Name der Variablen, den die Buttongroup beeinflussen soll
+!minwidth=num: minimale Breite in Pixel
+!minheight=num: minimale Höhe in Pixel.
+!maxwidth=num: maximale Breite in Pixel.
+!maxheight=num: maximale Höhe in Pixel.

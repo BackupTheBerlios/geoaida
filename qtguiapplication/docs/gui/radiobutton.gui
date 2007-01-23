@@ -1,0 +1,17 @@
+?node: RADIOBUTTON
+?included: BUTTONGROUP
+?desc: Ein Radiobutton ist Teil einer Gruppe von Radiobuttons, von
+denen immer nur einer gedrückt sein kann (ähnlich der
+?slots:	enable(), enable(bool), disable(), disable(bool), 
+        show(), show(bool), hide(), hide(bool)
+Sendereinstellung beim Radio).
+?attr:
+!name=string: Name des Radiobuttons zu Referenzierung
+!label=string: Bezeichung
+!varname=string: Name der Variablen, die den Wert des Radiobuttons enthält
+!minwidth=num: minimale Breite in Pixel
+!minheight=num: minimale Höhe in Pixel.
+!maxwidth=num: maximale Breite in Pixel.
+!maxheight=num: maximale Höhe in Pixel.
+!signal=function(): Die Funktion wird aufgerufen, wenn der Radiobutton gedrückt wird
+!id=num: Wert, der in die Variable oder in die Variable der übergeordneten Buttongroup geschrieben wird, falls der Button aktiviert ist.

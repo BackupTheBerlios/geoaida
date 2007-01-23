@@ -1,0 +1,16 @@
+?node: LABEL
+?included: DIALOG TABVIEW
+?desc: Label
+?slots: show(), show(bool), hide(), hide(bool),
+	valueSet(QString),valueSet();
+?attr:
+!label=string: des Bezeichnung Labels, wenn kein Bild gewählt wird.
+!pixmap=file: Dateiname des Bildes, das auf den Label gelegt werden soll.
+!x=num: x-Position, wenn das Element innerhalb eines Grid-Layouts verwendet wird.
+!y=num: y-Position, wenn das Element innerhalb eines Grid-Layouts verwendet wird.
+!tip=string: Tooltip
+!minwidth=num: minimale Breite
+!maxwidth=num: maximale Breite
+!minheight=num: minimale Höhe
+!maxheight=num: maximale Höhe
+
