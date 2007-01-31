@@ -2,7 +2,7 @@ find_package(Qt3 REQUIRED)
 
 add_definitions(${QT_DEFINITIONS} -DTMAKECONF)
 
-include_directories(${CMAKE_SOURCE_DIR}/src/qtparser ${QT_INCLUDE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/src/qtparser ${QT_INCLUDE_DIR})
 
 set(headers 
 	   QtGui.h

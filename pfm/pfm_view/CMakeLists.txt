@@ -2,7 +2,7 @@ find_package(Qt3 REQUIRED)
 
 add_definitions(${QT_DEFINITIONS})
 
-include_directories(${CMAKE_SOURCE_DIR}/libpfm ${QT_INCLUDE_DIR})
+include_directories(${PROJECT_SOURCE_DIR}/libpfm ${QT_INCLUDE_DIR})
 
 set(headers combislider.h 
 	doubleslider.h 
