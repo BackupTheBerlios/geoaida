@@ -1,0 +1,22 @@
+/.cvsignore/1.1.1.1/Wed Jul 12 12:07:34 2000//
+/Makefile.am/1.30/Wed Jun  4 11:49:25 2003//
+/cleanup.xpm/1.1/Wed Jul 25 13:32:41 2001//
+/compound.xpm/1.1/Fri Oct 13 13:47:30 2000//
+/filenew.xpm/1.1.1.1/Wed Jul 12 12:07:34 2000//
+/fileopen.xpm/1.1.1.1/Wed Jul 12 12:07:34 2000//
+/filesave.xpm/1.1.1.1/Wed Jul 12 12:07:34 2000//
+/gda.app/1.38/Thu Feb 27 12:45:12 2003//
+/gda.xpm/1.1.1.1/Wed Jul 12 12:07:34 2000//
+/generalization.xpm/1.1/Fri Oct 13 13:47:30 2000//
+/main.cpp/1.4/Fri Feb 27 09:32:18 2004//
+/maingui.cpp/1.57/Fri Oct 14 07:38:31 2005//
+/maingui.h/1.28/Fri Oct 14 07:38:31 2005//
+/mini-gda.xpm/1.1.1.1/Wed Jul 12 12:07:34 2000//
+/start.png/1.2/Wed Jul 25 13:32:41 2001/-kb/
+/start.xpm/1.2/Wed Jul 25 13:32:41 2001//
+D/api////
+D/core////
+D/docs////
+D/gui////
+D/semnetgui////
+D/templates////

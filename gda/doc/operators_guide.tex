@@ -1,0 +1,222 @@
+\chapter{Operatoren}
+
+Die eigentliche Bildverarbeitungsfunktionalität wird in \geoaida über
+sogenannte Operatoren eingebunden. Dies sind eigenständige Programme,
+die über ein definiertes Interface mit \geoaida
+kommunizieren. Grundsätzlich existieren zwei Arten von Operatoren:
+\emph{TopDown} und \emph{BottomUp}.
+
+\begin{description}
+\item[TopDown-Operatoren] dienen dazu, ein oder mehrere Ausgangsbilder
+  in Teilregionen zu segmentieren. Als Ergebnis liefern die
+  \emph{TopDown}-Operatoren eine Regionenbeschreibungsdatei und ein
+  Labelbild in dem die gefundenden Regionen eingetragen sind. Die
+  Regionenbeschreibungsdatei enthält für jede gefundene Region die
+  Attribute \emph{id}, \emph{class}, \emph{file}, \emph{geoNorth},
+  \emph{geoSouth}, \emph{geoWest} und \emph{geoEast}. Weitere
+  Attribute können gesetzt werden und werden unverändert in das
+  hypothetische Instanzennetz übernommen und von diesem an die
+  BottomUp-Operatoren weitergereicht.
+\item[BottomUp-Operatoren] dienen dazu aus einem hypothetischen
+  Instanzenteilnetz ein Ergebnis-Instanzenteilnetz zu generieren. Als
+  Eingangsdaten erhalten sie eine Knotenliste. Unter Berücksichtigung
+  der gesetzten Knoten-Attribute generieren sie eine Ergebnisdatei, in
+  der die Knoten in jeweils zusammengehörende Gruppen aufgeteilt
+  sind. Knoten, die in der Ergebnisdatei keine Erwähnung finden,
+  gelten als verworfene Lösung.
+\end{description}
+
+
+\section{Operatorenbeschreibungsdatei}
+
+Alle in \geoaida verfügbaren Operatoren werden in einer oder mehreren
+ASCII-Dateien beschrieben, die beim Start von \geoaida eingelesen
+wird. Diese Dateien liegt im Verzeichnis
+\texttt{\$\{GEOAIDA\_HOME\}/share/data} und haben die Dateiendung
+\texttt{.op}.
+
+Zur Operatorbeschreibung dient das Tag
+\texttt{<operator>}. Eigenschaften des Operators wie Name,
+auszuführendes Programm werden über Attribute beschrieben. Erlaubt der
+Operator ein Konfiguration über Kommandozeilenparameter, so werden
+diese Attribute über das Tag \texttt{<attribute>} beschrieben, welches
+in den zugehörigen \texttt{operator}-Tag eingebunden wird:
+
+\begin{verbatim}
+<operator name=... cmd=...>
+  <attribute name=... type=... />
+</operator>
+\end{verbatim}
+
+Ein \textbf{Operator} hat die folgenden Attribute:
+
+\begin{description}
+\item[type:] Der Typ eines Operators kann \texttt{topdown} oder
+  \texttt{bottomup} sein. 
+\item[class:] Operatoren können in Klassen eingeteilt werden. Sollte
+  die Zahl der Operatoren sehr groß werden, können diese bei Auswahl
+  in Untermenüs gruppiert werden.
+\item[name:] Über den Namen werden Operatoren eindeutig identifiziert
+  und unter diesem dem Benutzer im Auswahlmenü angezeigt.
+\item[tip:] Das \texttt{tip}-Attribut kann einen Hilfetext im
+  HTML-Format enthalten, der dem Benutzer als Balloon-Help angezeigt
+  wird.
+\item[cmd:] Das Aufrufformat zur Ausführung wird in diesem Attribut
+  festgelegt. Attribute aus dem semantischen oder dem Instanzen-Netz
+  können in das Kommando übernommen werden, indem der Attributname in
+  \verb$@$ eingeschlossen wird. Operatorspezifische Attribute werden
+  auf die gleiche Weise eingebunden, müssen dann aber innerhalb der
+  der Operatorbeschreibung mit dem Tag \texttt{<attribute>} definiert
+  werden.
+\item[runglobal:] kann den Wert \texttt{true} oder \texttt{false}
+  annehmen. Wird der \texttt{runglobal} auf den Wert \texttt{true}
+  gesetzt, wird dem entsprechenden Operator das gesamte Bild bzw. die
+  gesamten Bilder zu Bearbeitung übergeben. Das ist sinnvoll für
+  Operatoren die auf größere Bildausschnitte besser arbeiten, da sie
+  z.B. statistische Verteilungen im Bildmaterial ausnutzen.
+\end{description}
+
+Die \textbf{Attribute} eines Operators besitzen die folgenden Eigenschaften:
+
+\begin{description}
+\item[name:] Der Name eines Attributs wird für die Ersetzung innerhalb
+  des Attribut- oder Operatorkommandos benötigt.
+\item[label:] Unter dem zugewiesenen Label erscheint das Attribut für
+  den Benutzer im GUI.
+\item[tip:] Der Tipp kann dem Benutzer Hilfestellung zur Bedeutung des
+  Attributs geben.
+\item[cmd:] Ist die Eigenschaft \texttt{cmd} gesetzt, so werden bei
+  Ausführung des Operators zunächst die Variablen in dem
+  Attribut-\texttt{cmd}-String ersetzt, bevor dieser String dann als
+  ganzes in das Operatorkommando an die durch den Namen des Attributs
+  gekennzeichnete Stelle eingesetzt wird. Bekommt das Attribut keinen
+  Wert zugewiesen, bleibt auch die Eigenschaft \texttt{cmd} leer. Auf
+  diese Weise ist es möglich optionale Argumente im Operatorenkommando
+  zu besetzen.
+\item[value:] Über die Eigenschaft \texttt{value} kann dem Attribut
+  ein Startwert zugeordnet werden, der übernommen wird, falls der
+  Benutzer keinen anderen Wert setzt.
+\item[type:] Der Typ eines Attributs kann \texttt{STRING},
+  \texttt{INT}, \texttt{DOUBLE}, \texttt{ENUM}, \texttt{BOOL} oder
+  \texttt{IMAGE} sein. Abhängig vom Typ können weitere typspezifische
+  Eigenschaften gesetzt werden.
+\item[min:] Für Attribute vom Typ \texttt{INT} oder \texttt{DOUBLE},
+  kann der minimal zulässige Wert gesetzt werden.
+\item[max] setzt den maximal zulässigen Wert für \texttt{INT}- oder
+  \texttt{DOUBLE}-Attribute.
+
+\item[imagetype:] Diese Eigenschaft kann nur für Attribute vom Typ
+  \texttt{IMAGE} gesetzt werden. \texttt{imagetype} bestimmt, welche
+  Art von Bildern diesem Attribut zugewiesen werden können. Derzeit
+  sind die Bildtypen \texttt{LASER}, \texttt{VIS},
+  \texttt{SAR},\texttt{IR} und \texttt{VIDEO} möglich. Im Prinzip ist
+  jedoch Bildtyp möglich, sofern in der Datenbank ebenfalls Bilder
+  diesen Typs für die angewählte Region existieren.
+\item[options:] Bei einem Attribut vom Typ \texttt{ENUM} können hier
+  die möglich Auswahloptionen angegeben werden. Es handelt sich dabei
+  um eine durch Kommata getrennte Liste von Strings.
+\end{description}
+
+
+\subsubsection{Beispiel für eine Operatorbeschreibung}
+
+Es existieren ein Operator zum Finden von Straßen \emph{findStreet}.
+Das ausführbare Programm wird mittels \texttt{ga\_find\_streets}
+aufgerufen. Über die Kommandozeile können die minimale und die
+maximale Straßenbreite angegeben werden. Wird die Option
+\texttt{--gis} verwendet, so benutzt der Operator vorhandene GIS-Daten
+zur Straßenextraktion aus der angegebenen Datenbank. Das Kommando wird
+folgendermaßen aufgerufen:
+
+\small \verb$ga_find_streets --min <wert> --max <wert> [--gis server] <vis-image> <output>$
+
+Die folgenden Zeilen beschreiben den Operator:
+
+{\small 
+\begin{verbatim}
+<operator name=findStreet class=bv type=topdown 
+  tip="Findet Straßen in visuellen Bildern<br>
+       Optional kann eine GIS-Datenbank verwendet werden"
+  cmd="ga_find_streets --min @min@ --max @max@ @gis@ @vis@ @output@">
+  <attribute name=min type=INT value=1.0 min=1.0 max=5.0 />
+  <attribute name=max type=INT value=3.0 min=1.5 max=20.0 />
+  <attribute name=gis type=STRING cmd="--gis @gis@" />
+  <attribute name=vis type=IMAGE imagetype=VIS />
+</operator>
+\end{verbatim}
+}
+
+Der Operator wird zwischen dem Starttag \texttt{<operator>} und dem
+Endtag \texttt{</operator>} definiert. Er erhält den Namen \emph{findStreet}
+zugewiesen und wird in die Klasse \emph{bv} (BildVerarbeitung) eingeordnet. Vom
+Typ her handelt es sich um einen \emph{TopDown}-Operator. Der im
+HTML-Format angegebene Tipp dient zur Information des Benutzers über
+die Bedeutung.
+
+
+\section{TopDown-Attribute}
+
+
+\subsubsection{Globale Attribute}
+
+
+\begin{description}
+\item[geoWest, geoNorth, geoEast, geoSouth] 
+\item[geoType] 
+\item[minRes, maxRes]: minimale und maximale Auflösung des zur
+  Verfügung stehenden Bildmaterials.
+\item[output] Ausgabedatei für die Regionenbeschreibung.
+\end{description}
+
+
+\subsubsection{Bildabhängige Attribute}
+Die folgenden Attribute werden für jedes an den Operator übergegebene
+Bild gesetzt. Dem Attribut wird jeweils der Name des
+\texttt{IMAGE}-Attributs des aufzurufendenden Operators vorangestellt.
+\begin{description}
+\item[\_key] 
+\item[\_type] 
+\item[\_file] 
+\item[\_res\_x, \_res\_y] 
+\item[\_size\_x, \_size\_y] 
+\end{description}
+
+%\begin{verbatim}
+%<operator type=topdown class=gis name=GisOpFindRegionsByStreets
+%      cmd="ga_gisop -l @class@ -r 1 @street_width@  @geoWest@ @geoNorth@ @geoEast@ @geoSouth@ >@output@">
+%  <attribute name=street_width cmd="-w @street_width@" type=int>
+%</operator>
+
+%<operator type=topdown class=gis name=GisOpFindStreets
+%      cmd="ga_gisop -b @class@ -r 1 @street_width@  @geoWest@ @geoNorth@ @geoEast@ @geoSouth@ >@output@">
+%  <attribute name=street_width cmd="-w @street_width@" type=int>
+%</operator>
+
+%<operator type=topdown class=bv name=findCars cmd="findCars @vis1@ @min@ @max@ @input@ @output@ @class@" >
+%  <attribute name=class cmd="-class @class@" type=enum options="LKW,PKW">
+%  <attribute name=vis1 label="1. visuelles Bild" type=image imagetype=vis cmd="-vis @vis1@">
+%</operator>
+
+
+
+%<operator type=topdown class=bv name=findHouse cmd="findCars @min@ @max@ @input@ @output@" />
+%<operator type=topdown class=bv name=findCow cmd="findCars @min@ @max@ @input@ @output@" />
+%<operator type=topdown class=bv name=findStreet cmd="findCars @min@ @max@ @input@ @output@" />
+%<operator type=topdown class=bv name=findRiver cmd="findCars @min@ @max@ @input@ @output@" />
+%<operator type=topdown class=misc name=dummyTopDown cmd="ga_dummy_topdown -class \"@class@\" @id@ @geoWest@ @geoNorth@ @geoEast@ @geoSouth@ @labelpic@ @output@">
+%  <attribute name=vis1 label="1. visuelles Bild" type=image imagetype=vis cmd="-vis @vis1@">
+%</operator>
+
+%<operator type=topdown class=misc name=1to2_TopDown cmd="ga_1to2_topdown @class@ @id@ @geoWest@ @geoNorth@ @geoEast@ @geoSouth@ @labelpic@ @output@" />
+%<operator type=bottomup class=misc name=dummyBottomUp cmd="ga_dummy_bottomup @input@ @output@ @class@ @id@ @geoWest@ @geoNorth@ @geoEast@ @geoSouth@ @labelpic@ " 
+%        tip="Dummy operator<br>Always returns the given nodes in one group"/>
+%<operator type=bottomup class=misc name=separateBottomUp cmd="ga_separate_bottomup @input@ @output@ @class@ @id@ @geoWest@ @geoNorth@ @geoEast@ @geoSouth@ @labelpic@ " />
+%\end{verbatim}
+
+
+\input{bottom_up}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "guide"
+%%% End: 

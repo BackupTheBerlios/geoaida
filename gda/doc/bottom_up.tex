@@ -1,0 +1,59 @@
+
+
+\section{BottomUp}
+\subsubsection{Aufgabe des BottomUp-Operators}
+Der BottomUp-Operator hat die Aufgabe eine ihm übergebene Knotenliste
+zu guppieren. Jede Gruppe enthält dabei eine Menge von Subinstanzen
+deren gruppierung speziell für eine Aufgabe realisiert sein kann. Die
+entstandenen Mengen sind zueinander disjunkt. Weiterhin soll für jede
+Gruppe eine Karte (Labelbild) [map] generiert werden in der jedes
+Subinstanzen-Individuum mit einem eigenen Label passend zur Beschreibung
+in der Gruppe eingetragen ist. Für alle Gruppen ist ebenfalls eine
+Karte [file] zu erstellen, in der jede Gruppe einen eigenen
+eindeutigen Label besitzt.
+
+\subsubsection{Input für den BottomUp-Operator}
+Eine Knotenliste siehe oben...\\
+Einen Prefix aus dem die Output-Datei-Namen generiert werden.\\
+Die Namen für die \textit{map}-files - \textbf{prefix\_map\_[NR].plm}\\
+Der Name für das \textit{file} (labelfile) - \textbf{prefix.plm}\\
+Der Name für das Beschreibungsfile - \textbf{prefix}\\
+
+\subsubsection{Output des BottomUp-Operators}
+Diese Attribute beschreiben die Ergebnisdarstellung des
+BottomUp-Operators. 
+\begin{description}
+\item[id]: Gruppen ID
+\item[map]: Karte mit Subinstanzen
+\item[file]: Karte mit den Instanzen der Gruppenkonzepte
+\item[geoWest, geoNorth, geoEast, geoSouth]: bounding box
+\end{description}
+Weiterhin werden die Lablebilder (mehrere map, file) erzeugt
+
+\subsubsection{Beispiel}
+Input
+\begin{verbatim}
+<node class="house" id=1 file="label1" ...\>
+<node class="house" id=2 file="label1" ...\>
+<node class="house" id=3 file="label1" ...\>
+<node class="house" id=4 file="label1" ...\>
+\end{verbatim}
+
+Output
+\begin{verbatim}
+<group 
+  <node class="house" id=1 file="label1" ...\>
+  <node class="house" id=2 file="label1" ...\>
+  id=1 map="prefix_map_1.plm" file="prefix.plm"
+\>
+<group
+<node class="house" id=3 file="label1" ...\>
+<node class="house" id=4 file="label1" ...\>
+  id=2 map="prefix_map_2.plm" file="prefix.plm"
+\>
+\end{verbatim}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "guide"
+%%% End: 

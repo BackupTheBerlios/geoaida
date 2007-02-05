@@ -1,0 +1,62 @@
+
+\chapter{Dateiformate}
+\label{cha:asciifileformat}
+
+Der Informationsaustausch zwischen den einzelnen Kompononten von
+\geoaida geschieht über ASCII-Dateien, in denen die Daten in einem
+HTML-ähnlichen Format gespeichert werden. Dadurch lassen sich
+hierarchische Strukturen einfach darstellen. Jeder Knoten der
+Hierarchie wird durch einen Start-Tag eingeleitet und durch einen
+End-Tag beendet. Zwischen Start- und End-Tag können Child-Knoten
+beschrieben werden, die ihrerseits geschachtelt sein können.
+
+\textbf{Start-Tags} werden mit \texttt{<} eingeleitet. Unmittelbar auf das
+\texttt{<} folgt der Name des Tags. Dem Name des Tags kann eine Liste
+von Attributen folgen, die dem zu beschreibenen Knoten bestimmte
+Eigenschaften zuordnen. Das Start-Tag wird durch \texttt{>}
+beendet. Enthält der Knoten keine Child-Knoten, so kann das Start-Tag
+auch mit \texttt{/>} abgeschlossen werden. Es ist dann kein End-Tag
+mehr erforderlich.
+
+Das \textbf{End-Tag} wird mit \texttt{</} eingeleitet. Darauf folgt
+der Name des End-Tags der mit einem zuvor benutzten Start-Tag
+korrespondieren muss.
+
+Die beim Start-Tag einsetzbare \textbf{Attributeliste} hat das Format
+\emph{Attribute-Name}\texttt{=}\emph{Value}, wobei mehrere Attribute
+durch Leerzeichen oder andere Widespaces getrennt aufeinander folgen
+können. \emph{Attribute-Name} und \emph{Value} dürfen aus beliebigen
+Zeichen bestehen. Werden Zeichen verwendet, die auch zum Einleitung
+oder Beenden der Tags genutzt werden, muss der Ausdruck in
+Anführungszeichen gesetzt werden. Dem Zeichen \verb$"$ muss ein
+Backslash \texttt{$\backslash$} vorangestellt werden, gleiches gilt
+für natürlich für das Zeichen \texttt{$\backslash$} selber.
+
+Im folgenden Beispiel sind insgesamt drei Knoten dargestellt. Zwei vom
+Typ \texttt{region} und einer vom Typ \texttt{subregion}.
+\texttt{subregion} ist Child des \texttt{region}-Knoten mit dem Name
+Knoten2. Der \texttt{region}-Knoten mit dem Namen Knoten1 sowie der
+\texttt{subregion}-Knoten sind einfache Knoten ohne Children. Deshalb
+können deren Beschreibungen mit \texttt{/>} beendet werden, wohingegen
+der zweite \texttt{region}-Knoten ein Endtag (\texttt{</region>})
+benötigt. Die beiden \texttt{region}-Knoten besitzen jeweils die
+Attribute \emph{id} und \emph{name}, \texttt{subregion} besitzt
+\emph{id} und \emph{label}. Das Label Attribut zeigt dabei, wie
+Sonderzeichen durch Nutzung des Escape-Zeichen \texttt{$\backslash$}
+in die Attributewerte integriert werden können.
+
+\begin{verbatim}
+<region id=5 name="Knoten1"/>
+<region id=3 name=Knoten2>
+  <subregion id=6 label="Baum \"Oskar\""/>
+</region>
+\end{verbatim}
+
+\input{region.tex}
+\input{images.tex}
+\input{nodelist.tex}
+\input{mapfileformat.tex}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "guide"
+%%% End: 

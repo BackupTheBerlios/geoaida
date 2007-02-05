@@ -1,0 +1,62 @@
+\documentclass[BCOR5mm,DIV14,headexclude,a4paper,14pt,pdftex]{scrbook}
+%\documentclass[BCOR5mm,DIV14,headexclude,a4paper,12pt]{scrbook}
+\usepackage{times}
+\usepackage{german}
+\usepackage[iso]{umlaute} 
+\usepackage[bibcomment]{tntdasa}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\newcommand{\shortpage}{\enlargethispage{-\baselineskip}}
+\newcommand{\longpage}{\enlargethispage{\baselineskip}}
+\usepackage{thumbpdf}
+\newcommand{\geoaida}{\textsc{geoAIDA}\ }  
+
+\begin{document}
+\sloppy
+
+
+\begin{titlepage}
+  \thispagestyle{empty}
+  \setcounter{page}{0}
+  \begin{center}
+    {\large Dokumentation}
+
+  \vfill
+
+    {\Large \textbf{\geoaida Operatoren}}
+
+  \vfill
+
+  \vfill
+
+    {\large %Bearbeiter: \\
+      Dipl.-Phys. O. Stahlhut \\
+      Dipl.-Ing. M. Pahl \\
+      Dipl.-Inform. J. Bückner \\
+      } 
+
+  \vfill
+
+\today
+  \vfill
+\end{center}
+
+\vfill
+
+
+
+
+\end{titlepage}
+
+\begin{titlepage} \ 
+  \thispagestyle{empty}
+  \setcounter{page}{0}
+\end{titlepage} 
+
+\pagestyle{tntdasa}
+
+\tableofcontents
+\input{programming_guide.tex}
+\input{geocoordinates.tex}
+\end{document}
+

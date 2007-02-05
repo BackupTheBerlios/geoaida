@@ -1,0 +1,65 @@
+\section{Knotenliste}
+
+Eine Knotenliste wird an einen \emph{bottomUp}-Opertator übergeben,
+dessen Aufgabe darin besteht:
+\begin{enumerate}
+\item die Knoten zu gruppieren,
+\item eine Karte der Knoten zu generieren,
+\item die Knoten einer Karte zu einer Gruppenregion zusammenzufassen.
+\end{enumerate}
+
+Knoten werden mittel \verb$\<node$ eingeleitet, Gruppen mittels
+\verb$\<group$.
+
+Als Eingabe erhält der \texttt{bottomUp}-Operator eine List von
+\emph{node}s. \texttt{node}s können beliebige Attribute haben. Die
+folgenden Attribute sind in jedem Fall vorhanden.
+\begin{description}
+\item[class]  bestimmt die Klasse, von welcher diese Region ist.
+\item[id:] Unter der angegebenen \emph{id} ist die Region im Labelbild
+  zu finden.
+\item[file] ist der Dateiname des zu dieser Region gehörenden
+  Labelbildes. Mehrere Regionen können das gleiche Labelbild
+  verwenden. Die Unterscheidung findet über die \emph{id} statt.
+\item[llx, lly, urx, ury] beschreiben die Boundingbox der Region in
+  Pixeln im angegegeben Labelbild \emph{file}. Dabei gilt:
+  $llx<=x<=urx$ und $ury<=y<=lly$, d.h. die Boundingbox liegt
+  vollständig in der Region.
+\item[geoNorth, geoSouth, geoWest, geoEast] beschreibt die Boundingbox
+  der Region. Die beschriebene Boundingbox in Geokoordinaten liegt
+  genau auf der Regionengrenze und ist damit in jede Richtung einen
+  halben Pixel größer als die Boundingbox in Pixeln.
+\item[file\_geoNorth, file\_geoSouth, file\_geoWest, file\_geoEast]
+  beschreibt die Boundingbox des mittels \texttt{file} angegebenen
+  Label-Bildes.
+%\item[llx, lly, urx, ury] beschreiben die Boundingbox der Region in
+%  Pixeln im angegegeben Labelbild \emph{file}.
+%\item[geoNorth, geoSouth, geoWest, geoEast] beschreibt die Boundingbox
+%  der Region in Geokoordinaten.
+\item[name] ist der Name der Region. Er dient lediglich
+  Visualisierungszwecken. Ist kein \emph{name} angegeben, wird ein
+  Name automatisch aus dem Klassenname und einer fortlaufenden Nummer
+  generiert. 
+\item[addr] gibt die Adresse dieses Attributs im Speicher an. Dieses
+  Attribut darf in keinem Fall verändert werden, da es die Zuordnung
+  dieses Knotens im \geoaida-Netz herstellt.
+\end{description}
+
+In den einzelnen Knoten muss der \emph{bottomUp}-Operator die
+folgenden Attribute setzen:
+\begin{description}
+\item[id] 
+\end{description}
+
+\texttt{group}-Attribute:
+
+\begin{description}
+\item[map] 
+\item[file] 
+\item[id] 
+\end{description}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "guide"
+%%% End: 

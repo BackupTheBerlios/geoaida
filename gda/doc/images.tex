@@ -1,0 +1,34 @@
+\section{Bilddatenbeschreibung}
+
+Die Bilddaten, der in \geoaida\ verwendeten Bilder werden in einem
+ASCII-Format beschrieben. Die folgende Attribue müssen/können gesetzt
+werden:
+
+\begin{description}
+\item[file] ist der Dateiname des zu dieser Bild gehörenden
+  Rasterdaten. 
+\item[geoType] bestimmt die Art des Geokoordinatensystems. Bisher wird
+  lediglich \texttt{GK/1}, \texttt{GK/2} und \texttt{GK/3}
+  (Gauß-Krüger) unterstützt. Denkbar wären jedoch auch Typen wie
+  \texttt{UTM}.
+\item[geoNorth, geoSouth, geoWest, geoEast] beschreibt die
+  Geokoordinaten der Rasterdaten im mit \texttt{geoType} festgelegten
+  Koordinatensystem. Die Geokoordinaten beschreiben die Bildpunkte
+  \emph{(-0.5, size\_y-0.5)} und \emph{(size\_x-0.5, -0.5)} (s. auch
+  Kapitel \ref{chap:geocoordinates}).
+\item[type] bestimmt den Typ dieses Bildes. Derzeit sind die Bildtypen
+  \texttt{LASER}, \texttt{VIS}, \texttt{SAR},\texttt{IR} und
+  \texttt{VIDEO} möglich.  Im Prinzip ist jeder beliebige Bildtyp
+  möglich, sofern in der Datenbank ebenfalls Bilder diesen Typs für
+  die angewählte Region existieren.
+\item[key] dient dazu, das Bild innerhalb seiner \texttt{type}-Klasse
+  eindeutig zu identifizieren.
+\item[size\_x, size\_y]
+\item[res\_x, res\_y]  
+\item[name] ist der Name des Bildes.  
+\end{description}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "guide"
+%%% End: 

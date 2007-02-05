@@ -1,0 +1,80 @@
+\section{Mapfileformat}
+
+\subsubsection{Map}
+
+\begin{tabular}{|l|l|l|}
+\hline
+\emph{Typ} & \emph{Bezeichnung} & \emph{Beschreibung} \\
+\hline
+DD & num\_regions & Anzahl der Regionen \\
+\hline
+Region & region\_1 & 1. Region \\
+\vdots & \vdots & \\
+Region & region\_n & letzte Region \\
+\hline
+VectorList& vectorlist\_1 & 1. Vektorliste \\
+\vdots & \vdots & \\
+VectorList& vectorlist\_n & letzte Vektorliste \\
+\hline
+\end{tabular}
+
+\subsubsection{Region}
+\begin{tabular}{|l|l|l|}
+\hline
+\emph{Typ} & \emph{Bezeichnung} & \emph{Beschreibung} \\
+\hline
+DD & id & ID der Region \\
+\hline
+DD & file\_offset & Position der Vektorliste in der Datei relativ zum
+Start der Vektorlisten\\
+\hline
+\end{tabular}
+
+\subsubsection{VectorList}
+\begin{tabular}{|l|l|l|}
+\hline
+\emph{Typ} & \emph{Bezeichnung} & \emph{Beschreibung} \\
+\hline
+DD & num\_vectors & Anzahl der Vektoren \\
+\hline
+Vector& vector\_1 & 1. Vektor \\
+\vdots & \vdots & \\
+Vector& vector\_n & letzter Vektor \\
+\hline
+\end{tabular}
+
+\subsubsection{Vector}
+\begin{tabular}{|l|l|l|}
+\hline
+\emph{Typ} & \emph{Bezeichnung} & \emph{Beschreibung} \\
+\hline
+DD & start\_x & Startpunkt X \\
+DD & start\_y & Startpunkt Y \\
+DD & num\_points & Anzahl der Richtungsanweisungen \\
+\hline
+Direction & dir\_1 & 1. Richtung \\
+Direction & dir\_n & letzte Richtung \\
+\hline
+\end{tabular}
+
+\subsubsection{Direction}
+\emph{Direction} ist ein 2 bit-Wert mit den folgenden Bedeutungen:
+
+\begin{tabular}{ll}
+0 & East \\
+1 & North \\
+2 & West \\
+3 & South \\
+\end{tabular}
+
+Jeweils 4 Richtungswerte werden in einem Byte zusammengefasst:
+
+\begin{tabular}{lc@{}c@{}c@{}c}
+Bit&7\ 6&5\ 4&3\ 2&1\ 0\\
+&$\underbrace{x\ x}$&$\underbrace{x\ x}$&$\underbrace{x\ x}$&$\underbrace{x\ x}$\\
+Dir-Index&3 &2 &1 &0 \\
+\end{tabular}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "guide"
+%%% End: 

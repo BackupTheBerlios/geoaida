@@ -1,0 +1,26 @@
+\chapter{Geokoordinaten und Bildkoordinaten}
+\label{chap:geocoordinates}
+
+\tntpic{geocoordinates}{pic:geocoord}{}{Geokoordinaten}
+\newpage
+\begin{eqnarray*}
+  \frac{x-(-0,5)}{x(geo)-geoWest}&=&\frac{(xdim-1+0,5)-(-0,5)}{geoEast-geoWest} \\
+\Rightarrow x&=&
+\frac{(xdim-1+0,5)-(-0,5)}{geoEast-geoWest}{\left(x(geo)-geoWest\right)+(-0,5)}
+\\
+&=&\frac{xdim\left(x(geo)-geoWest\right)}{geoEast-geoWest}{-0,5} \\
+\Rightarrow
+geo(x)&=&\frac{geoEast-geoWest}{(xdim-1+0,5)-(-0,5)}(x-(-0,5))+geoWest
+\\
+&=&\frac{(x+0,5)(geoEast-geoWest)}{xdim}+geoWest\\
+\end{eqnarray*}
+\begin{eqnarray*}
+  \frac{y-(-0,5)}{geo(y)-geoNorth}&=&\frac{(ydim-1+0,5)-(-0,5)}{geoSouth-geoNorth} \\
+  \Rightarrow y&=&\frac{ydim}{geoSouth-geoNorth}(geo(y)-geoNorth)-0,5
+  \\
+\Rightarrow geo(y)&=&\frac{geoSouth-geoNorth}{ydim}(y+0,5)+geoNorth\\
+\end{eqnarray*}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "guide"
+%%% End: 

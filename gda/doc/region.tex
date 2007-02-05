@@ -1,0 +1,36 @@
+\section{Regionenbeschreibung}
+
+Eine Regionenbeschreibung entsteht als Ergebnis eines
+\emph{topDown}-Operators. Sie besteht aus einer Liste von Tags des
+Typs \texttt{region}. Die folgende Attribue müssen/können gesetzt
+werden:
+
+\begin{description}
+\item[class]  bestimmt die Klasse, von welcher diese Region ist. Nur
+  Regionen, die der Klasse des aufrufenden Knotens entsprechen, werden
+  in das Instanzennetz überführt.
+\item[id:] Unter der angegebenen \emph{id} ist die Region im Labelbild
+  zu finden.
+\item[file] ist der Dateiname des zu dieser Region gehörenden
+  Labelbildes. Mehrere Regionen können das gleiche Labelbild
+  verwenden. Die Unterscheidung findet über die \emph{id} statt.
+\item[llx, lly, urx, ury] beschreiben die Boundingbox der Region in
+  Pixeln im angegegeben Labelbild \emph{file}. Dabei gilt:
+  $llx<=x<=urx$ und $ury<=y<=lly$, d.h. die Boundingbox liegt
+  vollständig in der Region.
+\item[geoNorth, geoSouth, geoWest, geoEast] beschreibt die Boundingbox
+  der Region. Die beschriebene Boundingbox in Geokoordinaten liegt
+  genau auf der Regionengrenze und ist damit in jede Richtung einen
+  halben Pixel größer als die Boundingbox in Pixeln. Geokoordinaten
+  müssen nicht angegeben werden. Dann wird jedoch angenommen, dass die
+  Geokoordinaten und die Größe des Gesamtbildes (\texttt{file}) denen
+  der übergeordneten Region entsprechen.
+\item[name] ist der Name der Region. Er dient lediglich
+  Visualisierungszwecken. Ist kein \emph{name} angegeben, wird ein
+  Name automatisch aus dem Klassenname und einer fortlaufenden Nummer
+  generiert. 
+\end{description}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "guide"
+%%% End: 
