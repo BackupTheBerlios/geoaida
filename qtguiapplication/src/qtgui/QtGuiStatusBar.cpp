@@ -37,7 +37,7 @@ public:
     item_->setAutoDelete(true);
     name_="statusbar";
   }
-  void QtGuiStatusBarPrivate::create(QWidget *parent);
+  void create(QWidget *parent);
   QList<QtGuiDialogItem> *item_;
   QStatusBar *statusbar_;
 };

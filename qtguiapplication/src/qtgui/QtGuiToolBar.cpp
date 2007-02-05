@@ -36,7 +36,7 @@ public:
     item_->setAutoDelete(true);
     name_="toolbar";
   }
-  void QtGuiToolBarPrivate::create(QWidget *parent);
+  void create(QWidget *parent);
   QList<QtGuiDialogItem> *item_;
   QToolBar *toolbar_;
 };
