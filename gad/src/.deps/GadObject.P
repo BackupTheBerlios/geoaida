@@ -1,0 +1,206 @@
+GadObject.o: GadObject.cpp ../config.h GadObject.h GadModule.h \
+ GadGui.h /project/geoaida/include/MLParser.h \
+ /project/geoaida/include/qdict.h /project/geoaida/include/qgdict.h \
+ /project/geoaida/include/qptrcollection.h \
+ /project/geoaida/include/qglobal.h /project/geoaida/include/qconfig.h \
+ /project/geoaida/include/qmodules.h \
+ /project/geoaida/include/qfeatures.h \
+ /project/geoaida/include/qstring.h \
+ /project/geoaida/include/qcstring.h \
+ /project/geoaida/include/qmemarray.h \
+ /project/geoaida/include/qgarray.h /project/geoaida/include/qshared.h \
+ /usr/include/string.h /usr/include/features.h \
+ /usr/include/sys/cdefs.h /usr/include/gnu/stubs.h \
+ /usr/lib/gcc-lib/i486-suse-linux/2.95.3/include/stddef.h \
+ /project/geoaida/include/qtextstream.h \
+ /project/geoaida/include/qiodevice.h /usr/include/stdio.h \
+ /usr/include/bits/types.h /usr/include/bits/pthreadtypes.h \
+ /usr/include/bits/sched.h /usr/include/libio.h \
+ /usr/include/_G_config.h /usr/include/wchar.h \
+ /usr/include/bits/wchar.h /usr/include/gconv.h \
+ /usr/lib/gcc-lib/i486-suse-linux/2.95.3/include/stdarg.h \
+ /usr/include/bits/stdio_lim.h /usr/include/bits/stdio.h \
+ /project/geoaida/include/qwidget.h \
+ /project/geoaida/include/qwindowdefs.h \
+ /project/geoaida/include/qobjectdefs.h \
+ /project/geoaida/include/qnamespace.h \
+ /usr/lib/gcc-lib/i486-suse-linux/2.95.3/include/limits.h \
+ /usr/lib/gcc-lib/i486-suse-linux/2.95.3/include/syslimits.h \
+ /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+ /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+ /usr/include/bits/posix2_lim.h /project/geoaida/include/qobject.h \
+ /project/geoaida/include/qevent.h /project/geoaida/include/qregion.h \
+ /project/geoaida/include/qrect.h /project/geoaida/include/qsize.h \
+ /project/geoaida/include/qpoint.h /project/geoaida/include/qmime.h \
+ /project/geoaida/include/qmap.h \
+ /project/geoaida/include/qdatastream.h \
+ /project/geoaida/include/qpair.h /project/geoaida/include/qtl.h \
+ /project/geoaida/include/qpaintdevice.h \
+ /project/geoaida/include/qpalette.h /project/geoaida/include/qcolor.h \
+ /project/geoaida/include/qbrush.h /project/geoaida/include/qfont.h \
+ /project/geoaida/include/qfontmetrics.h \
+ /project/geoaida/include/qfontinfo.h \
+ /project/geoaida/include/qsizepolicy.h GadIO.h \
+ /project/geoaida/include/qlineedit.h \
+ /project/geoaida/include/qframe.h /project/geoaida/include/qlabel.h \
+ /project/geoaida/include/qlist.h /project/geoaida/include/qptrlist.h \
+ /project/geoaida/include/qglist.h ClassDict.h \
+ /project/geoaida/include/qintdict.h \
+ /project/geoaida/include/qvector.h \
+ /project/geoaida/include/qptrvector.h \
+ /project/geoaida/include/qgvector.h \
+ /project/geoaida/include/qdatetime.h \
+ /project/geoaida/include/qstack.h \
+ /project/geoaida/include/qptrstack.h GadWorkspace.h \
+ /project/geoaida/include/qpopupmenu.h \
+ /project/geoaida/include/qmenudata.h \
+ /project/geoaida/include/qiconset.h \
+ /project/geoaida/include/qpixmap.h \
+ /project/geoaida/include/qkeysequence.h \
+ /project/geoaida/include/qsignal.h \
+ /project/geoaida/include/qvariant.h \
+ /project/geoaida/include/qvaluelist.h \
+ /project/geoaida/include/qstringlist.h \
+ /project/geoaida/include/qstrlist.h \
+ /project/geoaida/include/qdialog.h /project/geoaida/include/qlayout.h \
+ /project/geoaida/include/qpushbutton.h \
+ /project/geoaida/include/qbutton.h /project/geoaida/include/qhbox.h \
+ /project/geoaida/include/qpainter.h /project/geoaida/include/qpen.h \
+ /project/geoaida/include/qpointarray.h \
+ /project/geoaida/include/qwmatrix.h \
+ /project/geoaida/include/qtooltip.h \
+ /project/geoaida/include/qregexp.h /project/geoaida/include/qfile.h \
+ /project/geoaida/include/qfileinfo.h /project/geoaida/include/qdir.h \
+ /project/geoaida/include/qapplication.h \
+ /project/geoaida/include/qdesktopwidget.h \
+ /project/geoaida/include/qasciidict.h \
+ /project/geoaida/include/qtranslator.h \
+ /project/geoaida/include/quuid.h /usr/include/memory.h GadProcess.h \
+ /project/geoaida/include/qtimer.h WildcardReplace.h GadObject.moc \
+ /project/geoaida/include/qmetaobject.h \
+ /project/geoaida/include/qconnection.h \
+ /project/geoaida/include/private/qucomextra_p.h \
+ /project/geoaida/include/private/qucom_p.h \
+ /project/geoaida/include/qsignalslotimp.h
+GadObject.cpp :
+../config.h :
+GadObject.h :
+GadModule.h :
+GadGui.h :
+/project/geoaida/include/MLParser.h :
+/project/geoaida/include/qdict.h :
+/project/geoaida/include/qgdict.h :
+/project/geoaida/include/qptrcollection.h :
+/project/geoaida/include/qglobal.h :
+/project/geoaida/include/qconfig.h :
+/project/geoaida/include/qmodules.h :
+/project/geoaida/include/qfeatures.h :
+/project/geoaida/include/qstring.h :
+/project/geoaida/include/qcstring.h :
+/project/geoaida/include/qmemarray.h :
+/project/geoaida/include/qgarray.h :
+/project/geoaida/include/qshared.h :
+/usr/include/string.h :
+/usr/include/features.h :
+/usr/include/sys/cdefs.h :
+/usr/include/gnu/stubs.h :
+/usr/lib/gcc-lib/i486-suse-linux/2.95.3/include/stddef.h :
+/project/geoaida/include/qtextstream.h :
+/project/geoaida/include/qiodevice.h :
+/usr/include/stdio.h :
+/usr/include/bits/types.h :
+/usr/include/bits/pthreadtypes.h :
+/usr/include/bits/sched.h :
+/usr/include/libio.h :
+/usr/include/_G_config.h :
+/usr/include/wchar.h :
+/usr/include/bits/wchar.h :
+/usr/include/gconv.h :
+/usr/lib/gcc-lib/i486-suse-linux/2.95.3/include/stdarg.h :
+/usr/include/bits/stdio_lim.h :
+/usr/include/bits/stdio.h :
+/project/geoaida/include/qwidget.h :
+/project/geoaida/include/qwindowdefs.h :
+/project/geoaida/include/qobjectdefs.h :
+/project/geoaida/include/qnamespace.h :
+/usr/lib/gcc-lib/i486-suse-linux/2.95.3/include/limits.h :
+/usr/lib/gcc-lib/i486-suse-linux/2.95.3/include/syslimits.h :
+/usr/include/limits.h :
+/usr/include/bits/posix1_lim.h :
+/usr/include/bits/local_lim.h :
+/usr/include/linux/limits.h :
+/usr/include/bits/posix2_lim.h :
+/project/geoaida/include/qobject.h :
+/project/geoaida/include/qevent.h :
+/project/geoaida/include/qregion.h :
+/project/geoaida/include/qrect.h :
+/project/geoaida/include/qsize.h :
+/project/geoaida/include/qpoint.h :
+/project/geoaida/include/qmime.h :
+/project/geoaida/include/qmap.h :
+/project/geoaida/include/qdatastream.h :
+/project/geoaida/include/qpair.h :
+/project/geoaida/include/qtl.h :
+/project/geoaida/include/qpaintdevice.h :
+/project/geoaida/include/qpalette.h :
+/project/geoaida/include/qcolor.h :
+/project/geoaida/include/qbrush.h :
+/project/geoaida/include/qfont.h :
+/project/geoaida/include/qfontmetrics.h :
+/project/geoaida/include/qfontinfo.h :
+/project/geoaida/include/qsizepolicy.h :
+GadIO.h :
+/project/geoaida/include/qlineedit.h :
+/project/geoaida/include/qframe.h :
+/project/geoaida/include/qlabel.h :
+/project/geoaida/include/qlist.h :
+/project/geoaida/include/qptrlist.h :
+/project/geoaida/include/qglist.h :
+ClassDict.h :
+/project/geoaida/include/qintdict.h :
+/project/geoaida/include/qvector.h :
+/project/geoaida/include/qptrvector.h :
+/project/geoaida/include/qgvector.h :
+/project/geoaida/include/qdatetime.h :
+/project/geoaida/include/qstack.h :
+/project/geoaida/include/qptrstack.h :
+GadWorkspace.h :
+/project/geoaida/include/qpopupmenu.h :
+/project/geoaida/include/qmenudata.h :
+/project/geoaida/include/qiconset.h :
+/project/geoaida/include/qpixmap.h :
+/project/geoaida/include/qkeysequence.h :
+/project/geoaida/include/qsignal.h :
+/project/geoaida/include/qvariant.h :
+/project/geoaida/include/qvaluelist.h :
+/project/geoaida/include/qstringlist.h :
+/project/geoaida/include/qstrlist.h :
+/project/geoaida/include/qdialog.h :
+/project/geoaida/include/qlayout.h :
+/project/geoaida/include/qpushbutton.h :
+/project/geoaida/include/qbutton.h :
+/project/geoaida/include/qhbox.h :
+/project/geoaida/include/qpainter.h :
+/project/geoaida/include/qpen.h :
+/project/geoaida/include/qpointarray.h :
+/project/geoaida/include/qwmatrix.h :
+/project/geoaida/include/qtooltip.h :
+/project/geoaida/include/qregexp.h :
+/project/geoaida/include/qfile.h :
+/project/geoaida/include/qfileinfo.h :
+/project/geoaida/include/qdir.h :
+/project/geoaida/include/qapplication.h :
+/project/geoaida/include/qdesktopwidget.h :
+/project/geoaida/include/qasciidict.h :
+/project/geoaida/include/qtranslator.h :
+/project/geoaida/include/quuid.h :
+/usr/include/memory.h :
+GadProcess.h :
+/project/geoaida/include/qtimer.h :
+WildcardReplace.h :
+GadObject.moc :
+/project/geoaida/include/qmetaobject.h :
+/project/geoaida/include/qconnection.h :
+/project/geoaida/include/private/qucomextra_p.h :
+/project/geoaida/include/private/qucom_p.h :
+/project/geoaida/include/qsignalslotimp.h :
