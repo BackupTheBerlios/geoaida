@@ -1,0 +1,39 @@
+#!/bin/sh
+
+Usage()
+{
+   echo "Usage:"
+   echo "  $0 <classname> <id> <geoWest> <geoNorth> <geoEast> <geoSouth> <mask> <input> <output> <p>"
+   exit -1;
+}
+
+echo "$0($#) $* " 1>&2
+
+if [ $# -ne 11 ]
+then
+  Usage $0
+fi
+
+classname=$2
+id=$3
+geoWest=$4
+geoNorth=$5
+geoEast=$6
+geoSouth=$7
+mask=$8
+input=$9
+output=${10}
+p=${11}
+echo "# $0 $*" >$output
+if [ -z "$mask" ]
+then
+  id=1
+  pfmgenblanklabel $input $output.td.plm $id
+  echo "# pfmgenblanklabel $input $output.td.plm $id" >>$output
+else
+  pbm2plm $mask $output.td.plm $id
+  echo "# pbm2plm $mask $output.td.plm $id" >>$output
+fi
+cat << EOF >>$output
+<REGION class=$classname id=$id geoWest=$geoWest geoNorth=$geoNorth geoEast=$geoEast geoSouth=$geoSouth p=$p file=$output.td.plm />
+EOF

@@ -1,0 +1,7 @@
+#
+# Dummy TopDown
+#
+<operator type=topdown class=misc name=DummyTopDown cmd="ga_dummy_topdown -class \"@class@\" @id@ @geoWest@ @geoNorth@ @geoEast@ @geoSouth@ \"@mask_file@\" @vis1_file@ @output@ @p@">
+  <attribute name=p label="Sicherheit" type=double value=0.5>
+  <attribute name=vis1 label="1. visuelles Bild" type=image imagetype=vis cmd="-vis @vis1@">
+</operator>

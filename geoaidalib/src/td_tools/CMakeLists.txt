@@ -1,0 +1,7 @@
+add_subdirectory(ga_dummy_topdown)
+add_subdirectory(ga_copy_topdown)
+add_subdirectory(ga_ppm_split_into_regions)
+add_subdirectory(ga_td_label_laser_ir_vis)
+add_subdirectory(ga_td_test_split)
+add_subdirectory(ga_split_into_regions)
+add_subdirectory(ga_td_symbolize)

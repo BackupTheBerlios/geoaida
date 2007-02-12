@@ -1,0 +1,31 @@
+#!/bin/sh
+
+filename=$1
+pipename=$2
+
+#   Test if regionmask died
+if [ -f $filename.pid ]
+then
+  pid=`cat $filename.pid`
+  if [ ! -d /proc/$pid ]
+  then
+	 echo pipe $pipename in ga_regionmask_pipe loeschen
+    rm $pipename
+  fi
+fi
+if [ ! -p $pipename ]
+then 
+  # Start regionmask
+  mkfifo $pipename
+  if [ ! -p $pipename ]
+  then
+    echo "mkfifo $pipename failed ($$)" 1>&2
+  fi
+  echo "*** Starting new $$"
+  echo "($$) regionmask -p $pipename -l $filename.lock"
+  regionmask -p $pipename -l $filename.lock >/tmp/regionmask.$$.log 2>&1 &
+#  regionmask -p $pipename -l $filename.lock &
+  echo $! >$filename.pid
+  echo "numCalls 10" >$pipename
+  watch_pipe $pipename $filename.lock $filename.pid 150 &
+fi

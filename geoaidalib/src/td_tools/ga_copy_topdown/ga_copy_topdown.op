@@ -1,0 +1,7 @@
+#
+# Dummy TopDown
+#
+<operator type=topdown class=misc name=CopyTopDown cmd="ga_copy_topdown @input@ \"@mask_file@\" @mask_x@ @mask_y@ @mask_size_x@ @mask_size_y@ @output@ @p@"
+	runglobal=true >
+  <attribute name=input label="Regionfile" type=string>
+</operator>

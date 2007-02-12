@@ -1,0 +1,14 @@
+#
+# TopDown Multi-Sensor
+#
+<operator type=topdown classname="segment" name="Multi-Sensor Classification" cmd="ga_td_label_laser_ir_vis @min_size@ @max_size@ @smooth@ @laser1_file@ @laser2_file@ @ir_file@ @vis_file@ \"@classn@\" @output@.plm @output@ ">
+  <attribute name="min_size" label="minimale regionen groesse" cmd="@min_size@" type=int value="2">
+  <attribute name="max_size" label="maximale regionen groesse" cmd="@max_size@" type=int value="0">
+  <attribute name="smooth" label="smooth factor" cmd="@smooth@" type=int value="2">
+  <attribute name=laser1 label="laser image 1th pulse" type=image imagetype=height>
+  <attribute name=laser2 label="laser image 2th pulse" type=image imagetype=height>
+  <attribute name=ir label="IR image" type=image imagetype=ir>
+  <attribute name=vis label="VIS image" type=image imagetype=vis>
+  <attribute name="classn" label="classname" type=enum options="Ortslage,Wirtschaftsflaeche,Greenland,Forest,Versiegelt,Water" value="Ortslage">
+</operator>
+

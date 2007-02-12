@@ -1,0 +1,57 @@
+#!/bin/sh
+
+Usage()
+{
+   echo "Usage:"
+   echo "  $0 <regionfile> <mask_file> <mask_x> <mask_y> <mask_size_x> <mask_size_y> <output> <p>"
+   exit -1;
+}
+
+echo "$0($#) $* " 1>&2
+
+if [ $# -ne 8 ]
+then
+  Usage $0
+fi
+
+regfile=$1
+mask_file=$2
+mask_x=$3
+mask_y=$4
+mask_size_x=$5
+mask_size_y=$6
+output=$7
+echo "# $0 $*" >$output
+
+filename=/tmp/`echo $regfile | sed -e 's/\//_/g'`
+pipename=$filename.pipe
+
+if [ ! -f $regfile ]
+then
+  exit 1
+fi
+
+lockfile $filename.lock
+if [ -z "$mask_file" ]
+then
+  cp $regfile $output
+else
+#  ga_regionmask_pipe $filename $pipename
+#  echo "*** Starting $$"
+#  echo "run $output $regfile $mask_file $mask_x $mask_y $mask_size_x $mask_size_y"
+#  echo "run $output $regfile $mask_file $mask_x $mask_y $mask_size_x $mask_size_y" >$pipename
+  # Wait for regionmask to finish
+#  echo "*** Waiting $$"
+#  lockfile $filename.lock
+#  echo "*** Done $$"
+  regionmask -o $output $regfile $mask_file $mask_x $mask_y $mask_size_x $mask_size_y
+fi
+
+# Remove lockfile
+rm -f $filename.lock
+
+mv $output /tmp/$$.output
+echo "# reusing results from $regfile " >$output
+echo "# regionmask -o $output $regfile $mask_file $mask_x $mask_y $mask_size_x $mask_size_y" >>$output
+cat /tmp/$$.output >>$output
+rm /tmp/$$.output

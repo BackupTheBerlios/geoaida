@@ -1,9 +1,9 @@
 /***************************************************************************
-                          tree.cpp  -  description
+                          combine.h  -  description
                              -------------------
-    begin                : Wed Sep 27 2000
-    copyright            : (C) 2000 by Martin Pahl
-    email                : pahl@tnt.uni-hannover.de
+    begin                : Wed Jan 22 2003
+    copyright            : (C) 2003 by Oliver Stahlhut
+    email                : stahlhut@tnt.uni-hannover.de
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,34 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
-/*
- * $Source: /data/cvs/ga_image/ga_image/gaimage/treenode.hpp,v $
- * $Revision: 1.1 $
- * $Date: 2001/12/03 13:00:07 $
- * $Author: stahlhut $
- * $Locker:  $
- */
+#include <stdio.h>
+#include <iostream.h>
+#include <gaimage.h>
+#include <gaimaget.h>
+#include <garegiont.h>
 
-template <class T, class Base>
-TreeNode<T, Base>::TreeNode(){
-}
+//	MAX_LEVEL includes original resolution
+#define MAX_LEVEL 4
+//	number of classes in image
+#define CLASSES 4
+//	outputs unlabeled and extra outputs in all resolution levels
+//  #define DEBUG_MSG
 
-template <class T, class Base>
-TreeNode<T, Base>::~TreeNode(){
-}
+using namespace Ga;
 
-/** Get the parent of this node */
-template <class T, class Base>
-T* TreeNode<T, Base>::parent()
-{
-  return (T*)Base::parent_;
-}
-
-
-/** Get the List of children */
-template <class T, class Base>
-QList<T>& TreeNode<T, Base>::children()
-{
-  return (QList<T>&)Base::children_;
-}
-
+int combine (Image *in, Image &mask, char* eval_name, char *path);
+int compose_result (Image *in, char* eval_name, char* regdes_name, char *outimg_name);
+ImageT<int> *relabelOutput (Image &Img, char *labelname, char *descr);

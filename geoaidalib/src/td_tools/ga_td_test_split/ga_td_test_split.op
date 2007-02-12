@@ -1,0 +1,6 @@
+<operator type=topdown class="segment" name="Test Operator"
+  cmd="ga_td_test_split @vis_file@ @min_size@ @haus@ @output@.plm @output@ ">
+  <attribute name="vis" label="Eingangsbild" type=image imagetype=vis>
+  <attribute name="min_size" label="minimale regionen groesse" cmd="@min_size@" type=int value="100">
+  <attribute name="haus" label="Haeser-such-flag" cmd="@haus@" type=int value="0">
+</operator>
