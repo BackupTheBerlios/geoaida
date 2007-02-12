@@ -1,0 +1,10 @@
+#
+# Bottom-Up Operatoren
+#
+<operator type=bottomup class=bu name=minSize 
+  tip="calculate the size for all 'classes' and grouped all with a 'size >= minsize'"
+  cmd="ga_bu_maxsize @input@ @output@ @minsize@ @classes@" 
+  <attribute name="minsize" type=int>
+  <attribute name="classes" type=string value="ALL">
+</operator>
+

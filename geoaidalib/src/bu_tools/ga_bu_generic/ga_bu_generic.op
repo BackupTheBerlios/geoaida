@@ -1,0 +1,8 @@
+<operator type=bottomup class=bu name="Generic Operator"
+  tip="Select regions using a UPN command"
+  cmd="ga_bu_generic @input@ @output@ '@cmd@'">
+  <attribute name=cmd label="Command"
+             tip="<b>Commands:</b><br>
+	          nodelist : push nodelist on stack<br>"
+             type=formula>
+</operator>

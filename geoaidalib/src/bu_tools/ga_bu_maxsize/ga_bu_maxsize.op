@@ -1,0 +1,7 @@
+<operator type=bottomup class=bu name=maxSize 
+  tip="calculate the size for all 'classes' and grouped all with a 'size < maxsize'"
+  cmd="ga_bu_maxsize @input@ @output@ @maxsize@ @classes@" 
+  <attribute name="maxsize" type=int>
+  <attribute name="classes" type=string value="ALL">
+</operator>
+

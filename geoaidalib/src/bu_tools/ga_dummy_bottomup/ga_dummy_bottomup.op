@@ -1,0 +1,6 @@
+
+#
+# Dummy BottomUp
+#
+<operator type=bottomup class=misc name=DummyBottomUp cmd="ga_dummy_bottomup @input@ @output@ @class@ @id@ @geoWest@ @geoNorth@ @geoEast@ @geoSouth@ @mask_file@ " 
+	tip="Dummy operator<br>Always returns the given nodes in one group"/>

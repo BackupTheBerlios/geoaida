@@ -1,0 +1,13 @@
+<operator type=bottomup class=bu name="Merge settlement regions"
+  tip="Merges settlement regions"
+  cmd="ga_bu_settlement @input@ @output@ @output@.bu.node.plm @output@.bu.plm @min_size@ @max_thickness@ @class_list@">
+  <attribute name=min_size label="Min Region Size" value=12 
+             tip="Minimum region size in pixel"
+	     type=int min=1 >
+  <attribute name=max_thickness label="Max Thickness" value=18 
+             tip="Maximum thickness of a region in pixel "
+	     type=int min=1 >
+  <attribute name=class_list label="Valid classes" value="ALL"
+             type=string tip="List of valid classes" >
+</operator>
+

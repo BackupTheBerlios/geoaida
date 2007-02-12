@@ -1,0 +1,32 @@
+#!/bin/sh
+
+Usage()
+{
+   echo "Usage:"
+   echo "  $0 <input> <output> <classname> <id> <ulx> <uly> <lrx> <lry> <labelpic>"
+   exit -1;
+}
+
+if [ $# -ne 9 ]
+then
+  Usage $0
+fi
+
+input=$1
+output=$2
+classname=$3
+id=$4
+ulx=$5
+uly=$6
+lrx=$7
+lry=$8
+labelpic=$9
+
+cat << EOF >$output
+<group creator=dummyBottomUp>
+EOF
+cat $input >>$output
+cat << EOF >>$output
+</group>
+EOF
+
