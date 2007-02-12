@@ -13,3 +13,4 @@ qt_wrap_cpp(moclib mocsrc ${headers})
 add_library(qtparser ${sources} ${mocsrc})
 
 install(TARGETS qtparser DESTINATION lib)
+install(FILES ${headers} DESTINATION include)

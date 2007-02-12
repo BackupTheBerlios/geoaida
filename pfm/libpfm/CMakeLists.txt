@@ -1,3 +1,5 @@
+set(headers pfm.h)
 set(sources pfm.c)
 add_library(pfm STATIC ${sources})
 install(TARGETS pfm DESTINATION lib)
+install(FILES ${headers} DESTINATION include)

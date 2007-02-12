@@ -78,3 +78,4 @@ qt_wrap_cpp(moclib mocsrc ${headers})
 add_library(qtgui ${sources} ${mocsrc})
 
 install(TARGETS qtgui DESTINATION lib)
+install(FILES ${headers} DESTINATION include)
