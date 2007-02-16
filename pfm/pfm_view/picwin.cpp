@@ -18,17 +18,15 @@
 //#define DEBUG_PRG
 
 #include "picwin.h"
+#include "mini-junktion.xpm"
 #include <float.h>
 #include <math.h>
 #include <stdlib.h>
 #include <qstatusbar.h>
 #include "paintwidget.h"
 #include "plot2d.h"
-
-#include "icons/tnt.xpm"
-#include "icons/mini-junktion.xpm"
-
-#include <iostream>
+#include "iostream.h"
+#include "tnt.xpm"
 
 #ifdef GCC29
 #ifdef linux
@@ -60,10 +58,10 @@ PicWin::PicWin( QWidget *parent, const char *name, int wFlags )
     : QMainWindow( parent, name, wFlags ),
       conversion_flags( PreferDither ),
       filename( 0 ),
+      helpmsg( 0 ),
       image((const char**)tnt_xpm),
       pm((const char**)tnt_xpm),
       pmScaled((const char**)tnt_xpm),
-      helpmsg( 0 ),
       llx(0),lly(0),urx(0),ury(0)
 {
     pickx = -1;
@@ -410,7 +408,6 @@ void PicWin::loadpfm(char* filename) {
   }
 
  int cols, rows;
- std::cerr << "void PicWin::loadpfm ...\n"; 
  pfm_data=pfm_readpfm(infile,&cols,&rows,&pfm_min_val,&pfm_max_val);
  qDebug("PicWin::loadpfm8 min=%f max=%f",pfm_min_val,pfm_max_val);
  fclose(infile);
@@ -423,7 +420,7 @@ void PicWin::loadpfm(char* filename) {
 void PicWin::editImg() {
   if(!pfm_data) return;
   EditImg* edit_img = new EditImg(this, "TEST",pfm_min_val,pfm_max_val);
-  edit_img->show();
+	edit_img->show();
 }
 
 void PicWin::absImg() {
@@ -446,7 +443,7 @@ void PicWin::absImg() {
    }
  // And reconvert...
  reconvertImage();
- repaint(image.hasAlphaBuffer());  // show image in widget
+ repaint(image.hasAlphaBuffer());	// show image in widget
 }
 
 void PicWin::rndColImg() {
@@ -454,7 +451,7 @@ void PicWin::rndColImg() {
  // And reconvert.
  convertLabel(image,pfm_data);
  reconvertImage();
- repaint(image.hasAlphaBuffer());  // show image in widget
+ repaint(image.hasAlphaBuffer());	// show image in widget
 }
 
 void PicWin::circularColorImg() {
@@ -465,7 +462,7 @@ void PicWin::circularColorImg() {
  }
  // And reconvert...
  reconvertImage();
- repaint(image.hasAlphaBuffer());  // show image in widget
+ repaint(image.hasAlphaBuffer());	// show image in widget
 }
 
 void PicWin::origColImg() {
@@ -478,14 +475,14 @@ void PicWin::origColImg() {
  convertScalar(image,pfm_data,pfm_min_val,pfm_max_val);
  // And reconvert...
  reconvertImage();
- repaint(image.hasAlphaBuffer());  // show image in widget
+ repaint(image.hasAlphaBuffer());	// show image in widget
 }
 
 void PicWin::slotScaleImg(float min, float max) {
  convertScalar(image,pfm_data,min,max);
  // And reconvert...
  reconvertImage();
- repaint(image.hasAlphaBuffer());  // show image in widget
+ repaint(image.hasAlphaBuffer());	// show image in widget
 }
 
 /** set the contrast by evaluating the min and max values from the selected region */
@@ -527,19 +524,19 @@ void PicWin::histogram()
   if (turx>=image.width() || tlly>=image.height()) return;
   float min=FLT_MAX;
   float max=FLT_MIN;
-  float mean = 0.0, meanx = 0.0;
+	float mean = 0.0, meanx = 0.0;
   int cols=image.width();
   for (int y=tury; y<=tlly; y++) {
-    meanx = 0.0;
+		meanx = 0.0;
     for (int x=tllx; x<=turx; x++) {
       float v=pfm_data[y*cols+x];
       if (v<min) min=v;
       if (v>max) max=v;
-      meanx+=v;
+			meanx+=v;
     }
-    mean += meanx / (turx-tllx+1);
+		mean += meanx / (turx-tllx+1);
   }
-  mean/=(tlly-tury+1);
+	mean/=(tlly-tury+1);
 
   if (max<256 && min>=0 && max>128) {min=0; max=256;}
   float range=max-min;
@@ -621,71 +618,71 @@ void PicWin::histogram()
 }
 
 int follow_ray (int start_x, int start_y, float *pfm_data, int alpha, int cols,
-              int max_x, int min_x, int max_y, float shadecol, int &points){
+							int max_x, int min_x, int max_y, float shadecol, int &points){
 
 int sum=0, x=start_x, y=start_y, deltax, deltay;
 float a;
 
 a= (float(alpha)*M_PI) /180.0;
-  #ifdef DEBUG_PRG
-//  cout<<"Startpunkt (="<<x<<","<<y<<")"<<endl;
-  #endif              
+	#ifdef DEBUG_PRG
+//	cout<<"Startpunkt (="<<x<<","<<y<<")"<<endl;
+	#endif							
 if (a<= M_PI/4){
-  do{  
-    #ifdef DEBUG_PRG
-//    cout<<"Teste Punkt (="<<x<<","<<y<<")"<<endl;
-    #endif              
-    points++;
-    if (pfm_data[y*cols+x]== shadecol)
-      sum++;    
-    x++;
-    deltax= x-start_x;
-    y= start_y+int(tan(a)*float(deltax));
-     }
-  while ((x<=max_x) && (y<=max_y));
-  }
+	do{	
+		#ifdef DEBUG_PRG
+//		cout<<"Teste Punkt (="<<x<<","<<y<<")"<<endl;
+		#endif							
+		points++;
+		if (pfm_data[y*cols+x]== shadecol)
+			sum++;		
+		x++;
+		deltax= x-start_x;
+		y= start_y+int(tan(a)*float(deltax));
+   	}
+	while ((x<=max_x) && (y<=max_y));
+	}
 else if ((a>M_PI/4) && (a<M_PI/2)){
-  do{  
-    #ifdef DEBUG_PRG
-//    cout<<"Teste Punkt (="<<x<<","<<y<<")"<<endl;
-    #endif    
-    points++;          
-    if (pfm_data[y*cols+x]== shadecol)
-      sum++;    
-    y++;
-    deltay= y-start_y;
-    x= start_x+int(tan(M_PI/2-a)*float(deltay));
-     }
-  while ((x<=max_x) && (y<=max_y));
-  }
+	do{	
+		#ifdef DEBUG_PRG
+//		cout<<"Teste Punkt (="<<x<<","<<y<<")"<<endl;
+		#endif		
+		points++;					
+		if (pfm_data[y*cols+x]== shadecol)
+			sum++;		
+		y++;
+		deltay= y-start_y;
+		x= start_x+int(tan(M_PI/2-a)*float(deltay));
+   	}
+	while ((x<=max_x) && (y<=max_y));
+	}
 else if ((a>M_PI/2) && (a<3*(M_PI/4.0))){
-  do{  
-    #ifdef DEBUG_PRG
-//    cout<<"Teste Punkt (="<<x<<","<<y<<")"<<endl;
-    #endif    
-    points++;          
-    if (pfm_data[y*cols+x]== shadecol)
-      sum++;    
-    y++;
-    deltay= y-start_y;
-    x= start_x-int(tan(a-M_PI/2)*float(deltay));
-     }
-  while ((x>=min_x) && (y<=max_y));
-  }
+	do{	
+		#ifdef DEBUG_PRG
+//		cout<<"Teste Punkt (="<<x<<","<<y<<")"<<endl;
+		#endif		
+		points++;					
+		if (pfm_data[y*cols+x]== shadecol)
+			sum++;		
+		y++;
+		deltay= y-start_y;
+		x= start_x-int(tan(a-M_PI/2)*float(deltay));
+   	}
+	while ((x>=min_x) && (y<=max_y));
+	}
 else if ((a>3*(M_PI/4)) && (a<M_PI)){
-  do{  
-    #ifdef DEBUG_PRG
-//    cout<<"Teste Punkt (="<<x<<","<<y<<")"<<endl;
-    #endif    
-    points++;          
-    if (pfm_data[y*cols+x]== shadecol)
-      sum++;    
-    x--;
-    deltax= abs(x-start_x);
-    y= start_y+int(tan(M_PI-a)*float(deltax));
-     }
-  while ((x>=min_x) && (y<=max_y));
-  }
+	do{	
+		#ifdef DEBUG_PRG
+//		cout<<"Teste Punkt (="<<x<<","<<y<<")"<<endl;
+		#endif		
+		points++;					
+		if (pfm_data[y*cols+x]== shadecol)
+			sum++;		
+		x--;
+		deltax= abs(x-start_x);
+		y= start_y+int(tan(M_PI-a)*float(deltax));
+   	}
+	while ((x>=min_x) && (y<=max_y));
+	}
 
 return (sum);
 }
@@ -694,15 +691,15 @@ return (sum);
 void PicWin::sundir()
 {
   if (!pfm_data) return;
-  double f=double(pm.width())/pmScaled.width();  //  factor  original - scaled image
-  int tllx=int(llx*f);  // true llx
+  double f=double(pm.width())/pmScaled.width();	//	factor	original - scaled image
+  int tllx=int(llx*f);	// true llx
   int tlly=int(lly*f);
   int turx=int(urx*f);
   int tury=int(ury*f);
   if (tllx>turx)
-   qSwap(tllx,turx);
+ 	qSwap(tllx,turx);
   if (tury>tlly) qSwap(tlly,tury);
-  if (turx>=image.width() || tlly>=image.height()) return;  //  markierter Bereich groesser als Original
+  if (turx>=image.width() || tlly>=image.height()) return;	//	markierter Bereich groesser als Original
 
   int cols=image.width();
 //  int rows=image.height();
@@ -713,110 +710,110 @@ void PicWin::sundir()
   for (int i=0; i<181; i++) value[i]=0;
 
   // test sun from directions alpha 0 and 180
-  int count=0;
-  int points=0;
-  for (int y=tury; y<=tlly; y++){
-    sum=0;
-      for (int x=tllx; x<=turx; x++){
-      points++;
-      if (pfm_data[y*cols+x]== shadecol)
-        sum++;
-      }
-      if (sum > 0)
-        count++;
-      accsum+= float (sum);
-    }
-  value[0]= accsum / (float(count)*float(points));
-  value[180]= value[0];  
-  #ifdef DEBUG_PRG
-  cout<<"alpha=0 points="<<points<<" sum="<<accsum<<" value[0]="<<value[0]<<endl;
-  #endif
+	int count=0;
+	int points=0;
+	for (int y=tury; y<=tlly; y++){
+		sum=0;
+   	 for (int x=tllx; x<=turx; x++){
+			points++;
+			if (pfm_data[y*cols+x]== shadecol)
+				sum++;
+			}
+			if (sum > 0)
+				count++;
+			accsum+= float (sum);
+		}
+	value[0]= accsum / (float(count)*float(points));
+	value[180]= value[0];	
+	#ifdef DEBUG_PRG
+	cout<<"alpha=0 points="<<points<<" sum="<<accsum<<" value[0]="<<value[0]<<endl;
+	#endif
 
-  // test sun from directions alpha 1...89  
-  for (int alpha=1; alpha<=89; alpha+=1){
-    accsum=0.0;
-     count=0;
-    points=0;
-      for (int x=tllx; x<=turx; x++){      
-      sum= follow_ray (x, tury, pfm_data, alpha, cols, turx, tllx, tlly, shadecol, points);    
-      accsum+= sum;
-      if (sum > 0)
-        count++;
-      }
-    for (int y=tury+1; y<=tlly; y++){
-      sum= follow_ray (tllx, y, pfm_data, alpha, cols, turx, tllx, tlly, shadecol, points);    
-      accsum+= sum;
-      if (sum > 0)
-        count++;
-      }
-    value[alpha]= accsum / (float(count)*float(points));
+	// test sun from directions alpha 1...89	
+	for (int alpha=1; alpha<=89; alpha+=1){
+		accsum=0.0;
+   	count=0;
+		points=0;
+   	 for (int x=tllx; x<=turx; x++){			
+			sum= follow_ray (x, tury, pfm_data, alpha, cols, turx, tllx, tlly, shadecol, points);		
+			accsum+= sum;
+			if (sum > 0)
+				count++;
+			}
+		for (int y=tury+1; y<=tlly; y++){
+			sum= follow_ray (tllx, y, pfm_data, alpha, cols, turx, tllx, tlly, shadecol, points);		
+			accsum+= sum;
+			if (sum > 0)
+				count++;
+			}
+		value[alpha]= accsum / (float(count)*float(points));
 
-    #ifdef DEBUG_PRG
-    cout<<"alpha="<<alpha<<" points="<<points<<" sum="<<accsum<<" value["<<alpha<<"]="<<value[alpha]<<endl;
-    #endif
-    }
+		#ifdef DEBUG_PRG
+		cout<<"alpha="<<alpha<<" points="<<points<<" sum="<<accsum<<" value["<<alpha<<"]="<<value[alpha]<<endl;
+		#endif
+		}
 
-  //  alpha == 90
-  count=0;
-  points=0;
-  accsum=0.0;
-    for (int x=tllx; x<=turx; x++){
-    sum=0;
-    for (int y=tury; y<=tlly; y++){
-      points++;
-      if (pfm_data[y*cols+x]== shadecol)      
-        sum++;
-      }
-      if (sum > 0)
-        count++;
-      accsum+= float (sum);
-    }
-  value[90]= accsum / (float(count)*float(points));
+	//	alpha == 90
+	count=0;
+	points=0;
+	accsum=0.0;
+  	for (int x=tllx; x<=turx; x++){
+		sum=0;
+		for (int y=tury; y<=tlly; y++){
+			points++;
+			if (pfm_data[y*cols+x]== shadecol)			
+				sum++;
+			}
+			if (sum > 0)
+				count++;
+			accsum+= float (sum);
+		}
+	value[90]= accsum / (float(count)*float(points));
 
-  #ifdef DEBUG_PRG
-  cout<<"alpha=90 points="<<points<<" sum="<<accsum<<" value[90]="<<value[90]<<endl;
-  #endif
+	#ifdef DEBUG_PRG
+	cout<<"alpha=90 points="<<points<<" sum="<<accsum<<" value[90]="<<value[90]<<endl;
+	#endif
 
-  // test sun from directions alpha 91...179
-  for (int alpha=91; alpha<=179; alpha+=1){
-    accsum=0.0;
-     count=0;
-    points=0;
-      for (int x=tllx; x<=turx; x++){      
-      sum= follow_ray (x, tury, pfm_data, alpha, cols, turx, tllx, tlly, shadecol, points);    
-      accsum+= sum;
-      if (sum > 0)
-        count++;
-      }
-    for (int y=tury+1; y<=tlly; y++){
-      sum= follow_ray (turx, y, pfm_data, alpha, cols, turx, tllx, tlly, shadecol, points);    
-      accsum+= sum;
-      if (sum > 0)
-        count++;
-      }
-  value[alpha]= accsum / (float(count)*float(points));
+	// test sun from directions alpha 91...179
+	for (int alpha=91; alpha<=179; alpha+=1){
+		accsum=0.0;
+   	count=0;
+		points=0;
+   	 for (int x=tllx; x<=turx; x++){			
+			sum= follow_ray (x, tury, pfm_data, alpha, cols, turx, tllx, tlly, shadecol, points);		
+			accsum+= sum;
+			if (sum > 0)
+				count++;
+			}
+		for (int y=tury+1; y<=tlly; y++){
+			sum= follow_ray (turx, y, pfm_data, alpha, cols, turx, tllx, tlly, shadecol, points);		
+			accsum+= sum;
+			if (sum > 0)
+				count++;
+			}
+	value[alpha]= accsum / (float(count)*float(points));
 
-    #ifdef DEBUG_PRG
-    cout<<"alpha="<<alpha<<" points="<<points<<" sum="<<accsum<<" value["<<alpha<<"]="<<value[alpha]<<endl;
-    #endif
-    }
+		#ifdef DEBUG_PRG
+		cout<<"alpha="<<alpha<<" points="<<points<<" sum="<<accsum<<" value["<<alpha<<"]="<<value[alpha]<<endl;
+		#endif
+		}
 
-  float maxvalue=0.0;
+	float maxvalue=0.0;
   int maxcl=0;
-  for (int i=0; i<181; i++)
-    if (value[i] > maxvalue){
-      maxvalue=value[i];
-      maxcl= i;
-      }
-  //  norm values
-  for (int i=0; i<181; i++){
-    value[i]= value[i]/maxvalue;
-    value[i]*=100;
-    }
+	for (int i=0; i<181; i++)
+		if (value[i] > maxvalue){
+			maxvalue=value[i];
+			maxcl= i;
+			}
+	//	norm values
+	for (int i=0; i<181; i++){
+		value[i]= value[i]/maxvalue;
+		value[i]*=100;
+		}
 
-  int maxcount= 100;
-  //  visualisation
-  float min=0, max=181;
+	int maxcount= 100;
+	//	visualisation
+	float min=0, max=181;
   float range=max-min;
   const int win_height=512;
   const int win_width=182;
@@ -826,9 +823,9 @@ void PicWin::sundir()
   QString s;
   s.sprintf("shade direction from 0°...180°");
   p.drawText(5,+15,s);
-  int sundir= maxcl-90;
-  if (sundir < 0)
-    sundir =maxcl+90;
+	int sundir= maxcl-90;
+	if (sundir < 0)
+		sundir =maxcl+90;
   s.sprintf("sundir=%i°", sundir);
   p.drawText(5,35,s);
   s.sprintf("maxcount=%d at sundir=%d",maxcount,maxcl);
@@ -1005,23 +1002,23 @@ void PicWin::shape()
 /** shift the image by one column (cylindrical) */
 void PicWin::shiftImage()
 {
-  if (!pfm_data)
-    return;
-  
-  int block = image.width() / 64;
-  if (!block) block = 1;
+	if (!pfm_data)
+		return;
+	
+	int block = image.width() / 64;
+	if (!block) block = 1;
 
-  float tmpval[block];
+	float tmpval[block];
    
   for (int y = 0; y < image.height(); y ++)
-  {
-    memcpy(tmpval, pfm_data + y * image.width(), sizeof(float) * block);
-    memcpy(pfm_data + y * image.width(), pfm_data + y * image.width() + block, (image.width() - block) * sizeof(float));
-    memcpy(pfm_data + (y + 1) * image.width() - block, tmpval, sizeof(float) * block);
-  }
+	{
+		memcpy(tmpval, pfm_data + y * image.width(), sizeof(float) * block);
+		memcpy(pfm_data + y * image.width(), pfm_data + y * image.width() + block, (image.width() - block) * sizeof(float));
+		memcpy(pfm_data + (y + 1) * image.width() - block, tmpval, sizeof(float) * block);
+	}
 
   qDebug("PicWin::shiftImage() min=%f max=%f",pfm_min_val,pfm_max_val);
-  slotScaleImg(pfm_min_val, pfm_max_val);
+	slotScaleImg(pfm_min_val, pfm_max_val);
 }
 
 
@@ -1044,12 +1041,12 @@ void PicWin::openFile()
   "PNG files (*.png)","XBM files (*.xbm)","XPM files (*.xpm)"," ALL (*.*)",0};
   fd.setFilters (filter);
   if ( fd.exec() == QDialog::Accepted ) {
-    QString newfilename = fd.selectedFile();
+  	QString newfilename = fd.selectedFile();
 
-    if ( !newfilename.isEmpty() ) {
-      loadImage( newfilename ) ;
-      repaint();      // show image in widget
-    }
+  	if ( !newfilename.isEmpty() ) {
+  		loadImage( newfilename ) ;
+	  	repaint();			// show image in widget
+  	}
   }
 }
 
@@ -1076,7 +1073,7 @@ void PicWin::decompress(char* filename, int& compressed) {
 
   strcpy(bfilename, "/tmp/.pfm_view-");
   if(strrchr(filename, '/')) strcat(bfilename, strrchr(filename, '/') + 1);
-  else strcat(bfilename, filename);
+	else strcat(bfilename, filename);
   *strrchr(bfilename, '.') = '\0';
 
   // Check for bzip2 "magicnumber": BZh
@@ -1086,19 +1083,19 @@ void PicWin::decompress(char* filename, int& compressed) {
     compressed = 1;
     } else // Check for gzip "magicnumber": 31 139 8
     if (mag_nr1 == 31 && mag_nr2 == 139 && mag_nr3 == 8 ) {
-      sprintf(cmd, "gzip -d -q -c %s | cat >%s", filename, bfilename);
-      ret = system(cmd);
-      compressed = 1;
+    	sprintf(cmd, "gzip -d -q -c %s | cat >%s", filename, bfilename);
+    	ret = system(cmd);
+    	compressed = 1;
     }
 
-    if (compressed) {
-      if (ret == 127 || ret == -1) {
-        fprintf(stderr,"Error unzipping %s!\n", filename);
-        compressed = 0;
-        return;
-      }
-    strcpy(filename, bfilename);  
-    }
+		if (compressed) {
+    	if (ret == 127 || ret == -1) {
+      	fprintf(stderr,"Error unzipping %s!\n", filename);
+      	compressed = 0;
+      	return;
+			}
+		strcpy(filename, bfilename);	
+		}
 }
 
 /**
@@ -1115,36 +1112,36 @@ bool PicWin::loadImage( const char *fileName )
   strcpy(filename, fileName);
   bool ok = FALSE;
   if ( filename ) {
-  QApplication::setOverrideCursor( waitCursor ); // this might take time
+	QApplication::setOverrideCursor( waitCursor ); // this might take time
   if(pfm_data) delete pfm_data;  //reset PFM data
   editimg->setEnabled(FALSE);
   pfm_data = (float*)NULL;
   pfm_min_val = pfm_max_val = 0.0;
 
   int compressed = 0;
-  //fprintf(stderr,"open file %s (%d)!\n", filename,compressed);
-  decompress(filename, compressed);
+	//fprintf(stderr,"open file %s (%d)!\n", filename,compressed);
+	decompress(filename, compressed);
   //fprintf(stderr,"open file %s (%d)..\n", filename,compressed);
 
   ok = image.load(filename, 0);
   std::cerr << "bool PicWin::loadImage ... ok = " << (ok ? "true" : "false") << "\n";
-  pickx = -1;
-  clickx = -1;
-  if ( ok ) {
-    paintWidget->setFixedSize(image.width(),image.height());
-   ok = reconvertImage();
+	pickx = -1;
+	clickx = -1;
+	if ( ok ) {
+		paintWidget->setFixedSize(image.width(),image.height());
+	 ok = reconvertImage();
 #ifdef DEBUG_MSG
    qDebug("PicWin::loadImage: format=%s",image.imageFormat(filename));
 #endif
-   if ((strcmp(image.imageFormat(filename),"PFM")==0)
+	 if ((strcmp(image.imageFormat(filename),"PFM")==0)
      || (strcmp(image.imageFormat(filename),"PGMRAW")==0)
      || (strcmp(image.imageFormat(filename),"PGMASCII")==0))
        loadpfm(filename);
-  }
-  
-  if (compressed) {
-    char cmd[2048];
-    sprintf(cmd, "rm -f %s", filename);
+	}
+	
+	if (compressed) {
+		char cmd[2048];
+	  sprintf(cmd, "rm -f %s", filename);
     int ret = system(cmd);
 
     if (ret == 127 || ret == -1) {
@@ -1153,36 +1150,36 @@ bool PicWin::loadImage( const char *fileName )
     }
   }
 
-  if ( ok ) {
-      setCaption( filename );      // set window caption
-      int w = pm.width();
-      int h = pm.height();
+	if ( ok ) {
+	    setCaption( filename );			// set window caption
+	    int w = pm.width();
+	    int h = pm.height();
 
-      const int reasonable_width = 128;
-      if ( w < reasonable_width ) {
-    // Integer scale up to something reasonable
-    int multiply = ( reasonable_width + w - 1 ) / w;
-    w *= multiply;
-    h *= multiply;
-      }
+	    const int reasonable_width = 128;
+	    if ( w < reasonable_width ) {
+		// Integer scale up to something reasonable
+		int multiply = ( reasonable_width + w - 1 ) / w;
+		w *= multiply;
+		h *= multiply;
+	    }
 
-      paintWidget->setFixedSize(w,h);
-      resize(w+10,h+menubar->height()+status->height()+10);
-//      paintWidget->resize( w, h );        // we resize to fit image
-      //      update();
-      paintWidget->setPixmap(pmScaled);
-      paintWidget->adjustSize();
-      paintWidget->repaint();
-  } else {
-      pm.resize(0,0);        // couldn't load image
-      paintWidget->update();
-  }
-  QApplication::restoreOverrideCursor();  // restore original cursor
+			paintWidget->setFixedSize(w,h);
+			resize(w+10,h+menubar->height()+status->height()+10);
+//	    paintWidget->resize( w, h );				// we resize to fit image
+	    //	    update();
+	    paintWidget->setPixmap(pmScaled);
+	    paintWidget->adjustSize();
+	    paintWidget->repaint();
+	} else {
+	    pm.resize(0,0);				// couldn't load image
+	    paintWidget->update();
+	}
+	QApplication::restoreOverrideCursor();	// restore original cursor
     }
     updateStatus();
     setMenuItemFlags();
-//    if(pfm_data)  editimg->setEnabled(TRUE);
-    if (image.depth()==8) editimg->setEnabled(TRUE);
+//		if(pfm_data)  editimg->setEnabled(TRUE);
+		if (image.depth()==8) editimg->setEnabled(TRUE);
     return ok;
 }
 
@@ -1199,10 +1196,10 @@ bool PicWin::reconvertImage()
   if ( useColorContext() ) {
     alloc_context = QColor::enterAllocContext();
     // Clear the image to hide flickering palette
-#if 0  
+#if 0	
     QPainter painter(this);
     painter.eraseRect(0, menubar->heightForWidth( width() ), width(), height());
-#endif  
+#endif	
   }
 
   QApplication::setOverrideCursor( waitCursor ); // this might take time
@@ -1210,19 +1207,19 @@ bool PicWin::reconvertImage()
     pmScaled = QPixmap();
     scale();
     resize( width(), height() );
-    success = TRUE;        // load successful
+    success = TRUE;				// load successful
   }
   else {
-    pm.resize(0,0);        // couldn't load image
+    pm.resize(0,0);				// couldn't load image
   }
   updateStatus();
   setMenuItemFlags();
-  QApplication::restoreOverrideCursor();  // restore original cursor
+  QApplication::restoreOverrideCursor();	// restore original cursor
 
   if ( useColorContext() )
     QColor::leaveAllocContext();
 
-  return success;        // TRUE if loaded OK
+  return success;				// TRUE if loaded OK
 }
 
 bool PicWin::smooth() const
@@ -1236,7 +1233,7 @@ bool PicWin::useColorContext() const
 }
 
 void  PicWin::scaleImgSize(float fx, float fy) {
-  paintWidget->setFixedSize(int(pm.width()*fx),int(pm.height()*fy));
+	paintWidget->setFixedSize(int(pm.width()*fx),int(pm.height()*fy));
 };
 
 /*
@@ -1246,26 +1243,26 @@ void  PicWin::scaleImgSize(float fx, float fy) {
 
 void PicWin::scale()
 {
-  int h = paintWidget->height();
+	int h = paintWidget->height();
   if ( image.isNull() ) return;
 
   QApplication::setOverrideCursor( waitCursor ); // this might take time
   if ( paintWidget->width() == pm.width() && h == pm.height() )
-    {            // no need to scale if widget
-      pmScaled = pm;        // size equals pixmap size
+    {						// no need to scale if widget
+			pmScaled = pm;				// size equals pixmap size
     } else {
-      if (smooth()) {
-        pmScaled.convertFromImage(image.smoothScale(paintWidget->width(), h),
-        conversion_flags);
-    } else {
-      QWMatrix m;        // transformation matrix
-      m.scale(((double)paintWidget->width())/pm.width(),// define scale factors
-        ((double)h)/pm.height());
-      pmScaled = pm.xForm( m );    // create scaled pixmap
-    }
+			if (smooth()) {
+		    pmScaled.convertFromImage(image.smoothScale(paintWidget->width(), h),
+				conversion_flags);
+		} else {
+	    QWMatrix m;				// transformation matrix
+	    m.scale(((double)paintWidget->width())/pm.width(),// define scale factors
+		    ((double)h)/pm.height());
+	    pmScaled = pm.xForm( m );		// create scaled pixmap
+		}
   }
   paintWidget->setPixmap(pmScaled);
-  QApplication::restoreOverrideCursor();  // restore original cursor
+  QApplication::restoreOverrideCursor();	// restore original cursor
 }
 
 /*
@@ -1275,36 +1272,36 @@ void PicWin::scale()
 
 void PicWin::myResizeEvent( QResizeEvent * )
 {
-    if ( pm.size() == QSize( 0, 0 ) )    // we couldn't load the image
-  return;
+    if ( pm.size() == QSize( 0, 0 ) )		// we couldn't load the image
+	return;
 
     int h = paintWidget->height();
     if ( paintWidget->width() != pmScaled.width() || h != pmScaled.height())
-    {            // if new size,
-  scale();        // scale pmScaled to window
-  updateStatus();
+    {						// if new size,
+	scale();				// scale pmScaled to window
+	updateStatus();
     }
 }
 
 bool PicWin::convertEvent( QMouseEvent* e, int& x, int& y)
 {
   if ( pm.size() != QSize( 0, 0 ) ) {
-    int h = paintWidget->height();
-    int nx = e->x() * image.width() / paintWidget->width();
-    int ny = (e->y()) * image.height() / h;
-    if (nx != x || ny != y ) {
-      x = nx;
-      y = ny;
-      updateStatus();
-      return TRUE;
-    }
+		int h = paintWidget->height();
+		int nx = e->x() * image.width() / paintWidget->width();
+		int ny = (e->y()) * image.height() / h;
+		if (nx != x || ny != y ) {
+	    x = nx;
+	    y = ny;
+	    updateStatus();
+	    return TRUE;
+		}
   }
   return FALSE;
 }
 
 void PicWin::myMousePressEvent( QMouseEvent *e )
 {
-  button=e->button();
+	button=e->button();
   switch (button) {
   case LeftButton: {
       QPainter painter(paintWidget);
@@ -1322,17 +1319,17 @@ void PicWin::myMousePressEvent( QMouseEvent *e )
     }
     break;
   case MidButton:
-      clickx=e->x();
-      clicky=e->y();
+  		clickx=e->x();
+  		clicky=e->y();
     break;
   default:
     break;
-  }
+	}
 }
 
 void PicWin::myMouseReleaseEvent( QMouseEvent * )
 {
-  button=NoButton;
+	button=NoButton;
 }
 
 /*
@@ -1340,7 +1337,7 @@ void PicWin::myMouseReleaseEvent( QMouseEvent * )
 */
 void PicWin::myMouseMoveEvent( QMouseEvent *e )
 {
-  switch (button) {
+	switch (button) {
   case LeftButton: {
       QPainter painter(paintWidget);
       painter.setPen(white);
@@ -1360,22 +1357,22 @@ void PicWin::myMouseMoveEvent( QMouseEvent *e )
       painter.drawLine(llx,lly,urx,ury);
     }
     break;
-  case MidButton: {
-    int dx=-(e->x()-clickx);
-    int dy=-(e->y()-clicky);
-    if (dx && scrollView->horizontalScrollBar()->isVisible()) {
-      scrollView->horizontalScrollBar()->setValue(scrollView->horizontalScrollBar()->value()+dx);
-    }
-    if (dy && scrollView->verticalScrollBar()->isVisible()) {
-      scrollView->verticalScrollBar()->setValue(scrollView->verticalScrollBar()->value()+dy);
-    }
-    }
-    break;
-  default:
+	case MidButton: {
+		int dx=-(e->x()-clickx);
+		int dy=-(e->y()-clicky);
+		if (dx && scrollView->horizontalScrollBar()->isVisible()) {
+			scrollView->horizontalScrollBar()->setValue(scrollView->horizontalScrollBar()->value()+dx);
+		}
+		if (dy && scrollView->verticalScrollBar()->isVisible()) {
+			scrollView->verticalScrollBar()->setValue(scrollView->verticalScrollBar()->value()+dy);
+		}
+		}
+		break;
+	default:
     if (convertEvent(e,pickx,picky)) {
-      updateStatus();
-    }
-  }
+			updateStatus();
+	  }
+	}
 }
 
 /*
@@ -1385,11 +1382,11 @@ void PicWin::myMouseMoveEvent( QMouseEvent *e )
 
 void PicWin::myPaintEvent( QPaintEvent *e )
 {
-  if ( pm.size() != QSize( 0, 0 ) ) {    // is an image loaded?
+  if ( pm.size() != QSize( 0, 0 ) ) {		// is an image loaded?
 #if 0
   paintWidget->setPixmap(pmScaled);
 #endif
-  QPainter painter(paintWidget);
+	QPainter painter(paintWidget);
 #ifdef DEBUG_MSG
   qDebug("PicWin::myPaintEvent: llx=%d lly=%d urx=%d ury=%d",llx,lly,urx,ury);
   qDebug("PicWin::myPaintEvent: rect(%d %d %d %d)",
@@ -1398,8 +1395,8 @@ void PicWin::myPaintEvent( QPaintEvent *e )
          e->rect().right(),
          e->rect().bottom());
 #endif
-  painter.setClipRect(e->rect());
-  painter.drawPixmap(0, 0, pmScaled);
+	painter.setClipRect(e->rect());
+	painter.drawPixmap(0, 0, pmScaled);
   painter.setPen(white);
   painter.setRasterOp(XorROP);
   int w=urx-llx; if (w>0) w++; else w--;
@@ -1417,24 +1414,24 @@ void PicWin::myPaintEvent( QPaintEvent *e )
 void PicWin::giveHelp()
 {
     if (!helpmsg) {
-  QString helptext = "Show images";
-  QStrList support = QImage::inputFormats();
-  helptext += "\n\nSupported input formats:\n";
-  int lastnl = helptext.length();
-  helptext += "  ";
-  const char* f = support.first();
-  helptext += f;
-  f = support.next();
-  for (; f; f = support.next()) {
-      helptext += ',';
-      if ( helptext.length() - lastnl > 40 ) {
-    helptext += "\n  ";
-    lastnl = helptext.length() - 2;
-      } else {
-    helptext += ' ';
-      }
-      helptext += f;
-  }
+	QString helptext = "Show images";
+	QStrList support = QImage::inputFormats();
+	helptext += "\n\nSupported input formats:\n";
+	int lastnl = helptext.length();
+	helptext += "  ";
+	const char* f = support.first();
+	helptext += f;
+	f = support.next();
+	for (; f; f = support.next()) {
+	    helptext += ',';
+	    if ( helptext.length() - lastnl > 40 ) {
+		helptext += "\n  ";
+		lastnl = helptext.length() - 2;
+	    } else {
+		helptext += ' ';
+	    }
+	    helptext += f;
+	}
   helptext += "\n\nTNT, Uni - Hannover, Jürgen Bückner\nbueckner@tnt.uni-hannover.de";
   helpmsg = new QMessageBox( "Help", helptext,
   QMessageBox::Information, QMessageBox::Ok, 0, 0, 0, 0, FALSE );
@@ -1469,8 +1466,8 @@ EditImg::EditImg ( QWidget *parent, const char *name, float min_, float max_ )
   slider = new combiSlider("gray value range", this, "", min_, max_);
   layout->addLayout(mainList);
   layout->addWidget(slider);
-  layout->addSpacing(5);
-  
+	layout->addSpacing(5);
+	
   QFrame* seperator = new QFrame(this);
   seperator->setFrameStyle(QFrame::Box | QFrame::Sunken);
   seperator->setLineWidth(2);
@@ -1482,7 +1479,7 @@ EditImg::EditImg ( QWidget *parent, const char *name, float min_, float max_ )
   layout->addLayout(footer);
 
   cancel = new QPushButton( "Cancel", this );
-  connect( cancel, SIGNAL(clicked()), SLOT(reject()) );
+	connect( cancel, SIGNAL(clicked()), SLOT(reject()) );
   footer->addWidget( cancel );
 
   footer->addStretch();
@@ -1494,9 +1491,9 @@ EditImg::EditImg ( QWidget *parent, const char *name, float min_, float max_ )
   connect(this, SIGNAL(sigVal(float, float)), parent, SLOT(slotScaleImg(float, float)));
 
   //connect( this, SIGNAL(sigNewEntry(QString)), parent, SLOT(slotNewEntry(QString)));
-  // And reconvert...
-  //  reconvertImage();
-  //  repaint(image.hasAlphaBuffer());  // show image in widget
+	// And reconvert...
+	//  reconvertImage();
+	//  repaint(image.hasAlphaBuffer());	// show image in widget
 }
 
 void EditImg::slotGetVal() {

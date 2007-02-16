@@ -25,7 +25,7 @@ int main( int argc, char **argv )
 {
     QApplication a( argc, argv );
 #if 0
-argc=2;  
+argc=2;	
 #endif
     PicWin base;
     if (argc == 1 ) {
@@ -33,11 +33,11 @@ argc=2;
       base.scaleImgSize(2.0,2.0);
     }
     base.setCaption( "PFM and more View" );
-    QObject::connect(&a,SIGNAL(lastWindowClosed()),&a,SLOT(quit()));
-#if 0    
+  	QObject::connect(&a,SIGNAL(lastWindowClosed()),&a,SLOT(quit()));
+#if 0  	
     base.loadImage("laser_1th.pfm");
 #endif
-#if 1    
+#if 1  	
     if (argc > 1 ) {
        base.loadImage(argv[1]);
        for (int i = 2; i < argc; i++) {

@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "doubleslider.h"
+#include <iostream.h>
 
 doubleslider::doubleslider(float val1, float val2 ,
-         QWidget* parent, const char* name):
+			   QWidget* parent, const char* name):
   QWidget(parent, name)
 {
   bewegeLinks = false;
@@ -41,11 +42,13 @@ void doubleslider::setWert1(const QString& val1) {
 
 void doubleslider::setWert2(float val2) {
   wert2 = (val2-min_)/diff_;
+  //cout <<"#f#:"<< wert2<<" = ("<<val2<<" - "<<min_<<") / "<<diff_<<endl;
   paintAll();
 }
 
 void doubleslider::setWert2(const QString& val2) {
  wert2 = (val2.toFloat()-min_)/diff_;
+ //cout <<"#s#:"<< wert2<<" = ("<<val2.toFloat()<<" - "<<min_<<") / "<<diff_<<endl;
  paintAll();
 }
 
@@ -108,17 +111,17 @@ void doubleslider::mouseMoveEvent(QMouseEvent* event) {
   if (bewegeLinks) {
     float temp  = (event->x()*1.0) / width();
     if (temp < wert2) {
-      wert1 = temp;
-      paintAll();
-      emit value1Changed(wert1);
-    }
+  	  wert1 = temp;
+	    paintAll();
+	    emit value1Changed(wert1);
+  	}
   }
   if (bewegeRechts) {
     float temp  = (event->x()*1.0) / width();
     if (temp > wert1) {
-      wert2 = temp;
-      paintAll();
-      emit value2Changed(wert2);
-    }
+	    wert2 = temp;
+	    paintAll();
+	    emit value2Changed(wert2);
+	  }
   }
 }
