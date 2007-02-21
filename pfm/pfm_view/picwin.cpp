@@ -18,7 +18,6 @@
 //#define DEBUG_PRG
 
 #include "picwin.h"
-#include "mini-junktion.xpm"
 #include <float.h>
 #include <math.h>
 #include <stdlib.h>
@@ -26,7 +25,9 @@
 #include "paintwidget.h"
 #include "plot2d.h"
 #include "iostream.h"
-#include "tnt.xpm"
+#include "icons/mini-junktion.xpm"
+#include "icons/tnt.xpm"
+
 
 #ifdef GCC29
 #ifdef linux

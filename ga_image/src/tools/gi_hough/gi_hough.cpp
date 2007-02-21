@@ -171,22 +171,24 @@ int main(int argc, char **argv)
       
     float xk_re[N], xk_im[N];
 
-    for (int k=0; k<N; k++)
-        xk_re[k]=0.0; xk_im[k]=0.0;
+    for (int k=0; k<N; k++) {
+        xk_re[k]=0.0; 
+	xk_im[k]=0.0;
+    }
 
     for (int k=0; k<N; k++)
-      for (int n=0; n<N; n++){          
-        xk_re[k]+= xn[n]* cos( (2*M_PI*n*k)/N);
-        xk_im[k]+= xn[n]* sin( (2*M_PI*n*k)/N);
+      for (int n=0; n<N; n++) {          
+	  xk_re[k]+= xn[n]* cos( (2*M_PI*n*k)/N);
+	  xk_im[k]+= xn[n]* sin( (2*M_PI*n*k)/N);
         }      
 
     float F[N];
     peak=0.0;
-    for (int k=0; k<N; k++){
-      F[k]= sqrt(xk_re[k]*xk_re[k]+xk_im[k]*xk_im[k]);
-      if (F[k]> peak)
-        peak=F[k];
-      }
+    for (int k=0; k<N; k++) {
+	F[k]= sqrt(xk_re[k]*xk_re[k]+xk_im[k]*xk_im[k]);
+	if (F[k]> peak)
+	    peak=F[k];
+    }
 
   //  write result
     FILE *fp;
@@ -210,7 +212,7 @@ int main(int argc, char **argv)
 
   for (int x = 0; x < dft_image.sizeX(); x++){
    // scale histogram
-   int histpart= int((F[k]/peak)*dft_image.sizeY());
+   int histpart= int((F[x]/peak)*dft_image.sizeY());
    for (int y = 0; y < dft_image.sizeY(); y++)
       if (dft_image.sizeY()-(int)histpart < y){
         if (swit)

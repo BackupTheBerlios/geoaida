@@ -71,20 +71,20 @@ void houghMapLines(ImageT<int>& result, const ImageBase& img,
     for(int c=0; c<nx; c++ ) {
       if (row[c]) {
 #ifdef HESSE_NF
-        int ra0=int(c*carr[0]+r*sarr[0]);
+        int ra0=int(c*carr[0]+r*sarr[0])+rmax;
         if (ra0<0 || ra0>=rmax2) {
-//          printf("Warning: alhpa %f -> p %d out of range\n",0*angleStep+angleMin,ra0);
+          printf("Warning: alhpa %f -> p %d out of range\n",0*angleStep+angleMin,ra0);
         }
 #else
         double rr=(c-yc)*sarr[0]-(r-xc)*carr[0];
         int ra0=(rr<0.0?int(rr):int(rr+1));
 #endif
-        imgOut[0][rmax+ra0]++;
+        imgOut[0][ra0]++;
         for(int alpha=1; alpha<numAngles; alpha++ ) {
 #ifdef HESSE_NF
-          int ra1=int(c*carr[alpha]+r*sarr[alpha]);
+          int ra1=int(c*carr[alpha]+r*sarr[alpha])+rmax;
           if (ra1<0 || ra1>=rmax2) {
-//            printf("Warning: alhpa %f -> p %d out of range\n",alpha*angleStep+angleMin,ra1);
+            printf("Warning: alhpa %f -> p %d out of range\n",alpha*angleStep+angleMin,ra1);
             continue;
           }
           int rahalf=(ra1+ra0)/2;
