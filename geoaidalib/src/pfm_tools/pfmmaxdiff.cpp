@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "PFMArray.h"
 #include "PFMDiff.h"
-#include "PFMMax.h"
+//#include "PFMSqrDiff.h"
 #include "PFMGradAbs.h"
 #include "PFMGradAngle.h"
 

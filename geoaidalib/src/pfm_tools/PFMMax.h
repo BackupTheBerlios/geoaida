@@ -1,12 +1,12 @@
-#ifndef PFMMax_h
-#define PFMMax_h
+#ifndef PFMSqrDiff_h
+#define PFMSqrDiff_h
 
 #include "PFMArray.h"
 
-class PFMMax : public PFMArray
+class PFMSqrDiff : public PFMArray
 {
  public:
-  PFMMax(PFMArray &pic1, PFMArray &pic2);
+  PFMSqrDiff(PFMArray &pic1, PFMArray &pic2);
 };
 
 #endif

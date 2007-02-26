@@ -9,10 +9,10 @@ int __isnanf(float);
 #endif
 #endif
 
-#include "PFMMax.h"
+#include "PFMSqrDiff.h"
 #include <math.h>
 
-PFMMax::PFMMax(PFMArray &pic1, PFMArray &pic2) 
+PFMSqrDiff::PFMSqrDiff(PFMArray &pic1, PFMArray &pic2) 
   : PFMArray(pic1.xsize(), pic1.ysize())
 {
   int i;
