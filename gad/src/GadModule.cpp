@@ -34,7 +34,7 @@
 #include <qfileinfo.h>
 #include <qdir.h>
 #include "WildcardReplace.h"
-#include <qtgui.h>
+#include <QtGuiApplication.h>
 
 QString GadGetTmpDir()
 {

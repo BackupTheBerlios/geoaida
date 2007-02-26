@@ -35,7 +35,7 @@
 #include "qtooltip.h"
 #include "qcolordialog.h"
 #include <qtextedit.h>
-#include "qtgui.h"
+#include "QtGuiApplication.h"
 #include <qregexp.h>
 // #define DEBUGMSG
 

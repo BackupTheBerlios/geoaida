@@ -87,6 +87,10 @@ void houghMapLines(ImageT<int>& result, const ImageBase& img,
             printf("Warning: alhpa %f -> p %d out of range\n",alpha*angleStep+angleMin,ra1);
             continue;
           }
+#if 0
+	  imgOut[alpha][ra1]++;
+	  continue;
+#endif
           int rahalf=(ra1+ra0)/2;
           if (ra1<ra0) {
             for (int rx=ra1; rx<=rahalf; rx++) {
@@ -116,13 +120,13 @@ void houghMapLines(ImageT<int>& result, const ImageBase& img,
             int x,y;
             for (int rx=ra1; rx<=rahalf; rx++)
               imgOut[alpha][rmax+rx]++;
-            for (int rx=rahalf; rx<ra0; rx++) {
+            for (int rx=rahalf; rx<ra0; rx++) 
               imgOut[alpha-1][rmax+rx]++;
           }
           else {
-            for (int rx=ra0+1; rx<=rahalf; rx++) {
+            for (int rx=ra0+1; rx<=rahalf; rx++) 
               imgOut[alpha-1][rmax+rx]++;
-            for (int rx=rahalf; rx<=ra1; rx++) {
+            for (int rx=rahalf; rx<=ra1; rx++) 
               imgOut[alpha][rmax+rx]++;
           }
 #endif

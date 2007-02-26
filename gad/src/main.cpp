@@ -23,7 +23,7 @@
  * $Locker:  $
  */
 
-#include <qtgui.h>
+#include <QtGuiApplication.h>
 #include "MainGui.h"
 #include <qmainwindow.h>
 #include <qwindowsstyle.h>

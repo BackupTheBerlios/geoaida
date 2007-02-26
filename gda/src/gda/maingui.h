@@ -33,7 +33,7 @@
   *@author Martin Pahl
   */
 
-#include "qtgui.h"
+#include "QtGuiApplication.h"
 #include <qmainwindow.h>
 #include <qapp.h>
 #include <qtextedit.h>

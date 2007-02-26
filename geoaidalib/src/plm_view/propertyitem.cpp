@@ -33,7 +33,7 @@
 #include "qcolordialog.h"
 #include <qtextedit.h>
 #include <qregexp.h>
-#include "qtgui.h"
+#include "QtGuiApplication.h"
 // #define DEBUGMSG
 
 PropertyItem::PropertyItem(GNode * node, PropertyEditor * parent,
