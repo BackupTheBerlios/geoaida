@@ -102,7 +102,7 @@ public:
   /** return geoWest  valueof the image*/
 	float geoWest(QString imgKey);
   /** return Info the image*/
-	void NodeList::info(QString imgKey);
+	void info(QString imgKey);
   /** Returns the number of items in the list.*/
 	int size() {return list_.count();};
 	/** Overloading insert function*/

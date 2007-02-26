@@ -77,7 +77,7 @@ public:                        // Public attributes
   /** Get the attribute list */
   AttribList & attribList();
   /** Set variables of this node using the attributes */
-  virtual void GNode::setVars();
+  virtual void setVars();
   /**  Makes a copy of this node */
   virtual GNode *copy();
   /** return a new Node */
