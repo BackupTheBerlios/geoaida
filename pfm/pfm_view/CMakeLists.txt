@@ -26,3 +26,4 @@ add_executable(pfm_view ${sources} ${mocsrc})
 target_link_libraries(pfm_view pfm ${QT_LIBRARIES})
 
 install(TARGETS pfm_view DESTINATION bin)
+install(FILES pfm_view.mod DESTINATION share/data/modules)
