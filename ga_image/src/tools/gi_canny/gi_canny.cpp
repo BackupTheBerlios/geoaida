@@ -62,6 +62,8 @@ const int GAUSS[9]     = {  1,  2,  1,    2,  4,  2,    1,  2,  1 };
 const int SOBEL_X[9]   = {  1,  0, -1,    2,  0, -2,    1,  0, -1 };
 const int SOBEL_Y[9]   = {  1,  2,  1,    0,  0,  0,   -1, -2, -1 };
 
+// To be moved into separate tool?
+
 Image convolve(const Image &source, const int (&coefficients)[9], double factor, double base) {
     int sizeX = source.sizeX(), sizeY = source.sizeY();
     Image result(typeid(float), sizeX, sizeY);
