@@ -45,7 +45,8 @@ namespace Ga {
 
 Image regression(const Image& imgIn,
 		 const Image& mask,
-		 const Image& learnfeature1
+		 const Image& learnfeature1,
+		 const Image& learnfeature2
 		 );
 } // namespace Ga
 

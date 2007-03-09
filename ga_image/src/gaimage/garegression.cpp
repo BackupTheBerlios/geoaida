@@ -42,10 +42,11 @@ namespace Ga {
 
 Image regression(const Image& imgIn,
 		 const Image& maskIn,
-		 const Image& learnfeatureIn
+		 const Image& learnfeatureIn1,
+		 const Image& learnfeatureIn2
                     )
 {
-    Image result(typeid(int),imgIn.sizeX(),imgIn.SizeY);
+    Image result(typeid(int),imgIn.sizeX(),imgIn.sizeY()); 
 
     
     return result;
