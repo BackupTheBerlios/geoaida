@@ -38,10 +38,38 @@
 #include <cmath>
 #include <algorithm>
 
+/*
+ 
+ Implementation rationale: 
+ 
+ * Does not reuse existing convolution because the Gaussian blur can
+   be implemented as a separable convolution, which scales linearly,
+   no quadratically with the sigma parameter.
+ 
+ * Does not introduce a separate function for separable convolutions
+   as the Gaussian blur is the only filter which can losslessly be
+   separated. If the need arises (e.g. for fast median filter approx.),
+   convolution can be outsourced.
+ 
+ * Assumes the border pixels to repeat infinitely outside of the image
+   bounds, i.e. they have more weight than other pixels. I deemed this
+   a less problematic choice than to assume a constant colour outside.
+ 
+ To do:
+ 
+ * Speed up by working on ImageT instead of Image?
+ 
+ * Colour support
+ 
+ * Ummmm... can gi_fft do all this anyway? I better find out before
+   continuing work.
+ 
+ */
+
 Ga::Image Ga::gaussianBlur(const Image &source, double sigma)
 {
     // Size of relevant Gauss mask.
-    int mirroredPortion = std::ceil(sigma * 2);
+    int mirroredPortion = static_cast<int>(std::ceil(sigma * 2));
     int size = 2 * mirroredPortion + 1;
 
     // Compute Gauss mask.
