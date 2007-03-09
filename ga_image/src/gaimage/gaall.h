@@ -27,3 +27,4 @@
 #include "gagradient.h"
 #include "gakirsch.h"
 #include "gahough.h"
+#include "gagaussian.h"

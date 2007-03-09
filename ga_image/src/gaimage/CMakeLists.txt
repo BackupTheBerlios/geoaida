@@ -8,6 +8,7 @@ set(headers gaall.h
            gadowindowt.h
            gadraw.h
            gadrawt.h
+           gagaussian.h
            gagradient.h
            gagradientt.h
            gahough.h
@@ -34,6 +35,7 @@ set(templateheaders
 )
 
 set(sources gadraw.cpp 
+           gagaussian.cpp
            gagradient.cpp
            gahough.cpp
            gaimage.cpp
