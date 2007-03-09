@@ -24,6 +24,7 @@ set(headers gaall.h
            gaimaget.hpp
            gavariance.h
            gavectorizet.h
+	   garegression.h
 )
 
 set(templateheaders
@@ -38,6 +39,7 @@ set(sources gadraw.cpp
            gaimage.cpp
            garegion.cpp
            gavariance.cpp
+	   garegression.cpp
 )
 
 add_library(gaimage STATIC ${sources})
