@@ -24,9 +24,9 @@
 //           --------      
 //          /     ^ /      
 //         /  ^^   /--     
-//        / ^ ° ^^/  /
+//        / ^  ^^/  /
 //        --------  /--
-//         /  °  * /+ /
+//         /    * /+ /
 //         --------  /
 //          /   ~~  /
 //          --------
@@ -39,37 +39,38 @@
 #include <algorithm>
 
 /*
- 
- Implementation rationale: 
- 
- * Does not reuse existing convolution because the Gaussian blur can
-   be implemented as a separable convolution, which scales linearly,
-   no quadratically with the sigma parameter.
- 
- * Does not introduce a separate function for separable convolutions
-   as the Gaussian blur is the only filter which can losslessly be
-   separated. If the need arises (e.g. for fast median filter approx.),
-   convolution can be outsourced.
- 
- * Assumes the border pixels to repeat infinitely outside of the image
-   bounds, i.e. they have more weight than other pixels. I deemed this
-   a less problematic choice than to assume a constant colour outside.
- 
- To do:
- 
- * Speed up by working on ImageT instead of Image?
- 
- * Colour support
- 
- * Ummmm... can gi_fft do all this anyway? I better find out before
-   continuing work.
- 
- */
+
+Implementation rationale: 
+
+* Does not reuse existing convolution because the Gaussian blur can
+be implemented as a separable convolution, which scales linearly,
+no quadratically with the sigma parameter.
+
+* Does not introduce a separate function for separable convolutions
+as the Gaussian blur is the only filter which can losslessly be
+separated. If the need arises (e.g. for fast median filter approx.),
+convolution can be outsourced.
+
+* Assumes the border pixels to repeat infinitely outside of the image
+bounds, i.e. they have more weight than other pixels. I deemed this
+a less problematic choice than to assume a constant colour outside.
+
+Possible improvements:
+
+* Speed up by working on ImageT instead of Image?
+
+*/
 
 Ga::Image Ga::gaussianBlur(const Image &source, double sigma)
-{
+{    
+    // No need to blur?
+    if (sigma <= 0)
+        return source;
+
     // Size of relevant Gauss mask.
+    // 3x3 is the minimum (1x1 would only marginally darken the input).
     int mirroredPortion = static_cast<int>(std::ceil(sigma * 2));
+    mirroredPortion = std::max(mirroredPortion, 1);
     int size = 2 * mirroredPortion + 1;
 
     // Compute Gauss mask.
@@ -78,37 +79,39 @@ Ga::Image Ga::gaussianBlur(const Image &source, double sigma)
         mask[i + mirroredPortion] =
             std::exp(-(i * i)/(2 * sigma * sigma)) / (std::sqrt(2 * M_PI) * sigma);
 
-    int sizeX = source.sizeX(), sizeY = source.sizeY();
+    int sizeX = source.sizeX(), sizeY = source.sizeY(), channels = source.noChannels();
 
     // Horizontal convolution.
-    Image intermediate(typeid(float), sizeX, sizeY);
-    for (int x = 0; x < sizeX; ++x)
-        for (int y = 0; y < sizeY; ++y)
-        {
-            double accum = 0;
-            for (int i = -mirroredPortion; i < mirroredPortion; ++i)
+    Image intermediate = source;
+    for (int ch = 0; ch < channels; ++ch)
+        for (int x = 0; x < sizeX; ++x)
+            for (int y = 0; y < sizeY; ++y)
             {
-                // Capture scanner inside image bounds.
-                int curX = std::max(std::min(x + i, sizeX - 1), 0);
-                accum += source.getFloat(curX, y, 0) * mask[i + mirroredPortion];
+                double accum = 0;
+                for (int i = -mirroredPortion; i < mirroredPortion; ++i)
+                {
+                    // Capture scanner inside image bounds.
+                    int curX = std::max(std::min(x + i, sizeX - 1), 0);
+                    accum += source.getFloat(curX, y, ch) * mask[i + mirroredPortion];
+                }
+                intermediate.set(x, y, accum, ch);
             }
-            intermediate.set(x, y, accum, 0);
-        }
             
     // Vertical convolution.
-    Image result(typeid(float), sizeX, sizeY);
-    for (int x = 0; x < sizeX; ++x)
-        for (int y = 0; y < sizeY; ++y)
-        {
-            double accum = 0;
-            for (int i = -mirroredPortion; i < mirroredPortion; ++i)
+    Image result = intermediate;
+    for (int ch = 0; ch < channels; ++ch)
+        for (int x = 0; x < sizeX; ++x)
+            for (int y = 0; y < sizeY; ++y)
             {
-                // Capture scanner inside image bounds.
-                int curY = std::max(std::min(y + i, sizeY - 1), 0);
-                accum += intermediate.getFloat(x, curY, 0) * mask[i + mirroredPortion];
+                double accum = 0;
+                for (int i = -mirroredPortion; i < mirroredPortion; ++i)
+                {
+                    // Capture scanner inside image bounds.
+                    int curY = std::max(std::min(y + i, sizeY - 1), 0);
+                    accum += intermediate.getFloat(x, curY, ch) * mask[i + mirroredPortion];
+                }
+                result.set(x, y, accum, ch);
             }
-            result.set(x, y, accum, 0);
-        }
             
     return result;
 }
