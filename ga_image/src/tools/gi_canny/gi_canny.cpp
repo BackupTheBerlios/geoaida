@@ -58,7 +58,6 @@ void setPixel(Image &dest, int x, int y, float val) {
     dest.set(x, y, val * 255, 0);
 }
 
-const int GAUSS[9]     = {  1,  2,  1,    2,  4,  2,    1,  2,  1 };
 const int SOBEL_X[9]   = {  1,  0, -1,    2,  0, -2,    1,  0, -1 };
 const int SOBEL_Y[9]   = {  1,  2,  1,    0,  0,  0,   -1, -2, -1 };
 
@@ -218,11 +217,8 @@ int main(int argc, char **argv)
     return -1;
   }
 
-  Image blurred;
-  blurred = convolve(input, GAUSS, 1.0/16, 0);
-
-  Image sobelX = convolve(blurred, SOBEL_X, 1.0/4, 0.5);
-  Image sobelY = convolve(blurred, SOBEL_Y, 1.0/4, 0.5);
+  Image sobelX = convolve(input, SOBEL_X, 1.0/4, 0.5);
+  Image sobelY = convolve(input, SOBEL_Y, 1.0/4, 0.5);
 
   Image intensities = combineIntensities(sobelX, sobelY);
   Image angles = calcAngles(sobelX, sobelY);
