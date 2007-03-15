@@ -27,15 +27,6 @@ void Usage(int argc, char **argv)
 	exit(0);
 }
 
-#ifdef linux
-extern "C" {
-int __isnanf(float);
-	   }
-#ifndef NAN
-#define NAN sqrt(-1)
-#endif
-#endif
-
 // Adjust x/y when going over edge
 float getPixel(const Image &source, int x, int y) {
     if (x < 0)
@@ -101,8 +92,6 @@ const float HORIZONTAL = 1.0/4;
 const float SLASH = 1.0/8;
 const float BACKSLASH = 1.0/16;
 
-// TODO: Does NOT agree with Wikipedia example image :(
-
 Image calcAngles(const Image &sobelX, const Image &sobelY) {
     int sizeX = sobelX.sizeX(), sizeY = sobelX.sizeY();
     Image result(typeid(float), sizeX, sizeY);
@@ -132,6 +121,8 @@ Image calcAngles(const Image &sobelX, const Image &sobelY) {
 
     return result;
 }
+
+// TODO: Does NOT agree with Wikipedia example image :(
 
 Image findLocalMaxs(const Image &intensities, const Image &angles) {
     int sizeX = intensities.sizeX(), sizeY = intensities.sizeY();
@@ -224,6 +215,6 @@ int main(int argc, char **argv)
   Image angles = calcAngles(sobelX, sobelY);
 
   Image localMaxs = findLocalMaxs(intensities, angles);
-  Image canny = applyHysteresis(intensities, angles, 0.1, 0.2);
+  Image canny = applyHysteresis(localMaxs, angles, 0.1, 0.2);
   canny.write(cannyfile, 0);
 }

@@ -17,6 +17,7 @@
 
 #include <gaimage.h>
 #include <gagaussian.h>
+#include <typeinfo>
 using namespace Ga;
 
 void Usage(int argc, char **argv)
