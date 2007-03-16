@@ -35,6 +35,7 @@
 
 #include "gaimage.h"
 #include "gaimaget.h"
+#include <gsl/gsl_matrix.h>
 
 namespace Ga {
 
@@ -46,10 +47,13 @@ Image regression(const Image& imgIn,
 		 const Image& learnfeatureIn2
                     )
 {
-    Image result(typeid(int),imgIn.sizeX(),imgIn.sizeY()); 
+   Image result(typeid(int),imgIn.sizeX(),imgIn.sizeY()); 
 
-    
-    return result;
+   
+   
+   gsl_matrix_int * m = gsl_matrix_int_alloc(10, 3);
+   
+   return result;
 }
 
 

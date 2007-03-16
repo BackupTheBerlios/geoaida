@@ -9,7 +9,7 @@ set(data gi_regression.mod)
 
 add_executable(gi_regression ${sources})
 
-target_link_libraries(gi_regression gaimage pfm pnm)
+target_link_libraries(gi_regression gaimage gsl gslcblas pfm pnm)
 
 install(TARGETS gi_regression DESTINATION bin)
 install(FILES ${data} DESTINATION share/data/modules)
