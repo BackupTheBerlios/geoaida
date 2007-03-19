@@ -1,5 +1,5 @@
 /***************************************************************************
-                          pfmcanny.cpp  -  description
+                          gi_canny.cpp  -  description
                              -------------------
     begin                : Thu Feb 28 2007
     copyright            : (C) 2007 by Julian Raschke
@@ -18,14 +18,6 @@
 #include <gaimage.h>
 #include <gagradient.h>
 using namespace Ga;
-
-void Usage(int argc, char **argv)
-{
-	printf("Usage:\n"
-         "  %s <input-file> <canny-file>\n",
-         argv[0]);
-	exit(0);
-}
 
 // Adjust x/y when going over edge
 float getPixel(const Image &source, int x, int y) {
@@ -195,26 +187,30 @@ Image applyHysteresis(const Image &intensities, const Image &angles,
 
 int main(int argc, char **argv)
 {
-  if (argc < 3)
-    Usage(argc,argv);
-
-  const char* inputfile=argv[1];
-  const char* cannyfile=argv[2];
-
-  Image input;
-  input.read(inputfile);
-  if (input.isEmpty()) {
-    fprintf(stderr,"Can't open inputfile %s\n", inputfile);
-    return -1;
-  }
-
-  Image sobelX = convolve(input, SOBEL_X, 1.0/4, 0.5);
-  Image sobelY = convolve(input, SOBEL_Y, 1.0/4, 0.5);
-
-  Image intensities = combineIntensities(sobelX, sobelY);
-  Image angles = calcAngles(sobelX, sobelY);
-
-  Image localMaxs = findLocalMaxs(intensities, angles);
-  Image canny = applyHysteresis(localMaxs, angles, 0.1, 0.2);
-  canny.write(cannyfile, 0);
+    if (argc < 5) {
+        printf("Usage:\n  %s <input-file> <output-file> <low-threshold> <high-threshold>\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+    
+    const char* inputfile = argv[1];
+    const char* outputfile = argv[2];
+    double lowTh = atof(argv[3]);
+    double highTh = atof(argv[4]);
+    
+    Image input;
+    input.read(inputfile);
+    if (input.isEmpty()) {
+        fprintf(stderr,"Can't open inputfile %s\n", inputfile);
+        return -1;
+    }
+    
+    Image sobelX = convolve(input, SOBEL_X, 1.0/4, 0.5);
+    Image sobelY = convolve(input, SOBEL_Y, 1.0/4, 0.5);
+    
+    Image intensities = combineIntensities(sobelX, sobelY);
+    Image angles = calcAngles(sobelX, sobelY);
+    
+    Image localMaxs = findLocalMaxs(intensities, angles);
+    Image canny = applyHysteresis(localMaxs, angles, lowTh, highTh);
+    canny.write(outputfile, 0);
 }
