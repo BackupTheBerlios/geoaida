@@ -23,17 +23,9 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string>
-#ifdef GCC29
 #include <math.h>
-#else
-#include <cmath>
-#endif
 #include <time.h>
-#if __GNUC__==2
 #include <limits.h>
-#else
-#include <limits>
-#endif
 #include <errno.h>
 
 #if !defined( __GNUG__ )
@@ -70,7 +62,7 @@
 # define Abs(x)                 (x>=0 ? x : -(x))
 #endif
 
-#define GA_RGB(r,g,b)   (r + g * 0x0100 + b * 0x010000)
+#define GA_RGB(r,g,b)   ((r) + (g) * 0x0100 + (b) * 0x010000)
 
 namespace Ga {
 // --------------------------------------------------------------------------

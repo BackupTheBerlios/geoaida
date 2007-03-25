@@ -124,16 +124,16 @@ Image findLocalMaxs(const Image &intensities, const Image &angles) {
         for (int y = 0; y < sizeY; ++y) {
             double localIntensity = getPixel(intensities, x, y);
             
-            if (getPixel(intensities, x-1, y-1) > localIntensity && angles.getFloat(x, y, 0) != BACKSLASH ||
-                getPixel(intensities, x+0, y-1) > localIntensity && angles.getFloat(x, y, 0) != VERTICAL ||
-                getPixel(intensities, x+1, y-1) > localIntensity && angles.getFloat(x, y, 0) != SLASH ||
+            if (getPixel(intensities, x-1, y-1) > localIntensity && angles.getFloat(x, y, 0) == SLASH ||
+                getPixel(intensities, x+0, y-1) > localIntensity && angles.getFloat(x, y, 0) == HORIZONTAL ||
+                getPixel(intensities, x+1, y-1) > localIntensity && angles.getFloat(x, y, 0) == BACKSLASH ||
                 
-                getPixel(intensities, x-1, y+0) > localIntensity && angles.getFloat(x, y, 0) != HORIZONTAL ||
-                getPixel(intensities, x+1, y+0) > localIntensity && angles.getFloat(x, y, 0) != HORIZONTAL ||
+                getPixel(intensities, x-1, y+0) > localIntensity && angles.getFloat(x, y, 0) == VERTICAL ||
+                getPixel(intensities, x+1, y+0) > localIntensity && angles.getFloat(x, y, 0) == VERTICAL ||
                 
-                getPixel(intensities, x-1, y+1) > localIntensity && angles.getFloat(x, y, 0) != SLASH ||
-                getPixel(intensities, x+0, y+1) > localIntensity && angles.getFloat(x, y, 0) != VERTICAL ||
-                getPixel(intensities, x+1, y+1) > localIntensity && angles.getFloat(x, y, 0) != BACKSLASH)
+                getPixel(intensities, x-1, y+1) > localIntensity && angles.getFloat(x, y, 0) == BACKSLASH ||
+                getPixel(intensities, x+0, y+1) > localIntensity && angles.getFloat(x, y, 0) == HORIZONTAL ||
+                getPixel(intensities, x+1, y+1) > localIntensity && angles.getFloat(x, y, 0) == SLASH)
                     localIntensity = 0;
             
             setPixel(result, x, y, localIntensity);

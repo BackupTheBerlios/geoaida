@@ -19,27 +19,15 @@
 
 #include "picwin.h"
 #include <float.h>
-#include <math.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdlib>
 #include <qstatusbar.h>
 #include "paintwidget.h"
 #include "plot2d.h"
-#include "iostream.h"
+#include <iostream>
 #include "icons/mini-junktion.xpm"
 #include "icons/tnt.xpm"
-
-
-#ifdef GCC29
-#ifdef linux
-extern "C"
-{
-  int __isnanf(float);
-}
-#ifndef NAN
-#define NAN sqrt(-1)
-#endif
-#endif
-#endif
+using namespace std;
 
 static void convertLabel(QImage& img, float* data, float min=0, float max=255);
 static void convertScalar(QImage& img, float* data, float min=0, float max=255);

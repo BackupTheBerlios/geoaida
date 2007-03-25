@@ -27,17 +27,16 @@
 #ifndef __GA_IMAGET_H
 #define __GA_IMAGET_H
 
-#ifdef GCC29
+// <cmath> and <climits> would be nicer; however, all the code only uses
+// things in the global namespace. Assuming the also place stuff there is
+// not reliable.
 #include <math.h>
-#include <float.h>
-#else
-#include <cmath>
-#endif
-#if __GNUC__==2
 #include <limits.h>
-#else
-#include <limits>
+
+#ifdef GCC29
+#include <float.h>
 #endif
+
 extern "C" {
 #include <pnm.h>
 #include <pfm.h>
