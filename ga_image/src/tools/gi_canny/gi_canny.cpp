@@ -153,7 +153,7 @@ static const float REQUIRED_DIR[9] = {
 };
 
 bool trace(Image &result, const Image &intensities, const Image &angles, int x, int y, double threshold) {
-    setPixel(result, x, y, 1.0);
+    setPixel(result, x, y, 1);
 
     for (int i = 0; i < 9; ++i) {
         if (i == 4)
@@ -171,7 +171,7 @@ bool trace(Image &result, const Image &intensities, const Image &angles, int x, 
 Image applyHysteresis(const Image &intensities, const Image &angles,
                      double low, double high) {
     int sizeX = intensities.sizeX(), sizeY = intensities.sizeY();
-    Image result(typeid(float), sizeX, sizeY);
+    Image result(typeid(unsigned char), sizeX, sizeY);
 
     for (int x = 0; x < sizeX; ++x)
         for (int y = 0; y < sizeY; ++y)

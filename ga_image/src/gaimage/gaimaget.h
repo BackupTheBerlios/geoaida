@@ -28,8 +28,8 @@
 #define __GA_IMAGET_H
 
 // <cmath> and <climits> would be nicer; however, all the code only uses
-// things in the global namespace. Assuming the also place stuff there is
-// not reliable.
+// things in the global namespace. Assuming the new-style headers place
+// their contents in the global namespace is not portable.
 #include <math.h>
 #include <limits.h>
 
