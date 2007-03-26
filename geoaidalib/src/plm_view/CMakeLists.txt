@@ -34,7 +34,7 @@ install(FILES ${appdata} DESTINATION share/data/application)
 
 add_custom_command(TARGET plm_view POST_BUILD
                    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/src/share/data/application
-                   COMMAND cp -a ${appdata} ${PROJECT_BINARY_DIR}/src/share/data/application
+                   COMMAND cp -pR ${appdata} ${PROJECT_BINARY_DIR}/src/share/data/application
 		   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 

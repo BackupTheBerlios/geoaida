@@ -30,6 +30,6 @@ install(FILES ${data} DESTINATION share/data/application)
 
 add_custom_command(TARGET gda POST_BUILD
                    COMMAND mkdir -p ${PROJECT_BINARY_DIR}/src/share/data/application
-                   COMMAND cp -a ${data} ${PROJECT_BINARY_DIR}/src/share/data/application
+                   COMMAND cp -pR ${data} ${PROJECT_BINARY_DIR}/src/share/data/application
 		   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
