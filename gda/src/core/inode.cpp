@@ -410,11 +410,7 @@ int INode::evalTopDown(int pid)
     qDebug
       ("#  (ERROR -1/0) evalTopDown: can't start process \n  try it structural\n");
 #endif
-#ifdef WIN32
-#pragma message ("Without Dummy TopDown nothing works")
-#else
 #warning Without Dummy TopDown nothing works
-#endif
     if (!isLast() && !truncation())
       childTopDown();           //do it structural
     else if (isLast()) {                      //is last node

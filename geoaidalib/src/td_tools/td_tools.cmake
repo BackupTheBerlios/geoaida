@@ -41,6 +41,6 @@ endmacro(mod_tool)
 
 macro(td_tool_script name)
   install(FILES ${name}.op DESTINATION share/data/operators)
-  install(FILES ${name} DESTINATION bin)
+  install(PROGRAMS ${name} DESTINATION bin)
 endmacro(td_tool_script)
 

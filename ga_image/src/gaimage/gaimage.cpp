@@ -161,38 +161,38 @@ bool Image::read(const char* filename) {
 }
 
 IMGTYPE Image::readImageType(FILE *fp,int* cols, int* rows) {
-	int pxmtype;
-	IMGTYPE type=_UNKNOWN;
-	int c, r;
-	float minval,maxval;
-	long pos=ftell(fp);
-	if (pfm_readpfm_header(fp, &c, &r, &minval, &maxval, &pxmtype))
-  type=(IMGTYPE)pxmtype;
+    int pxmtype;
+    IMGTYPE type=_UNKNOWN;
+    int c, r;
+    float minval,maxval;
+    long pos=ftell(fp);
+    if (pfm_readpfm_header(fp, &c, &r, &minval, &maxval, &pxmtype))
+	type=(IMGTYPE)pxmtype;
+    fseek(fp,pos,SEEK_SET);
+    if (type==_UNKNOWN) {
+	xelval max_x;
+	pnm_readpnminit(fp, &c, &r, &max_x, &pxmtype);
 	fseek(fp,pos,SEEK_SET);
-	if (type==_UNKNOWN) {
-		xelval max_x;
-	  pnm_readpnminit(fp, &c, &r, &max_x, &pxmtype);
-		fseek(fp,pos,SEEK_SET);
-	  if (pxmtype == PBM_FORMAT || pxmtype == RPBM_FORMAT ||
-	      pxmtype == PPM_FORMAT || pxmtype == RPPM_FORMAT ) {
+	if (pxmtype == PBM_FORMAT || pxmtype == RPBM_FORMAT ||
+	    pxmtype == PPM_FORMAT || pxmtype == RPPM_FORMAT ) {
 	    switch(pxmtype) {
-      case PBM_FORMAT:
-      case RPBM_FORMAT:
-        type=_PBM;
-        break;
-      case PGM_FORMAT:
-      case RPGM_FORMAT:
-        type=_PGM;
-        break;
-      case PPM_FORMAT:
-      case RPPM_FORMAT:
-        type=_PPM;
-    	}
+		case PBM_FORMAT:
+		case RPBM_FORMAT:
+		    type=_PBM;
+		    break;
+		case PGM_FORMAT:
+		case RPGM_FORMAT:
+		    type=_PGM;
+		    break;
+		case PPM_FORMAT:
+		case RPPM_FORMAT:
+		    type=_PPM;
+	    }
   	}
-	}
-	if (cols) *cols=c;
-	if (rows) *rows=r;
-	return type;
+    }
+    if (cols) *cols=c;
+    if (rows) *rows=r;
+    return type;
 }
 
 bool Image::read(FILE *fp) {

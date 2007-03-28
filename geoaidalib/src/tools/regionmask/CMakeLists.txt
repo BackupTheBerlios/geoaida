@@ -21,6 +21,6 @@ target_link_libraries(regionmask gaimage qtparser pfm pnm ${QT_LIBRARIES})
 add_executable(watch_pipe watch_pipe.c)
 
 install(TARGETS regionmask watch_pipe DESTINATION bin)
-install(FILES ga_regionmask_pipe DESTINATION bin)
+install(PROGRAMS ga_regionmask_pipe DESTINATION bin)
 install(FILES ${data} DESTINATION share/data/modules)
 

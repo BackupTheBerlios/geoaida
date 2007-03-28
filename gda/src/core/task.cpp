@@ -274,11 +274,12 @@ void Task::check()
 #endif
     break;
   default:
- #ifdef WIN32
+#ifdef WIN32
 	job_.remove(process_[pidcount].jid_);
 	INode* iNode=process_[pidcount].node_;
 	process_[pidcount].pid_=0;	
 #else
+   qDebug("Task::check: ********* pid %d ", pid);
    ProcessEntry * p = process_[pid];
     if (!p) {
       qDebug("Task::check: pid %d not found in table", pid);
