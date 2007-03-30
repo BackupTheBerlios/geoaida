@@ -719,8 +719,8 @@ void Image::setMinValue(double v) { pImage_->setMinValue(v); }
 /** set the maximum value of the matrix to arg */
 void Image::setMaxValue(double v) { pImage_->setMaxValue(v); }
 
-double Image::minValue() { return pImage_->minValue(); }
-double Image::maxValue() { return pImage_->maxValue(); }
+double Image::minValue() const { return pImage_->minValue(); }
+double Image::maxValue() const { return pImage_->maxValue(); }
 
 
 /** Maximum element value of a Image

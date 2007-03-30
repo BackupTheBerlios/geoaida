@@ -19,6 +19,28 @@
 #include <gagradient.h>
 using namespace Ga;
 
+Image normalizeImage(Image &source) {
+    int sizeX = source.sizeX(), sizeY = source.sizeY();
+    Image result(typeid(float), sizeX, sizeY);
+
+	float min = source.minValue();
+	float range = source.maxValue() - min;
+
+    for (int x = 0; x < sizeX; ++x)
+        for (int y = 0; y < sizeY; ++y) {
+			float pix = source.getFloat(x, y, 0);
+			pix -= min;
+			pix /= range;
+			result.set(x, y, pix, 0);
+		}
+		
+	return result;
+}
+
+const int SOBEL_X[9]   = {  1,  0, -1,    2,  0, -2,    1,  0, -1 };
+const int SOBEL_Y[9]   = {  1,  2,  1,    0,  0,  0,   -1, -2, -1 };
+
+// Helper for convolution:
 // Adjust x/y when going over edge
 float getPixel(const Image &source, int x, int y) {
     if (x < 0)
@@ -29,22 +51,18 @@ float getPixel(const Image &source, int x, int y) {
         y = 0;
     else if (y >= source.sizeY())
         y = source.sizeY() - 1;
-    return source.getFloat(x, y, 0) / 255;
+    return source.getFloat(x, y, 0);
 }
 
+// Helper for convolution:
 // Adjust val when outside 0..1
 void setPixel(Image &dest, int x, int y, float val) {
     if (val < 0)
         val = 0;
     else if (val > 1)
         val = 1;
-    dest.set(x, y, val * 255, 0);
+    dest.set(x, y, val, 0);
 }
-
-const int SOBEL_X[9]   = {  1,  0, -1,    2,  0, -2,    1,  0, -1 };
-const int SOBEL_Y[9]   = {  1,  2,  1,    0,  0,  0,   -1, -2, -1 };
-
-// To be moved into separate tool?
 
 Image convolve(const Image &source, const int (&coefficients)[9], double factor, double base) {
     int sizeX = source.sizeX(), sizeY = source.sizeY();
@@ -71,9 +89,9 @@ Image combineIntensities(const Image &sobelX, const Image &sobelY) {
 
     for (int x = 0; x < sizeX; ++x)
         for (int y = 0; y < sizeY; ++y) {
-            float gx = getPixel(sobelX, x, y);
-            float gy = getPixel(sobelY, x, y);
-            setPixel(result, x, y, fabs(gx - 0.5) + fabs(gy - 0.5));
+            float gx = sobelX.getFloat(x, y, 0);
+            float gy = sobelY.getFloat(x, y, 0);
+            result.set(x, y, fabs(gx - 0.5) + fabs(gy - 0.5), 0);
         }
 
     return result;
@@ -90,8 +108,8 @@ Image calcAngles(const Image &sobelX, const Image &sobelY) {
 
     for (int x = 0; x < sizeX; ++x)
         for (int y = 0; y < sizeY; ++y) {
-            double gx = getPixel(sobelX, x, y) - 0.5;
-            double gy = getPixel(sobelY, x, y) - 0.5;
+            double gx = sobelX.getFloat(x, y, 0) - 0.5;
+            double gy = sobelY.getFloat(x, y, 0) - 0.5;
             double res;
             if (gx == 0)
                 if (gy == 0)
@@ -114,29 +132,27 @@ Image calcAngles(const Image &sobelX, const Image &sobelY) {
     return result;
 }
 
-// TODO: Does NOT agree with Wikipedia example image :(
-
 Image findLocalMaxs(const Image &intensities, const Image &angles) {
     int sizeX = intensities.sizeX(), sizeY = intensities.sizeY();
     Image result(typeid(float), sizeX, sizeY);
 
     for (int x = 0; x < sizeX; ++x)
         for (int y = 0; y < sizeY; ++y) {
-            double localIntensity = getPixel(intensities, x, y);
+            double localIntensity = intensities.getFloat(x, y, 0);
             
-            if (getPixel(intensities, x-1, y-1) > localIntensity && angles.getFloat(x, y, 0) == SLASH ||
-                getPixel(intensities, x+0, y-1) > localIntensity && angles.getFloat(x, y, 0) == HORIZONTAL ||
-                getPixel(intensities, x+1, y-1) > localIntensity && angles.getFloat(x, y, 0) == BACKSLASH ||
+            if (intensities.getFloat(x-1, y-1) > localIntensity && angles.getFloat(x, y, 0) == SLASH ||
+                intensities.getFloat(x+0, y-1) > localIntensity && angles.getFloat(x, y, 0) == HORIZONTAL ||
+                intensities.getFloat(x+1, y-1) > localIntensity && angles.getFloat(x, y, 0) == BACKSLASH ||
                 
-                getPixel(intensities, x-1, y+0) > localIntensity && angles.getFloat(x, y, 0) == VERTICAL ||
-                getPixel(intensities, x+1, y+0) > localIntensity && angles.getFloat(x, y, 0) == VERTICAL ||
+                intensities.getFloat(x-1, y+0) > localIntensity && angles.getFloat(x, y, 0) == VERTICAL ||
+                intensities.getFloat(x+1, y+0) > localIntensity && angles.getFloat(x, y, 0) == VERTICAL ||
                 
-                getPixel(intensities, x-1, y+1) > localIntensity && angles.getFloat(x, y, 0) == BACKSLASH ||
-                getPixel(intensities, x+0, y+1) > localIntensity && angles.getFloat(x, y, 0) == HORIZONTAL ||
-                getPixel(intensities, x+1, y+1) > localIntensity && angles.getFloat(x, y, 0) == SLASH)
+                intensities.getFloat(x-1, y+1) > localIntensity && angles.getFloat(x, y, 0) == BACKSLASH ||
+                intensities.getFloat(x+0, y+1) > localIntensity && angles.getFloat(x, y, 0) == HORIZONTAL ||
+                intensities.getFloat(x+1, y+1) > localIntensity && angles.getFloat(x, y, 0) == SLASH)
                     localIntensity = 0;
             
-            setPixel(result, x, y, localIntensity);
+            result.set(x, y, localIntensity, 0);
         }
     
     return result;
@@ -153,7 +169,7 @@ static const float REQUIRED_DIR[9] = {
 };
 
 bool trace(Image &result, const Image &intensities, const Image &angles, int x, int y, double threshold) {
-    setPixel(result, x, y, 1);
+    result.set(x, y, 255, 0);
 
     for (int i = 0; i < 9; ++i) {
         if (i == 4)
@@ -161,8 +177,8 @@ bool trace(Image &result, const Image &intensities, const Image &angles, int x, 
         int scanX = x + i % 3 - 1;
         int scanY = y + i / 3 - 1;
         if (inImage(result, scanX, scanY) && 
-            getPixel(intensities, scanX, scanY) >= threshold &&
-            getPixel(result, scanX, scanY) != 1.0 &&
+            intensities.getFloat(scanX, scanY, 0) >= threshold &&
+            result.getFloat(scanX, scanY) != 255 &&
             angles.getFloat(x, y, 0) == REQUIRED_DIR[i])
             trace(result, intensities, angles, scanX, scanY, threshold);
     }
@@ -175,11 +191,11 @@ Image applyHysteresis(const Image &intensities, const Image &angles,
 
     for (int x = 0; x < sizeX; ++x)
         for (int y = 0; y < sizeY; ++y)
-            setPixel(result, x, y, 0);
+            result.set(x, y, 0, 0);
 
     for (int x = 0; x < sizeX; ++x)
         for (int y = 0; y < sizeY; ++y)
-            if (getPixel(intensities, x, y) >= high)
+            if (intensities.getFloat(x, y, 0) >= high)
                 trace(result, intensities, angles, x, y, low);
 
     return result;
@@ -203,13 +219,21 @@ int main(int argc, char **argv)
         fprintf(stderr,"Can't open inputfile %s\n", inputfile);
         return -1;
     }
+
+	// The Canny algorithm is designed to work one grayscale images, so make sure we have one.
+	if (input.noChannels() != 1) {
+		input = input.convert2Luminance();
+	}
+	
+	// Normalize the image so every pixel lies in 0..1.
+	input = normalizeImage(input);
     
     Image sobelX = convolve(input, SOBEL_X, 1.0/4, 0.5);
     Image sobelY = convolve(input, SOBEL_Y, 1.0/4, 0.5);
     
     Image intensities = combineIntensities(sobelX, sobelY);
     Image angles = calcAngles(sobelX, sobelY);
-    
+
     Image localMaxs = findLocalMaxs(intensities, angles);
     Image canny = applyHysteresis(localMaxs, angles, lowTh, highTh);
     canny.write(outputfile, 0);

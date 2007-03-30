@@ -261,8 +261,8 @@ public:
   /** set the maximum value of the matrix to arg */
   void setMaxValue(double v);
 
-  double minValue();
-  double maxValue();
+  double minValue() const;
+  double maxValue() const;
 
 
   /** Maximum element value of a Image
