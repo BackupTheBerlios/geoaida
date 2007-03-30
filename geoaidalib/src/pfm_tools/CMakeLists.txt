@@ -75,7 +75,7 @@ pfm_tool(pgm2pgm "")
 pfm_tool(plm2pbm "")
 pfm_tool(ppm2ppm "")
 
-pfm_tool_cpp(pfmcutregion "")
+pfm_tool_cpp(pfmcutgeoregion "")
 pfm_tool_cpp(pfmfilter "")
 pfm_tool_cpp(pfmgenblanklabel "")
 pfm_tool_cpp(pfmgeoadd "")

@@ -2,6 +2,8 @@ find_package(Qt3 REQUIRED)
 
 add_definitions(${QT_DEFINITIONS})
 add_definitions(-DTMPDIR=\\\"${CMAKE_INSTALL_PREFIX}/tmp\\\")
+add_definitions(-DDEBUG_MSG)
+
 include_directories(.
         ${CMAKE_SOURCE_DIR}/pfm/libpfm
 	${CMAKE_SOURCE_DIR}/qtguiapplication/src/qtparser

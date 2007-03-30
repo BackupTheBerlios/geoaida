@@ -54,9 +54,6 @@ const char *const INode::iTypeName[] = {
 INode::INode(SNode * node)
 {
   init();
-#ifdef WIN32
-  parent_= node->parent();
-#endif
   sNode(node);
   if (sNode_) {
     attribute("name", node->GNode::name());

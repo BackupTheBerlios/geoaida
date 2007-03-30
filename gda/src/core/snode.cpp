@@ -67,10 +67,6 @@ SNode::SNode(SNode & node):TreeNode < SNode, GNode > (node)
   bottomUp_ = node.bottomUp_;
   evaluation_ = node.evaluation_;
   color_ = node.color_;
-#ifdef WIN32
-  parent_ = &node;
-#endif
-
 }
 
 /** Construct a SNode by parsing a file */
@@ -360,13 +356,8 @@ static void putAttribs(SNode & snode, AttribList & attribs, QString section)
   if (attribDict) {
     QDictIterator < Attribute > it(*attribDict);
     for (; it.current(); ++it) {
-#ifdef WIN32
-      QString name = (*it.current()).name();
-      QString *val = attribList[(*it.current()).fullname()];
-#else
       QString name = (**it).name();
       QString *val = attribList[(**it).fullname()];
-#endif
       if (val)
         attribs.replace(name, val);
     }
@@ -386,7 +377,7 @@ void SNode::execTopDownOp(INode * iNode)
   ASSERT(iNode->parent());
 //((*(TreeGNode*)(&(*(TreeNode<GNode,TreeGNode>*)(&(*(GNode*)(&(*(TreeNode<INode,GNode>*)(&*iNode))))))))).parent_
 //Hier Absturz weil parent = 0
-//Darf nur aus Analyze::start() gestertet werden, nicht aus MainGui::Start()!
+//Darf nur aus Analyze::start() gestartet werden, nicht aus MainGui::Start()!
 #ifdef WIN32
   INode *parent = 0;
   if (iNode)
@@ -407,19 +398,10 @@ void SNode::execTopDownOp(INode * iNode)
   if (topDownAttrib) {
     QDictIterator < Attribute > it(*topDownAttrib);
     for (; it.current(); ++it) {
-#ifdef WIN32
-      switch ((*it.current()).type()) {
-#else
       switch ((**it).type()) {
-#endif
       case Attribute::IMAGE:{
-#ifdef WIN32
-          QString imageName = attribute((*it.current()).fullname());
-          QString keyName = (*it.current()).name();
-#else
           QString imageName = attribute((**it).fullname());
           QString keyName = (**it).name();
-#endif
           GeoImage *image = geoImageList_.geoImage(imageName);
           if (image) {
             QDictIterator < QString > it(*image);
@@ -439,11 +421,7 @@ void SNode::execTopDownOp(INode * iNode)
                                      parent->attributeFloat("geoEast"),
                                      parent->attributeFloat("geoSouth"));
             cleanUp_.append(partName);
-#ifdef WIN32
-            attribs.replace(keyName + "_file", &partName);
-#else
             attribs.replace(keyName + "_file", partName);
-#endif
           }
         }
         break;
@@ -494,32 +472,14 @@ void SNode::execTopDownOp(INode * iNode)
                                 parent->attributeFloat("geoEast"),
                                 parent->attributeFloat("geoSouth"),
                                 parent->attributeInt("id"), parent->path());
-#ifdef WIN32
-    attribs.replace("mask_file", &maskfile);
-#else
     attribs.replace("mask_file", maskfile);
-#endif
     cleanUp_.append(maskfile);
   }
-#ifdef WIN32
-  else attribs.replace("mask_file", new QString("\"\""));
-  QString s = geoImageList_.minResolution();
-  attribs.replace("minRes", &s);
-  s =  geoImageList_.maxResolution();
-  attribs.replace("maxRes", &s);
-//Hier Absturz weil parent = 0
-  if (SNode::parent())
-    s = SNode::parent()->refCounter_;
-  else 
-    s = refCounter_;
-  attribs.replace("numRegions", &s);
-#else
   else attribs.replace("mask_file", "\"\"");
 
   attribs.replace("minRes", geoImageList_.minResolution());
   attribs.replace("maxRes", geoImageList_.maxResolution());
   attribs.replace("numRegions",SNode::parent()->refCounter_);
-#endif
 #if 1
   putAttribs(*this, attribs, "generic");
   putAttribs(*this, attribs, "topDown");
@@ -535,11 +495,7 @@ void SNode::execTopDownOp(INode * iNode)
   {
     qDebug("SNode::execTopDown: attributes");
     QTextOStream ts(stderr);
-#ifdef WIN32
-//    ts << (QTextOStream)attribs;
-#else
     ts << attribs;
-#endif
   }
 #endif
   execOperator(topDown_, iNode, attribs, parent->path(), tdCounter_);
