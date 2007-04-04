@@ -2,9 +2,19 @@
 #define GaVectorizeT_h
 
 #include <gaimage.h>
-
+#include <gapoint.h>
 /*
   PointT
+    PointT(int x, int y);
+      PointT(const PointT& p);
+      int x() const;
+      int y() const;
+      bool operator==(const Point& p2) const;
+      Point operator-(const Point& p2) const;
+      int x(int x);
+      int y(int y);
+  protected:
+
   RegDescT
      int setPixel(const DataPicT& dpic, LabelPicT& lpic, int x, int y, int val)
      int setId(int val);
@@ -28,21 +38,6 @@ void vectorize(const Ga::Image& lpic,
 #include "gavectorizet.hpp"
 
 #ifdef USE_EXAMPLE_CLASSES
-
-class Point
-{
-  public:
-    Point(int x, int y): x_(x),y_(y) {}
-    Point(const Point& p) {x_=p.x_; y_=p.y_;}
-    int x() const {return x_;}
-    int y() const {return y_;}
-    bool operator==(const Point& p2) const { return (x_==p2.x_ && y_==p2.y_);}
-    Point operator-(const Point& p2) const {Point p(*this); p.x_-=p2.x_; p.y_-=p2.y_; return p; }
-    int x(int x) {x_=x; return x;}
-    int y(int y) {x_=y; return y;}
-  protected:
-    int x_,y_;
-};
 
 class RegBorderDesc
 {
