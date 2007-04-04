@@ -34,3 +34,5 @@ add_custom_command(TARGET gad POST_BUILD
                    COMMAND cp -pR ${data} ${PROJECT_BINARY_DIR}/share/data/application
 		   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
+
+install(FILES modules.mod DESTINATION share/data/modules)
