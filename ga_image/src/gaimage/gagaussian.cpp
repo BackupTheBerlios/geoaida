@@ -43,8 +43,9 @@
 Implementation rationale: 
 
 * Does not reuse existing convolution because the Gaussian blur can
-be implemented as a separable convolution, which scales linearly,
-no quadratically with the sigma parameter.
+be implemented as a separable convolution, which has a performance
+characteristic that scales linearly, no quadratically with the sigma
+parameter.
 
 * Does not introduce a separate function for separable convolutions
 as the Gaussian blur is the only filter which can losslessly be
@@ -67,17 +68,22 @@ Ga::Image Ga::gaussianBlur(const Image &source, double sigma)
     if (sigma <= 0)
         return source;
 
-    // Size of relevant Gauss mask.
-    // 3x3 is the minimum (1x1 would only marginally darken the input).
+    // Size of relevant Gauss mask (up from 3x3)
     int mirroredPortion = static_cast<int>(std::ceil(sigma * 2));
     mirroredPortion = std::max(mirroredPortion, 1);
     int size = 2 * mirroredPortion + 1;
 
     // Compute Gauss mask.
     std::vector<double> mask(size);
-    for (int i = -mirroredPortion; i < mirroredPortion; ++i)
+    double sum = 0;
+    for (int i = -mirroredPortion; i <= mirroredPortion; ++i)
+    {
         mask[i + mirroredPortion] =
             std::exp(-(i * i)/(2 * sigma * sigma)) / (std::sqrt(2 * M_PI) * sigma);
+        sum += mask[i + mirroredPortion];
+    }
+    for (int i = 0; i < size; ++i)
+        mask[i] /= sum;
 
     int sizeX = source.sizeX(), sizeY = source.sizeY(), channels = source.noChannels();
 

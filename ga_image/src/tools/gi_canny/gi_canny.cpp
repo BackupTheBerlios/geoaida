@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include <gaimage.h>
-#include <gagradient.h>
 using namespace Ga;
 
 Image normalizeImage(Image &source) {
