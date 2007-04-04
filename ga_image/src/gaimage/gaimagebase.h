@@ -179,10 +179,11 @@ public:
   virtual void merge(ImageBase& img, double img_label, double new_label) {}
   virtual void getChannel(ImageBase& pic, int channel=0)=0;
   virtual void convert2Luminance(ImageBase& pic) {}
-  virtual ImageT<float> hsv()=0;
-  virtual void resample(ImageBase& result, int nx, int ny)=0;
-  virtual void resampleNN(ImageBase& result, int nx, int ny)=0;
-  virtual void resampleNNplus(ImageBase& result, int nx, int ny)=0;
+   virtual ImageT<float> hsv()=0;
+   virtual void convert2ndvi(ImageBase& pic) {}
+   virtual void resample(ImageBase& result, int nx, int ny)=0;
+   virtual void resampleNN(ImageBase& result, int nx, int ny)=0;
+   virtual void resampleNNplus(ImageBase& result, int nx, int ny)=0;
   virtual void calcHistogram(ImageT<int>& hist , double min, double max, int n, int channel=0)=0;
   virtual void blow(ImageBase &in, int label, int iterations)=0;
   virtual void minValue(ImageBase &in, float value)=0;

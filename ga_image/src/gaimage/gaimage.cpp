@@ -1187,6 +1187,14 @@ Image Image::hsv()
   return result;
 }
 
+   /** converts a 3-band image (irrgb-color) to single band ndvi-image */
+   Image Image::convert2ndvi()
+     { 
+	Image result(typeid(float));
+	pImage()->convert2ndvi(*result.pImage());
+	return result;
+     }  
+   
 /** resample the current image to size (x, y) */
 Image Image::resample(int nx, int ny) const
 {

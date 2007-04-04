@@ -1589,6 +1589,31 @@ inline void ImageT<PixTyp>::getChannel(ImageBase& resultImg, int channel)
 			  (double)*pChB *0.11 + 0.5);
      }
    }
+   
+   /** converts a 3-band image (irrgb-color) to a new single band ndvi-image */   
+ template <class PixTyp>
+   inline void ImageT<PixTyp>::convert2ndvi(ImageBase& resultImg)
+   {
+     assert(noChannels()==3);
+     
+     ImageT<float> &pic = (ImageT<float> &)resultImg;
+     
+     pic.resize(sizeX(), sizeY());
+     pic.setGeoCoordinates(geoWest(), geoNorth(), geoEast(), geoSouth());
+     pic.setGeoRes(geoRes());
+     
+     if (typeImage()==_PPM)
+       pic.typeImage(_PGM);
+      ImageT<float>::Iterator elem = pic.begin();
+     //    ConstIterator elem_rval = constBegin(0,channel);
+     ConstIterator pChIR=constBegin(0,0);
+     ConstIterator pChR=constBegin(0,1);
+     for (int i = 0; i < sizeImage(); ++i, ++elem, ++pChIR, ++pChR) {
+       *elem = (float) ( (double)((double) *pChIR - (double) *pChR)/
+			  ((double) *pChIR + (double) * pChR) );
+
+     }
+   }
 
 /** get the hue of an 3 band color image */
 template <class PixTyp>

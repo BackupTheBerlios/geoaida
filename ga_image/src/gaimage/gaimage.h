@@ -1,4 +1,4 @@
-/***************************************************************************
+/****************************************************************************
                           GaImage.h  -  geoAIDA template image class
                              -------------------
     begin                : Thu Jan 11 2001
@@ -399,6 +399,10 @@ public:
   Image convert2Luminance();
 
   Image hsv();
+   
+   /** converts a 3-band image (irrgb-color) to single band ndvi-image */   
+   Image convert2ndvi();
+    
 
   /** resample the current image to size (x, y) */
   Image resample(int nx, int ny) const;

@@ -402,6 +402,9 @@ namespace Ga {
   /** return a hsv 3 band image of an 3 band rgb image */
   ImageT<float> hsv();
 
+     /** converts a 3-band image (irrgb-color) to a new single band ndvi-image */   
+     void convert2ndvi(ImageBase &pic);
+     
   /** resample the current image to size (x, y) */
   void resample(ImageBase& result, int nx, int ny);
 
