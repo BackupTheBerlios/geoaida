@@ -1,8 +1,8 @@
-<MODULE class=misc name="data_connect" label="Data Connector" cmd="ln -sf @input@ >@output@">
+<MODULE class=Misc name="Connect Data" cmd="ln -sf @input@ @output@">
   <INPUT name=input>
   <OUTPUT name=output depend=input>
 </MODULE>
-<MODULE class=misc name="external_command" label="External Command"
+<MODULE class=Misc name="External Command"
         tip="<p>Executes an arbitrary external operator!</p>"
 	cmd="@operator@ @options@ @input@ @output@ ">
   <INPUT name=input label="Source File: " tip="Input File">
