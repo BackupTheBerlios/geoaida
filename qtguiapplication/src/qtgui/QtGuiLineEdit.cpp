@@ -77,7 +77,6 @@ public:
   void create(QWidget* parent, QLayout* layout);
   QLineEdit *lineedit_;
   QValidator *validator_;
-  QtGuiVarModifier *variable_;
   // Attribs
   int type_;
   QString format_;

@@ -45,7 +45,6 @@ public:
   }
   void create(QWidget* parent, QLayout* layout);
   QCheckBox *button_;
-  QtGuiVarModifier *variable_;
   // Attribs
   int id_;
 };

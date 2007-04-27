@@ -61,7 +61,6 @@ public:
   }
   void create(QWidget* parent, QLayout* layout);
   QTextBrowser *browser_;
-  QtGuiVarModifier *variable_;
   // Attribs
   QString location_;
   QString home_;
