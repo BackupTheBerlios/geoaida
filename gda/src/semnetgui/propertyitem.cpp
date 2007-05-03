@@ -94,8 +94,10 @@ PropertyItem::edit()
 #ifdef DEBUGMSG
   qDebug("edit: name=%s\n", (const char *) name_);
 #endif
-  if (editor_)
+  if (editor_) {
     delete editor_;
+    editor_=0;
+  }
   int type;
   if (!attrib_)
     type = Attribute::STRING;
@@ -106,12 +108,11 @@ PropertyItem::edit()
   }
   switch (type) {
   case Attribute::ENUM:{
-      editor_ = new QComboBox(parent_->viewport(), name_);
       QStringList *options = attrib_->options();
-      if (options) {
-        ((QComboBox *) editor_)->insertStringList(*options);
-        ((QComboBox *) editor_)->setCurrentItem(options->findIndex(value_));
-      }
+      if (!options) return;
+      editor_ = new QComboBox(parent_->viewport(), name_);
+      ((QComboBox *) editor_)->insertStringList(*options);
+      ((QComboBox *) editor_)->setCurrentItem(options->findIndex(value_));
     }
     break;
   case Attribute::BOOL:{
@@ -123,13 +124,13 @@ PropertyItem::edit()
     }
     break;
   case Attribute::OPERATOR:{
-      editor_ = new QComboBox(parent_->viewport(), name_);
       QStringList *options = operatorList_.keys(attrib_->typeOfOperator());
-      CHECK_PTR(options);
+      if (!options) return;
+      editor_ = new QComboBox(parent_->viewport(), name_);
       ((QComboBox *) editor_)->insertStringList(*options);
       ((QComboBox *) editor_)->setCurrentItem(options->findIndex(value_));
-//                      connect(editor_,SIGNAL(activated(int)),this,SLOT(editDone()));
-    }
+      //                      connect(editor_,SIGNAL(activated(int)),this,SLOT(editDone()));
+  }
     break;
   case Attribute::IMAGE:{
 #ifdef DEBUGMSG
