@@ -103,6 +103,7 @@ public:
   const void* end() const;
   double getFloat(int x, int y, int channel, double neutral=0) const;
   void set(int x, int y, double val, int channel=0, bool clip=false);
+  void fillRow(int row, int startX, int endX, double val, int channel=0, bool clip=false);
   double getFloat(const void *it) const;
   void set(void* it, double val);
   void nextCol(const void*& ptr) const;

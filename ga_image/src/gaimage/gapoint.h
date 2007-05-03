@@ -5,68 +5,6 @@
 #include <gaimage.h>
 
 namespace Ga {
-  class Value {
-    Value(bool v) 
-      : type_(typeid(bool))
-      {
-	value_.bool_=v;
-      }
-    Value(char v) 
-      : type_(typeid(char))
-      {
-	value_.char_=v;
-      }
-    Value(signed char v) 
-      : type_(typeid(signed char))
-      {
-	value_.signedChar_=v;
-      }
-    Value(unsigned char v) 
-      : type_(typeid(unsigned char))
-      {
-	value_.unsignedChar_=v;
-      }
-    Value(signed short v) 
-      : type_(typeid(signed short))
-      {
-	value_.signedShort_=v;
-      }
-    Value(unsigned short v) 
-      : type_(typeid(unsigned short))
-      {
-	value_.unsignedShort_=v;
-      }
-    Value(signed int v) 
-      : type_(typeid(signed int))
-      {
-	value_.signedInt_=v;
-      }
-    Value(unsigned int v) 
-      : type_(typeid(unsigned int))
-      {
-	value_.unsignedInt_=v;
-      }
-    Value(float v) 
-      : type_(typeid(float))
-      {
-	value_.float_=v;
-      }
-  protected:
-    const class std::type_info& type_;
-    union {
-      bool bool_;		
-      char char_;		
-      signed char signedChar_;  
-      unsigned char unsignedChar_;	
-      short short_;		
-      signed short signedShort_;		
-      unsigned short unsignedShort_;	
-      int int_;			
-      signed int signedInt_;		
-      unsigned int unsignedInt_;		
-      float float_;		
-    } value_;
-  };
   
   class Point {
   public:

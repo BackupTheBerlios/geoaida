@@ -49,15 +49,6 @@ extern "C" {
 
 namespace Ga {
 
-#ifndef NAN
-#define NAN sqrt(-1)
-#endif
-#define GA_RED(p)  (p & 0xff)
-#define GA_GREEN(p)  ((p & 0xff00) >> 8)
-#define GA_BLUE(p)  ((p & 0xff0000) >> 16)
-
-#define GA_RGB(r, g, b)  (r + g * 0x0100 + b * 0x010000)
-
 /** \class ImageT
     \brief defines an template class for operations between matrices and vectors
     and for handling geo-related images
@@ -136,7 +127,8 @@ namespace Ga {
     /** return pointer to the beginning of data
 	usage: \code PixTyp * dp = M.data(row); \endcode */
     PixTyp* data(int row =0, int channel = 0);
-    PixTyp** dataArray(int channel=0);
+    void* dataArray(int channel=0);
+    PixTyp** dataArrayT(int channel=0);
     ConstIterator constBegin(int row=0, int channel=0) const;
     void* beginVoid(int row=0, int channel=0);
     ConstIterator end(int row, int channel=0) const;
@@ -151,6 +143,7 @@ namespace Ga {
     double getFloat(int x, int y, int channel, double neutral=0) const;
     virtual double getFloat(const void *it) const;
     virtual void setFloat(void* it, double val);
+    virtual void fillRow(void *it, int startX, int endX, double val, int channel=0);
     virtual void* nextCol(const void*& ptr, int offset) const;
     virtual void* nextCol(const void*& ptr) const;
     virtual void* prevCol(const void*& ptr) const;

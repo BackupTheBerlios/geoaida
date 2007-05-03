@@ -43,6 +43,7 @@
 /* Utility macros                                                          */
 /*-------------------------------------------------------------------------*/
 
+namespace Ga {
 #ifndef TRUE
 # define TRUE 1
 #endif
@@ -54,22 +55,39 @@
  #define GA_NOTYPE    unsigned char
 #endif
 
-#ifdef abs
-# define Abs(x) abs
+/* #ifdef abs */
+/* # define Abs(x) abs */
+/* #endif */
+
+/* #ifndef Abs */
+/* # define Abs(x)                 (x>=0 ? x : -(x)) */
+/* #endif */
+
+#ifndef NAN
+#define NAN sqrt(-1)
 #endif
 
-#ifndef Abs
-# define Abs(x)                 (x>=0 ? x : -(x))
-#endif
-
+#define GA_RED(p)  (p & 0xff)
+#define GA_GREEN(p)  ((p & 0xff00) >> 8)
+#define GA_BLUE(p)  ((p & 0xff0000) >> 16)
 #define GA_RGB(r,g,b)   ((r) + (g) * 0x0100 + (b) * 0x010000)
 
-namespace Ga {
 // --------------------------------------------------------------------------
 //... Swap data of type T
 //... Purpose:  Having a unique function for Swap
 //... Use    :  Swap(&x,&y);
 // --------------------------------------------------------------------------
+  template <typename T> inline T Abs(T x) {
+    return  (x>=0 ? x : -(x));
+  }
+  
+#define DefineAbs(type)						\
+  template <> inline type Abs<type>(type x) { return x; };
+  DefineAbs(unsigned short int)
+  DefineAbs(unsigned int)
+  DefineAbs(unsigned char)
+  
+
 template <class T> void swap(T *x,T *y)
 {
   T temp = *x;

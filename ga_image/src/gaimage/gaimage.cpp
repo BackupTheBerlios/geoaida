@@ -293,6 +293,18 @@ void Image::set(int x, int y, double val, int channel, bool clip) {
 };
 
 
+void Image::fillRow(int row, int startX, int endX, double val, int channel, bool clip)
+{
+  assert(pImage_);
+  assert(channel<noChannels());
+  if (clip) {
+    if ((row<0) || (row>=sizeY())) return;
+    if (startX<=0) startX=0;
+    if (endX>=sizeX()) endX=sizeX()-1;
+  }
+  pImage_->fillRow(begin(row,channel),startX,endX,val);
+}
+
 double Image::getFloat(const void *it) const {
   assert(pImage_);
   return pImage_->getFloat(it);

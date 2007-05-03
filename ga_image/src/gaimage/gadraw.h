@@ -20,6 +20,7 @@
 #define __GA_DRAW_H
 
 #include "gaimaget.h"
+#include "gaimage.h"
 
 namespace Ga {
 

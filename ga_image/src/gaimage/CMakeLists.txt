@@ -26,6 +26,8 @@ set(headers gaall.h
            gavariance.h
            gavectorizet.h
 	   garegression.h
+	   
+	   gapainter.h
 )
 
 set(templateheaders
@@ -42,8 +44,13 @@ set(sources gadraw.cpp
            garegion.cpp
            gavariance.cpp
 	   garegression.cpp
+
+	   gapainter.cpp
 )
 
 add_library(gaimage STATIC ${sources})
 install(TARGETS gaimage DESTINATION lib)
 install(FILES ${headers} DESTINATION include)
+
+add_executable(painttest paint.cpp)
+target_link_libraries(painttest gaimage pfm pnm)

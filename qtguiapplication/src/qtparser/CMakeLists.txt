@@ -8,7 +8,7 @@ set(headers MLParser.h)
 
 set(sources MLParser.cpp)
 
-qt_wrap_cpp(moclib mocsrc ${headers})
+#qt_wrap_cpp(moclib mocsrc ${headers})
 
 add_library(qtparser ${sources} ${mocsrc})
 
