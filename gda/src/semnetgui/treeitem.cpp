@@ -100,8 +100,10 @@ void TreeItem::popupMenu(void)
 /** delete associated node */
 void TreeItem::deleteNode()
 {
-  if (nodeObj_)
-    delete nodeObj_;
+    if (nodeObj_){
+        delete nodeObj_;
+        nodeObj_=0;
+    }
 }
 
 /** return the associated nodeObj_ */

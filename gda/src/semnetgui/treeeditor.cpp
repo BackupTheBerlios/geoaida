@@ -117,7 +117,7 @@ void
     return;                     // ((TreeItem*)item)->popupMenu();
   TreeItem *lItem = (TreeItem *) item;
   setSelected(item, true);
-  repaint();
+  repaint();  
   QPopupMenu *popup;
   popup = new QPopupMenu;
   popup->insertItem("Copy Node", 0);
@@ -126,6 +126,7 @@ void
   popup->insertItem("New Node", 3);
   int ret = popup->exec(point);
   delete popup;
+  
   switch (ret) {
   case 0:
     clipboardNode_ = lItem->node()->copy();
