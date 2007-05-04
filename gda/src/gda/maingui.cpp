@@ -176,15 +176,16 @@ void MainGui::usage()
 
 void MainGui::netLoad() {
 #ifdef DEBUGMSG
-	qDebug("Sem. Net File Load");
+  qDebug("Sem. Net File Load");
 #endif
-	propertyEditor->itemSelected(0);
-	QString fname=QFileDialog::getOpenFileName("","*.net",mainwidget,"Load Net");
-	if (fname.isEmpty()) return;
-	fileSemanticNet_=fname;
-	readyToAna(TRUE);  //enable the analysis buttons XXX only for testing
-	semNet.read(fileSemanticNet_);
-	treeEditor->rootNode(semNet.rootNode());
+  propertyEditor->itemSelected(0);
+  QString fname=QFileDialog::getOpenFileName("","*.net",mainwidget,"Load Net");
+  if (fname.isEmpty()) return;
+  fileSemanticNet_=fname;
+  readyToAna(TRUE);  //enable the analysis buttons XXX only for testing
+  treeEditor->rootNode(0);
+  semNet.read(fileSemanticNet_);
+  treeEditor->rootNode(semNet.rootNode());
 }
 
 void MainGui::resultSave() {
@@ -193,30 +194,30 @@ void MainGui::resultSave() {
     return;
   }
 #ifdef DEBUGMSG
-	qDebug("MainGui::resultSave");
+  qDebug("MainGui::resultSave");
 #endif
-	propertyEditor->itemSelected(0);
-	QString fname=QFileDialog::getSaveFileName(fileInstanceNet_,"*.inet",mainwidget,"Save Result");
-	if (fname.isEmpty()) return;
-	fileInstanceNet_=fname;
+  propertyEditor->itemSelected(0);
+  QString fname=QFileDialog::getSaveFileName(fileInstanceNet_,"*.inet",mainwidget,"Save Result");
+  if (fname.isEmpty()) return;
+  fileInstanceNet_=fname;
   QFileInfo finfo(fname);
   fileMap_=finfo.dirPath()+"/"+finfo.baseName(true)+".map";
-	analysis_->writeInstanceNet(fileInstanceNet_);
+  analysis_->writeInstanceNet(fileInstanceNet_);
   qDebug("MainGui::resultNetSave: mapname=%s",fileMap_.latin1());
   map_->replace("dir","");
   map_->replace("file",fileMap_);
   map_->write();
-	treeEditor->rootNode(semNet.rootNode());
+  treeEditor->rootNode(semNet.rootNode());
 }
 
 void MainGui::resultLoad() {
 #ifdef DEBUGMSG
-	qDebug("MainGui::resultLoad");
+  qDebug("MainGui::resultLoad");
 #endif
-	propertyEditor->itemSelected(0);
-	QString fname=QFileDialog::getOpenFileName("","*.inet",mainwidget,"Load Result");
-	if (fname.isEmpty()) return;
-
+  propertyEditor->itemSelected(0);
+  QString fname=QFileDialog::getOpenFileName("","*.inet",mainwidget,"Load Result");
+  if (fname.isEmpty()) return;
+  
   QFile fp(fname);
   if (!fp.open(IO_ReadOnly)) {
     qDebug("MainGui::resultLoad(%s): file not found",(const char*)fname);
@@ -267,25 +268,25 @@ void MainGui::resultLoad() {
 
 void MainGui::netSave() {
 #ifdef DEBUGMSG
-	qDebug("Sem. Net File Save");
+  qDebug("Sem. Net File Save");
 #endif
-	propertyEditor->itemSelected(0);
-	QString fname=QFileDialog::getSaveFileName(fileSemanticNet_,"*.net",mainwidget,"Save Net");
-	if (fname.isEmpty()) return;
-	fileSemanticNet_=fname;
-	semNet.write(fileSemanticNet_);
-//?	treeEditor->rootNode(semNet.rootNode());
+  propertyEditor->itemSelected(0);
+  QString fname=QFileDialog::getSaveFileName(fileSemanticNet_,"*.net",mainwidget,"Save Net");
+  if (fname.isEmpty()) return;
+  fileSemanticNet_=fname;
+  semNet.write(fileSemanticNet_);
+  //?	treeEditor->rootNode(semNet.rootNode());
 }
 
 void MainGui::prjLoad() {
 #ifdef DEBUGMSG
-	qDebug("Project File Load");
+  qDebug("Project File Load");
 #endif
-	propertyEditor->itemSelected(0);
-	QString fname=QFileDialog::getOpenFileName("","*.gap",mainwidget,"Load Project");
-	if (fname.isEmpty()) return;
-	loadPrjFile(fname);
-	
+  propertyEditor->itemSelected(0);
+  QString fname=QFileDialog::getOpenFileName("","*.gap",mainwidget,"Load Project");
+  if (fname.isEmpty()) return;
+  loadPrjFile(fname);
+  
 }
 	
 /** read an instance net from the given file */
