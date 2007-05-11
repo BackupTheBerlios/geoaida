@@ -3,6 +3,7 @@ include_directories(.
 
 set(headers gaall.h
            gaarray2dt.h
+           gacanny.h
            gaconvert.h
            gadefines.h
            gadowindowt.h
@@ -36,7 +37,8 @@ set(templateheaders
            gavectorizet.hpp
 )
 
-set(sources gadraw.cpp 
+set(sources gacanny.cpp
+           gadraw.cpp 
            gagaussian.cpp
            gagradient.cpp
            gahough.cpp
