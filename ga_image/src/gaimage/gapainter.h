@@ -1,10 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 ///
 /// \file		gapainter.h
-/// \brief		prototype for class "Painter"
+/// \brief		Prototype for class "Painter"
 ///
 /// \date		Jan. 2007
 /// \author		Torsten Büschenfeld (bfeld@tnt.uni-hannover.de)
+///
+/// \note		Tabulator size 4 used
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -57,6 +59,8 @@ class Painter
 		void setChannel(int);
 
 	protected:
+
+		//--- variables [protected] ------------------------------------------//
 		Image&	img_;		///< image that is used for all operations
 		int		channel_;	///< channel used for all operations on the image
 
@@ -79,8 +83,10 @@ class Painter
 				
 		};
 
+		//--- const methods [private] ----------------------------------------//
 		void qSortPointsY(const PointArray&, IndexArray&, int, int) const;
 
+		//--- friend functions [private] -------------------------------------//
 		friend bool EdgeSortX(const Edge&, const Edge&);
 };
 

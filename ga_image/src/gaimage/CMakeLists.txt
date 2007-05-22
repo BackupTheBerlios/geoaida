@@ -17,6 +17,7 @@ set(headers gaall.h
            gaimagebase.h
            gaimaget.h
            gakirsch.h
+           gapoint.h
            garegion.h
            garegionsplittert.h
            garegiont.h
