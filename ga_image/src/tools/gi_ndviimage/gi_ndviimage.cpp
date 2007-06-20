@@ -17,28 +17,24 @@
 
 #include <getopt.h>
 #include <gaimage.h>
+#include <iostream>
 
 using namespace Ga;
+using namespace std;
 
 void Usage(int argc, char **argv)
 {
-	printf("Usage:\n"
-         "  %s -h <src> \n"
-         "    -h - Calculates ndvi image from irrg image)\n",
-         argv[0]);
-	exit(0);
+    clog << endl << endl;
+    clog << "Calculates ndvi image from irrg image."<<endl;
+    clog << "Output format: pfm (-1 <= pix-value <= 1)" << endl;
+    clog << endl;
+    clog << "Usage:" << endl;
+    clog << argv[0] << " <src> <dest>" << endl;
+
+    clog << endl << endl << endl;
+
+    exit(0);
 }
-
-#ifdef linux
-extern "C" {
-int __isnanf(float);
-	   }
-#ifndef NAN
-#define NAN sqrt(-1)
-#endif
-#endif
-
-#define sqr(x) ((x)*(x))
 
 
 int main(int argc, char **argv)
@@ -64,8 +60,8 @@ int main(int argc, char **argv)
    Image im;
    im.read(infile);   
    if (im.isEmpty()) {
-      fprintf(stderr,"Can't open %s\n",argv[1]);
-      return -1;
+       cerr << "Can't open" << argv[1] << endl;;
+       return -1;
    }
    
 
