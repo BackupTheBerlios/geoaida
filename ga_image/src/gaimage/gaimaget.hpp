@@ -1622,16 +1622,16 @@ inline void ImageT<PixTyp>::getChannel(ImageBase& resultImg, int channel)
      pic.setGeoCoordinates(geoWest(), geoNorth(), geoEast(), geoSouth());
      pic.setGeoRes(geoRes());
      
-     if (typeImage()==_PPM)
-       pic.typeImage(_PGM);
-      ImageT<float>::Iterator elem = pic.begin();
-     //    ConstIterator elem_rval = constBegin(0,channel);
-     ConstIterator pChIR=constBegin(0,0);
-     ConstIterator pChR=constBegin(0,1);
-     for (int i = 0; i < sizeImage(); ++i, ++elem, ++pChIR, ++pChR) {
-       *elem = (float) ( (double)((double) *pChIR - (double) *pChR)/
-			  ((double) *pChIR + (double) * pChR) );
-
+     if (typeImage()==_PPM){
+         pic.typeImage(_PGM);
+         ImageT<float>::Iterator elem = pic.begin();
+         
+         ConstIterator pChIR=constBegin(0,0);
+         ConstIterator pChR=constBegin(0,1);
+         for (int i = 0; i < sizeImage(); ++i, ++elem, ++pChIR, ++pChR) {
+             *elem = (float) ( (double)((double) *pChIR - (double) *pChR)/
+                               ((double) *pChIR + (double) * pChR) );
+         }
      }
    }
 
