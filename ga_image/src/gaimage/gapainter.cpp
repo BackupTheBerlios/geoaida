@@ -129,7 +129,7 @@ void Painter::fillPolygon(const PointArray& points, double val)
 	}
 
 	// begin filling the polygon
-	for (unsigned int i=points[indices[0]].y(); i<=points[indices.back()].y(); ++i)
+	for (int i=points[indices[0]].y(); i<=points[indices.back()].y(); ++i)
 	{
 		// select active edges
 		active_edges.clear();
