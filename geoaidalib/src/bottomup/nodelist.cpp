@@ -657,23 +657,17 @@ void NodeList::genGroupImage()
 	  int ury=node->ury();
 	  for (int y=ury; y<=lly; y++) {
 	    void *ptr=outImage_.begin(y,0);
-#ifdef WIN32
-qDebug("nodelist.cpp 546: Error C2661");
-//Error C2661: 'nextCol' : Keine ueberladene Funktion akzeptiert 2 Parameter
-	    outImage_.nextCol(ptr);
-#else
 	    outImage_.nextCol(ptr,llx);
-#endif
 	    for (int x=llx; x<=urx; x++) {
-	      int v=outImage_.getInt(ptr);
-	      if (v==id) {
-	        groupImage_.set(x,y,groupIdCounter_);
+        int v=outImage_.getInt(ptr);
+        if (v==id) {
+          groupImage_.set(x,y,groupIdCounter_);
 	      }
 	      outImage_.nextCol(ptr);
 	    }
 	  }
+ 
 	}
-
 }
 
 /** return stack - for bottom-up */

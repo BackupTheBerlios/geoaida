@@ -471,28 +471,29 @@ inline void ImageT<PixTyp>::fillRow(void *it, int startX, int endX, double val, 
 }
 
 template <class PixTyp>
-inline void* ImageT<PixTyp>::nextCol(const void*& ptr, int offset) const {
-  return ((PixTyp*)ptr)+offset;
+    inline void* ImageT<PixTyp>::nextCol(const void*& ptr, int offset) const {
+    ((PixTyp*&) ptr)+= offset;
+    return  (PixTyp*)ptr;
 }
 
 template <class PixTyp>
 inline void* ImageT<PixTyp>::nextCol(const void*& ptr) const {
-  return ((PixTyp*)ptr)+1;
+  return ((PixTyp*&)ptr)++;
 }
 
 template <class PixTyp>
 inline void* ImageT<PixTyp>::prevCol(const void*& ptr) const {
-	return ((PixTyp*)ptr)-1;
+	return ((PixTyp*&)ptr)--;
 }
 
 template <class PixTyp>
 inline void* ImageT<PixTyp>::nextRow(const void*& ptr) const {
-	return ((PixTyp*)ptr)+sizeX();
+	return ((PixTyp*&)ptr)+=sizeX();
 }
 
 template <class PixTyp>
 inline void* ImageT<PixTyp>::prevRow(const void*& ptr) const {
-	return ((PixTyp*)ptr)-sizeX();
+	return ((PixTyp*&)ptr)-=sizeX();
 }
 
 
