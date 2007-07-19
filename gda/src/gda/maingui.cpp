@@ -497,6 +497,10 @@ void MainGui::analyze() {
     sceneViewer->rootNode(0);
     trashViewer->disconnectSlots();
     trashViewer->rootNode(0);
+    propertyEditor->setNode(0,0);
+    sceneAttributes->setNode(0,0);
+    trashAttributes->setNode(0,0);
+
     mapViewer->set(0,0);
    	if (analysis_) delete analysis_;
    	else {
