@@ -233,35 +233,7 @@ void Task::check()
       iNode->taskFinished(p->pid_, p->status_);
     delete p;
   }
-#ifdef WIN32
-  int pid;
-  int pidcount = 0;
-  if (process_count < 0)	
-  {
-#ifdef DEBUGMSG
-    qDebug("Task::check process_ is Empty\n");
-#endif
-  }
-  else
-  {for (;pidcount < maxProcess; pidcount++)	
-    { pid=process_[pidcount].pid_;
-      if (pid>0)
-			{	HANDLE pidx= OpenProcess(PROCESS_ALL_ACCESS, FALSE,pid);
-				LPDWORD lpExitCode =0;
-				if (pidx!=NULL)    //Process nicht mehr zu öffnen
-				{	GetExitCodeProcess(pidx, lpExitCode);
-					CloseHandle(pidx);
-					if (*lpExitCode == STILL_ACTIVE)
-						pid=0;
-				}
-			}
-			if (pid > 0) break; //terminierter Process gefunden
-		}
-	}
-
-#else //WIN32
   int pid = waitpid(-1, &status, WNOHANG);
-#endif
   switch (pid) {
   case -1:
 #ifdef DEBUG_MSG
@@ -274,11 +246,6 @@ void Task::check()
 #endif
     break;
   default:
-#ifdef WIN32
-	job_.remove(process_[pidcount].jid_);
-	INode* iNode=process_[pidcount].node_;
-	process_[pidcount].pid_=0;	
-#else
    qDebug("Task::check: ********* pid %d ", pid);
    ProcessEntry * p = process_[pid];
     if (!p) {
@@ -293,24 +260,6 @@ void Task::check()
     qDebug("Task::child(%d) child %d exited - %d left\n", p->jid_, p->pid_,
            process_.count());
 #endif
-#endif
-#ifdef WIN32
-	if (!maxJobs_ ) 
-	{	execNext();
-	}
-	int status =0;
-    if (iNode) iNode->taskFinished(process_[pidcount].pid_, status);
-	BOOLEAN weiter = FALSE;
-	for (pidcount = 0;(!weiter && (pidcount < maxProcess)); pidcount++)	
-	{	if 	(process_[pidcount].pid_ >0) //Noch aktive Processe
-			weiter = TRUE;
-	}
-	if (!weiter)
-	{	timer_->stop();
-    	timerRunning_=false;
-    }
-    break;
-#else
     if (!systemLoad())
       execNext();
     else
@@ -325,7 +274,6 @@ void Task::check()
     emit processFinished(p->guiPtr_);
     delete p;
     break;
-#endif
   }
 }
 

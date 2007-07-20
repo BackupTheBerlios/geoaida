@@ -2,6 +2,7 @@ find_package(Qt3 REQUIRED)
 
 add_definitions(${QT_DEFINITIONS})
 add_definitions(-DTMPDIR=\\\"${CMAKE_INSTALL_PREFIX}/tmp\\\")
+add_definitions(-DWITH_GUI_SUPPORT)
 add_definitions(-DDEBUG_MSG)
 
 include_directories(.

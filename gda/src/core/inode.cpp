@@ -207,20 +207,8 @@ void INode::taskFinished(int pid, int exit_state)
       INode::analysis()->ready();
       break;
     case 0:
-#ifdef WIN32
-        analysis()->setError(true);
-        status(BU_ERROR);
-        analysis()->ready();
-#else
       delete this;
-#endif
       break;
-#ifdef WIN32
-    case -1:
-        analysis()->setError(true);
-        status(BU_ERROR);
-        analysis()->ready();
-#endif
     }
   }
   catch(FatalError err) {
@@ -552,12 +540,6 @@ bool INode::childTopDown(bool first)
         incrementCount(); //einer mehr in der queue -> siehe decrementCount()
         childcount_--; ordercount_--; //aktuelle wird gleich bearbeitet
         inode = new INode(el);    //new INode
-#ifdef WIN32
-         if (inode == 0){
-          cout << "Out of Memory..12";
-          exit(1);
-          }
-#endif
         CHECK_PTR(inode);
         inode->status(HI);
         inode->execState(TD);
@@ -577,9 +559,6 @@ void INode::execTopDown()
 {
 #ifdef DEBUGMSG
   qDebug("#*  INode::execTopDown(%s)(%p): Start\n", (const char *) name(),this);
-#ifdef WIN32
-  QMessageBox::information(0,"INode","execTopDown",QMessageBox::Default);
-#endif
 #endif
   if (analysis()->error()) {
     status(TD_ABORTED);

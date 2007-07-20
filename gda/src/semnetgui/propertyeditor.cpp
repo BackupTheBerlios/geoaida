@@ -72,7 +72,7 @@ PropertyEditor::setNode(TreeItem * listViewItem, GNode * node)
   qDebug("PropertyEditor::setNode: Start\n");
 #endif
   if (toBeDeleted_) {
-    delete toBeDeleted_;
+      delete toBeDeleted_;
     toBeDeleted_ = 0;
   }
   if (update_) {
@@ -171,15 +171,18 @@ PropertyEditor::setNode(TreeItem * listViewItem, GNode * node)
 void
 PropertyEditor::itemSelected(QListViewItem * item)
 {
-  if (update_)
-    return;
+  if (update_){
+      return;
+  }
   if (selectedItem_) {
     selectedItem_->editDone();
-    listViewItem_->setText(0, node_->name());
-    listViewItem_->repaint();
+    if (node_ && listViewItem_){
+      listViewItem_->setText(0, node_->name());
+      listViewItem_->repaint();
+    }
   }
-  if (update_) {
-    selectedItem_ = (PropertyItem *) item;
+  if (update_) {     
+    selectedItem_ = (PropertyItem *) item;   
     setNode(listViewItem_, node_);
     update_ = false;
   }

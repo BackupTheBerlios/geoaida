@@ -17,12 +17,7 @@
 
 #include "gnode.h"
 #ifdef WITH_GUI_SUPPORT 
-#include "treeitem.h"
-#elif defined WIN32
-#include "..\semnetgui\treeitem.h"
-#endif
-#ifdef WIN32
-#include <stdlib.h> // für exit
+#include "../semnetgui/treeitem.h"
 #endif
 
 
