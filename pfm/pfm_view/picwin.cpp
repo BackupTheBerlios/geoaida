@@ -485,7 +485,25 @@ void PicWin::autoContrast()
   int tury=int(ury*f);
   if (tllx>turx) qSwap(tllx,turx);
   if (tury>tlly) qSwap(tlly,tury);
-  if (turx>=image.width() || tlly>=image.height()) return;
+
+  if (turx>=image.width())
+      turx=image.width()-1;
+  if (tlly>=image.height())
+      tlly=image.height()-1;
+  if (tllx < 0)
+      tllx=0;
+  if (tury < 0)
+      tury=0;
+
+  assert(tllx>=0);
+  assert(tlly>=0);
+  assert(turx>=0);
+  assert(tury>=0);
+  assert(turx<image.width());
+  assert(tllx<image.width());
+  assert(tury<image.height());
+  assert(tlly<image.height());
+
   float min=FLT_MAX;
   float max=FLT_MIN;
   int cols=image.width();
