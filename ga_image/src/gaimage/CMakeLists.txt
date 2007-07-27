@@ -45,8 +45,6 @@ set(sources gacanny.cpp
            gaimage.cpp
            garegion.cpp
            gavariance.cpp
-	   garegression.cpp
-
 	   gapainter.cpp
 )
 
