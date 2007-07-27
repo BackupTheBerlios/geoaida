@@ -20,8 +20,11 @@
 #endif
 
 #include <math.h>
-#include "rfftw.h"
 
+
+#include <fftw3.h>
+
+#include <string>
 #include <iostream>
 #include <stdlib.h>
 #include <getopt.h>
@@ -38,6 +41,7 @@ void usage()
   cout << "usage: gi_fft  [--filter mode]       select operation mode" << endl;
 	cout << "                  mode: fft          execute 2D FFT" << endl;
 	cout << "                        ifft         execute inverse 2D FFT" << endl;
+/*
 	cout << "                        gauss        apply gauss e^(-x*x+y*y)" << endl;
 	cout << "                        cutbox       cutoff at Nyquist/factor" << endl;
 	cout << "                        cutdisc" << endl; 
@@ -48,21 +52,30 @@ void usage()
 	cout << "               [--ybox fac]          y factor for cutbox" << endl;
 	cout << "               [--disc fac]          x&y factor for cutdisc" << endl;
 	cout << "               [--lowcut]            sets low instead of high frequencies to 0" << endl;
+*/
+  cout << "               [--real file]         Input Filename for real/magnitude data" << endl;
+  cout << "               [--imaginary file]    Input Filename for imaginary/phase data" << endl;
+  cout << "               [--realout file]      Output Filename for real/magnitude data (depending on -p)" << endl;
+  cout << "               [--imaginaryout file] Putput Filename for imaginary/phase data (depending on -p)" << endl;
+  cout << "               [-p]                  writes/reads frequency image in polar coordinates in standard modus" << endl;
   cout << "               [-v]                  verbose operation" << endl;
-  cout << "               infile outfile" << endl;
+  cout << "               infile outfile        not used when using --real, --imaginary, --realout AND --imaginaryout" << endl;
   exit(-1);
 }
 
 int main(int argc, char *argv[])
 {
-  if (argc < 3)
+  if (argc < 1)
     usage();
 
   FILE *fp;
   int option_index, option_char;
   int verbose = 0, lowcut = 0;
-	float wgauss = 1.0, xbox = 1.0, ybox = 1.0, disc = 1.0;
-
+  int polar=0;
+	int readfiles=0, writefiles=0;
+  float wgauss = 1.0, xbox = 1.0, ybox = 1.0, disc = 1.0;
+  // string realinfile ='', iminfile ='', realoutfile='', imoutfile='';
+  
   char filter[80];
   
   // evaluate the user defined options
@@ -73,107 +86,235 @@ int main(int argc, char *argv[])
 		{"xbox", required_argument, 0, 2},
 		{"ybox", required_argument, 0, 3},
 		{"disc", required_argument, 0, 4},
-		{"lowcut", no_argument, 0, 5},
+		{"real", required_argument, 0, 5},
+		{"imaginary", required_argument, 0, 6},
+		{"realout", required_argument, 0, 7},
+		{"imaginaryout", required_argument, 0, 8},
+		{"lowcut", no_argument, 0, 9},
     {"help", no_argument, 0, 'h'},
     {0, 0, 0, 0}
   };
 
-  while ((option_char = getopt_long(argc, argv, "vuh", long_options, &option_index)) != EOF)
+  while ((option_char = getopt_long(argc, argv, "pvuh", long_options, &option_index)) != EOF)
     switch (option_char)
     {
-      case 0: 
+    case 0: 
 				strcpy(filter, optarg);
 				break;
-			case 1: wgauss = atof(optarg); break;
-			case 2: xbox = atof(optarg); break;
-			case 3: ybox = atof(optarg); break;
-			case 4: disc = atof(optarg); break;
-			case 5: lowcut = 1; break;
-      case 'v': verbose = 1; break;
-      case 'h':
-      case 'u': usage(); break;
+    case 1: wgauss = atof(optarg); break;
+    case 2: xbox = atof(optarg); break;
+    case 3: ybox = atof(optarg); break;
+    case 4: disc = atof(optarg); break;
+/*
+    case 5: realinfile=atof(optarg); break;
+    case 6: iminfile=atof(optarg); break;
+    case 7: realoutfile=atof(optarg); break;
+    case 8: imoutfile=atof(optarg); break;
+*/
+    case 9: lowcut = 1; break;
+    case 'v': verbose = 1; break;
+    case 'p': polar=1;break;
+    case 'h':
+    case 'u': usage(); break;
     }
 
   if (optind + 2 > argc)
     usage();
-
+/*
+  if ((realinfile) ^ (iminfile)){//xor
+      usage();
+  }
+  if ((realoutfile) ^ (imoutfile)){//xor
+      usage();
+  }
+  
+  if (realinfile && iminfile){
+      readfiles = 1;
+  }
+  if (realoutfile && imoutfile){
+      writefiles = 1;
+  }
+*/
   Image in;
 
   // load the input image
-  if (verbose) cout << "Loading image " << argv[optind] << ", " << endl;
+  if (verbose) clog << "Loading image " << argv[optind] << ", " << endl;
+/*
+  if (readfiles){
+      Image real;
+      Image im;
+      if (!real.read(realinfile)){
+          cerr << "Error: Could not open file " << argv[optind] << endl;
+          cerr << "Abort." << endl;
+          return false;
+      }
+      if (!im.read(iminfile)){
+          cerr << "Error: Could not open file " << argv[optind] << endl;
+          cerr << "Abort." << endl;
+          return false;
+      }
+      if ((real.sizeX()!=im.sizeX())|| 
+          (real.sizeY()!=im.sizeY())){
+          cerr << "Error: Input files have to have equal size."<< endl;
+          cerr << "Abort." << endl;
+          return false;
+      }
 
-  in.read(argv[optind]);
+      in(typeid(float), real.sizeX(), real.sizeY());
+      for (int x=0; x<real.sizeX(); x++){
+          for (int y=0; y<real.sizeY(); y++){
+              in.setPixel(x, y, real.getFloat(x, y));
+              in.setPixel(x + real.sizeX(), y, im.getFloat(x, y));              
+          }          
+      }      
+  }
+  else{
+*/
+      if (!in.read(argv[optind])){
+          cerr << "Error: Could not open file " << argv[optind] << endl;
+          cerr << "Abort." << endl;
+          return false;
+      }
+  
 
   int M = in.sizeY();
-  int N = in.sizeX() - 2;
+  int N = in.sizeX()-2;
  	int N21 = N / 2 + 1;
  
   // filter image
-
-	if (!strcmp(filter, "fft"))
-	{
-	  if (verbose) cout << "fft2D, " << endl;
-     	
-    rfftwnd_plan fftp = rfftw2d_create_plan(in.sizeY(), in.sizeX(), FFTW_REAL_TO_COMPLEX, FFTW_IN_PLACE);
-
-	  fftw_real *data = (fftw_real *) calloc((in.sizeX() + 2) * in.sizeY(), sizeof(fftw_real));
-
-	  for (int y = 0; y < in.sizeY(); y ++)
-  	  for (int x = 0; x < in.sizeX(); x ++)
-	      *(data + y * (in.sizeX() + 2) + x) = in.getFloat(x, y, 0) * pow(-1.0, double(y));
-
-    rfftwnd_one_real_to_complex(fftp, data, NULL);
-
-	  Image out(typeid(float), in.sizeX() + 2, in.sizeY());
-
-    for (int y = 0; y < in.sizeY(); y ++)
-	    for (int x = 0; x < in.sizeX() + 2; x ++)
-  	    out.set(x, y, *(data + y * (in.sizeX() + 2) + x) / in.sizeX() / in.sizeY() , 0);
-
-  	if (verbose) cout << "writing output image " << argv[optind + 1] << ", " << endl;
   
-	  assert(fp = fopen(argv[optind + 1], "w"));
-	  out.write(fp);
+	if (!strcmp(filter, "fft"))
+      {
+      if (verbose) clog << "fft2D, " << endl;
+      const int sizeX=in.sizeX();
+      const int sizeY=in.sizeY();
+       
+      fftw_complex *data = (fftw_complex *)fftw_malloc(sizeX * sizeY * sizeof(fftw_complex));
+      fftw_complex *dataout = (fftw_complex *)fftw_malloc(sizeX* sizeY * sizeof(fftw_complex));
+
+      Image out(typeid(float), sizeX*2, sizeY); //Image contains two images, left:Re right:Im
+
+      for (int y = 0; y < sizeY; y ++)
+          for (int x = 0; x < sizeX; x ++){
+              double * s = (double *) &data[y*sizeX + x];
+              *(s++) = in.getFloat(x, y, 0);
+              *(s) = 0;
+          }
+                  
+      fftw_plan plan = fftw_plan_dft_2d(sizeY, 
+                                        sizeX, 
+                                        data,
+                                        dataout,
+                                        FFTW_FORWARD,
+                                        FFTW_ESTIMATE);
+      
+      assert(plan);
+      fftw_execute(plan);
+
+      
+
+      for (int y = 0; y < sizeY; y ++)
+          for (int x = 0; x < sizeX; x ++){
+              double * val= (double *)&dataout[y * sizeX + x];
+              const double realVal = val[0]/sizeX/sizeY;// FFTW calculates non-normalized fft 
+              const double imVal = val[1]/sizeX/sizeY;  
+              if (polar){
+                  double r=sqrt(pow(realVal,2)+pow(imVal, 2));
+                  out.set(x, y, r, 0);
+                  double phi=0;
+                  const double PI = acos(0)*2;                 
+                  phi=atan2(realVal,imVal);
+                      
+                  out.set(x + sizeX, y,
+                          phi,0);                  
+              }
+              else{
+
+                  out.set(x, y, realVal, 0);
+                  out.set(x + sizeX, y, imVal, 0);
+              }
+          }
+              
+//      fftw_free(data);
+//      fftw_free(dataout);
+      fftw_destroy_plan(plan);
+
+      if (verbose) clog << "writing output image " << argv[optind + 1] << ", " << endl;
+  
+      assert(fp = fopen(argv[optind + 1], "w"));
+      out.write(fp);
 	}
+
+
   else if (!strcmp(filter, "ifft"))
 	{
-	  if (verbose) cout << "inv. fft2D, " << endl;
- 
-    rfftwnd_plan fftp = rfftw2d_create_plan(M, N, FFTW_COMPLEX_TO_REAL, FFTW_IN_PLACE);
+	  if (verbose) clog << "inv. fft2D, " << endl;
+    
+    fftw_complex *data = (fftw_complex *)fftw_malloc(in.sizeX() * in.sizeY()* sizeof(fftw_complex));
+    fftw_complex *dataout = (fftw_complex *)fftw_malloc(in.sizeX()* in.sizeY()* sizeof(fftw_complex));
 
-	  fftw_complex *data = (fftw_complex *) calloc(M * N21, sizeof(fftw_complex));
-	  fftw_real *result = (fftw_real *)data;
+    assert(in.sizeX()%2==0);
+    const int sizeX=in.sizeX()/2;
+    const int sizeY=in.sizeY();
 
-		for (int y = 0; y < M; y ++)
-    	for (int x = 0; x < N21; x ++)
-      {
-        (*(data + y * N21 + x)).re = in.getFloat( 2 * x, y, 0);
-        (*(data + y * N21 + x)).im = in.getFloat( 2 * x + 1, y, 0);
-      }
+    Image out(typeid(float), sizeX, sizeY);
 
-    rfftwnd_one_complex_to_real(fftp, data, NULL);
+    for (int y = 0; y < sizeY; y ++)
+        for (int x = 0; x < sizeX; x ++){
+            double * s = (double *) &data[y*sizeX + x];
+            if (polar){
+                const double PI = acos(0)*2;
+                const double r=in.getFloat(x, y,0);
+                const double phi=in.getFloat(x+sizeX, y,0);
+                *(s++) = r*cos(phi);
+                *(s) = r*sin(phi);
 
-	  Image out(typeid(float), N, M);
+            }
+            else{
+                *(s++) = in.getFloat(x, y, 0);
+                *(s) = in.getFloat(x+sizeX, y, 0);
+            }
+        }
+    
+    fftw_plan plan = fftw_plan_dft_2d(sizeY, 
+                                      sizeX, 
+                                      data,
+                                      dataout,
+                                      FFTW_BACKWARD,
+                                      FFTW_ESTIMATE);
+    
 
-  	for (int y = 0; y < M; y ++)
-    	for (int x = 0; x < N; x ++)
-      	out.set(x, y, *(result + y * (N + 2) + x) * pow(-1-0, float(y)) , 0);
 
-  	if (verbose) cout << "writing output image " << argv[optind + 1] << ", " << endl;
-  
-	  assert(fp = fopen(argv[optind + 1], "w"));
-	  out.write(fp);
+    fftw_execute(plan);
+
+    
+    for (int y = 0; y < sizeY; y ++)
+        for (int x = 0; x < sizeX; x ++){
+            double * val= (double *)&dataout[y * sizeX + x];
+            const double realVal = val[0]/sizeX/sizeY;// FFTW calculates non-normalized fft 
+            const double imVal = val[1]/sizeX/sizeY;  
+            out.set(x, y, val[0], 0);
+        }
+//    fftw_free(data);
+//    fftw_free(dataout);
+    fftw_destroy_plan(plan);
+    
+    if (verbose) clog << "writing output image " << argv[optind + 1] << ", " << endl;
+    
+    assert(fp = fopen(argv[optind + 1], "w"));
+    out.write(fp);
 	}
+/*
   else if (!strcmp(filter, "gauss"))
 	{
-	  if (verbose) cout << "Gauss filter, " << endl;
+	  if (verbose) clog << "Gauss filter, " << endl;
 
-	  /* Gaussian filter
-  	
-    	 The Fourier image consists of N21 complex values. Zero
-	     frequencies are clustered around y= M/2 and x = 0 (origin).
-  	   Apply the exp-filter to real and imaginary part independently
-	  */
+	  // Gaussian filter
+  	//
+    //	 The Fourier image consists of N21 complex values. Zero
+	  //   frequencies are clustered around y= M/2 and x = 0 (origin).
+  	//   Apply the exp-filter to real and imaginary part independently
+	  //
 
   	float scale = 0.0;
 
@@ -186,14 +327,14 @@ int main(int argc, char *argv[])
         in.set(2 * x + 1, y, in.getFloat(2 * x + 1, y, 0) * scale, 0);
       }
 
-   	if (verbose) cout << "writing output image " << argv[optind + 1] << ", " << endl;
+   	if (verbose) clog << "writing output image " << argv[optind + 1] << ", " << endl;
   
 	  assert(fp = fopen(argv[optind + 1], "w"));
 	  in.write(fp);
 	}
   else if (!strcmp(filter, "cutbox"))
 	{
-	  if (verbose) cout << "Box filter, " << endl;
+	  if (verbose) clog << "Box filter, " << endl;
 
     for (int y = 0 ; y < M; y ++)
  	  	for (int x = 0; x < N21; x ++)
@@ -214,14 +355,14 @@ int main(int argc, char *argv[])
 					}
       }
 
-   	if (verbose) cout << "writing output image " << argv[optind + 1] << ", " << endl;
+   	if (verbose) clog << "writing output image " << argv[optind + 1] << ", " << endl;
   
 	  assert(fp = fopen(argv[optind + 1], "w"));
 	  in.write(fp);
 	}
 	else if (!strcmp(filter, "cutdisc"))
 	{
-	  if (verbose) cout << "Disc filter, " << endl;
+	  if (verbose) clog << "Disc filter, " << endl;
 
     for (int y = 0 ; y < M; y ++)
  	  	for (int x = 0; x < N21; x ++)
@@ -242,20 +383,20 @@ int main(int argc, char *argv[])
 					}
       }
 
-   	if (verbose) cout << "writing output image " << argv[optind + 1] << ", " << endl;
+   	if (verbose) clog << "writing output image " << argv[optind + 1] << ", " << endl;
   
 	  assert(fp = fopen(argv[optind + 1], "w"));
 	  in.write(fp);
 	}
   else if (!strcmp(filter, "ln"))
 	{
-	  if (verbose) cout << "Natural logarithm, " << endl;
+	  if (verbose) clog << "Natural logarithm, " << endl;
 
-	  /*
-    	 The Fourier image consists of N21 complex values. Zero
-	     frequencies are clustered around y= M/2 and x = 0 (origin).
-  	   Apply the log-filter with  
-	  */
+	  //
+    //	 The Fourier image consists of N21 complex values. Zero
+	  //   frequencies are clustered around y= M/2 and x = 0 (origin).
+  	//   Apply the log-filter with  
+	  //
 
   	float re, im;
 
@@ -269,14 +410,14 @@ int main(int argc, char *argv[])
 				in.set(2 * x + 1, y, atan2(im, re), 0);
       }
 
-   	if (verbose) cout << "writing output image " << argv[optind + 1] << ", " << endl;
+   	if (verbose) clog << "writing output image " << argv[optind + 1] << ", " << endl;
   
 	  assert(fp = fopen(argv[optind + 1], "w"));
 	  in.write(fp);
 	}
   else if (!strcmp(filter, "exp"))
 	{
-	  if (verbose) cout << "Exponential function, " << endl;
+	  if (verbose) clog << "Exponential function, " << endl;
 
   	float re, im;
 
@@ -290,14 +431,15 @@ int main(int argc, char *argv[])
 				in.set(2 * x + 1, y, exp(re)*sin(im), 0);
       }
 
-   	if (verbose) cout << "writing output image " << argv[optind + 1] << ", " << endl;
+   	if (verbose) clog << "writing output image " << argv[optind + 1] << ", " << endl;
   
 	  assert(fp = fopen(argv[optind + 1], "w"));
 	  in.write(fp);
 	}
 
+*/
 
-  if (verbose) cout << "ready." << endl;
+  if (verbose) clog << "ready." << endl;
 
   return EXIT_SUCCESS;
 }
