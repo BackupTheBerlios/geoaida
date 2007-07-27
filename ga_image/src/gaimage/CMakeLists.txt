@@ -1,3 +1,4 @@
+
 include_directories(.
         ${CMAKE_SOURCE_DIR}/pfm/libpfm)
 
@@ -27,8 +28,6 @@ set(headers gaall.h
            gaimaget.hpp
            gavariance.h
            gavectorizet.h
-	   garegression.h
-	   
 	   gapainter.h
 )
 
