@@ -45,8 +45,10 @@ namespace Ga {
       They are using the open source library fftw3.
       
     */
-    Image fft(const Image& img, bool polar);
-    Image ifft(const Image& img, bool polar);
+
+    int fft_real2compl(const Image& real, const bool polar, Image& realout, Image& imagout);
+    int fft_compl2compl(const Image& real, const Image& imag, const bool polar, Image& realout, Image& imagout);
+    int ifft_compl2compl(const Image& real, const Image& imag, const bool polar, Image& realout, Image& imagout);
 }
 
 #endif

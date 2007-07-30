@@ -53,13 +53,15 @@ void usage()
 	cout << "               [--disc fac]          x&y factor for cutdisc" << endl;
 	cout << "               [--lowcut]            sets low instead of high frequencies to 0" << endl;
 */
+/*  
   cout << "               [--real file]         Input Filename for real/magnitude data" << endl;
   cout << "               [--imaginary file]    Input Filename for imaginary/phase data" << endl;
   cout << "               [--realout file]      Output Filename for real/magnitude data (depending on -p)" << endl;
   cout << "               [--imaginaryout file] Putput Filename for imaginary/phase data (depending on -p)" << endl;
+*/
   cout << "               [-p]                  writes/reads frequency image in polar coordinates in standard modus" << endl;
   cout << "               [-v]                  verbose operation" << endl;
-  cout << "               infile outfile        not used when using --real, --imaginary, --realout AND --imaginaryout" << endl;
+  cout << "               file1 file2 file3     when fft: file1=input file2=real/magnitude file3=imag/phase, when ifft file1=real/magnitude file2=imag/phase file2=output" << endl;
   exit(-1);
 }
 
@@ -135,7 +137,7 @@ int main(int argc, char *argv[])
       writefiles = 1;
   }
 */
-  Image in;
+
 
   // load the input image
   if (verbose) clog << "Loading image " << argv[optind] << ", " << endl;
@@ -170,32 +172,42 @@ int main(int argc, char *argv[])
   }
   else{
 */
-      if (!in.read(argv[optind])){
-          cerr << "Error: Could not open file " << argv[optind] << endl;
-          cerr << "Abort." << endl;
-          return false;
-      }
-      // This fft algorithm is designed to work on grayscale images, so make sure we have one.
-      if (in.noChannels() != 1) {
-          in = in.convert2Luminance();
-      }  
 
+/*
   int M = in.sizeY();
   int N = in.sizeX()-2;
  	int N21 = N / 2 + 1;
- 
+*/
   // filter image
   
 	if (!strcmp(filter, "fft"))
       {
+          Image in;
+          if (!in.read(argv[optind])){
+              cerr << "Error: Could not open file " << argv[optind] << endl;
+              cerr << "Abort." << endl;
+              return false;
+          }
+
+          // This fft algorithm is designed to work on grayscale images, so make sure we have one.
+          if (in.noChannels() != 1) {
+              in = in.convert2Luminance();
+          }  
+
       if (verbose) clog << "fft2D, " << endl;
-      
-      Image out=fft(in, polar);
+      Image realOut(typeid(float), in.sizeX(), in.sizeY());
+      Image imagOut(typeid(float), in.sizeX(), in.sizeY());
+      fft_real2compl(in, polar, realOut, imagOut);
 
       if (verbose) clog << "writing output image " << argv[optind + 1] << ", " << endl;
   
       assert(fp = fopen(argv[optind + 1], "w"));
-      out.write(fp);
+      realOut.write(fp);
+      fclose(fp);
+
+      assert(fp = fopen(argv[optind + 2], "w"));
+      imagOut.write(fp);
+      fclose(fp);
 	}
 
 
@@ -203,10 +215,34 @@ int main(int argc, char *argv[])
 	{
 	  if (verbose) clog << "inv. fft2D, " << endl;
     
-    Image out=ifft(in, polar);
+    Image realin;
+    Image imagin;
+    if (!realin.read(argv[optind])){
+        cerr << "Error: Could not open file " << argv[optind] << endl;
+        cerr << "Abort." << endl;
+        return false;
+    }
+    if (!imagin.read(argv[optind+1])){
+        cerr << "Error: Could not open file " << argv[optind] << endl;
+        cerr << "Abort." << endl;
+        return false;
+    }
+
+          // This fft algorithm is designed to work on grayscale images, so make sure we have one.
+    if (realin.noChannels() != 1) {
+        realin = realin.convert2Luminance();
+    }  
+    if (imagin.noChannels() != 1) {
+        imagin = imagin.convert2Luminance();
+    }  
+
+
+    Image realout(typeid(int), realin.sizeX(), realin.sizeY());
+    Image imagout(typeid(int), realin.sizeX(), realin.sizeY());
+    ifft_compl2compl(realin, imagin, polar, realout, imagout);
     
     assert(fp = fopen(argv[optind + 1], "w"));
-    out.write(fp);
+    realout.write(fp);
 	}
 /*
   else if (!strcmp(filter, "gauss"))
