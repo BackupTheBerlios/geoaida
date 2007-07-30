@@ -20,8 +20,6 @@
 #endif
 
 #include <math.h>
-
-
 #include <fftw3.h>
 
 #include <string>
@@ -31,6 +29,8 @@
 
 #include <gaimage.h>
 #include <garegion.h>
+#include <gafft.h>
+
 #include <unistd.h>
 
 using namespace std;
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
   FILE *fp;
   int option_index, option_char;
   int verbose = 0, lowcut = 0;
-  int polar=0;
+  bool polar=false;
 	int readfiles=0, writefiles=0;
   float wgauss = 1.0, xbox = 1.0, ybox = 1.0, disc = 1.0;
   // string realinfile ='', iminfile ='', realoutfile='', imoutfile='';
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 */
     case 9: lowcut = 1; break;
     case 'v': verbose = 1; break;
-    case 'p': polar=1;break;
+    case 'p': polar=true;break;
     case 'h':
     case 'u': usage(); break;
     }
@@ -175,7 +175,10 @@ int main(int argc, char *argv[])
           cerr << "Abort." << endl;
           return false;
       }
-  
+      // This fft algorithm is designed to work on grayscale images, so make sure we have one.
+      if (in.noChannels() != 1) {
+          in = in.convert2Luminance();
+      }  
 
   int M = in.sizeY();
   int N = in.sizeX()-2;
@@ -186,58 +189,8 @@ int main(int argc, char *argv[])
 	if (!strcmp(filter, "fft"))
       {
       if (verbose) clog << "fft2D, " << endl;
-      const int sizeX=in.sizeX();
-      const int sizeY=in.sizeY();
-       
-      fftw_complex *data = (fftw_complex *)fftw_malloc(sizeX * sizeY * sizeof(fftw_complex));
-      fftw_complex *dataout = (fftw_complex *)fftw_malloc(sizeX* sizeY * sizeof(fftw_complex));
-
-      Image out(typeid(float), sizeX*2, sizeY); //Image contains two images, left:Re right:Im
-
-      for (int y = 0; y < sizeY; y ++)
-          for (int x = 0; x < sizeX; x ++){
-              double * s = (double *) &data[y*sizeX + x];
-              *(s++) = in.getFloat(x, y, 0);
-              *(s) = 0;
-          }
-                  
-      fftw_plan plan = fftw_plan_dft_2d(sizeY, 
-                                        sizeX, 
-                                        data,
-                                        dataout,
-                                        FFTW_FORWARD,
-                                        FFTW_ESTIMATE);
       
-      assert(plan);
-      fftw_execute(plan);
-
-      
-
-      for (int y = 0; y < sizeY; y ++)
-          for (int x = 0; x < sizeX; x ++){
-              double * val= (double *)&dataout[y * sizeX + x];
-              const double realVal = val[0]/sizeX/sizeY;// FFTW calculates non-normalized fft 
-              const double imVal = val[1]/sizeX/sizeY;  
-              if (polar){
-                  double r=sqrt(pow(realVal,2)+pow(imVal, 2));
-                  out.set(x, y, r, 0);
-                  double phi=0;
-                  const double PI = acos(0)*2;                 
-                  phi=atan2(realVal,imVal);
-                      
-                  out.set(x + sizeX, y,
-                          phi,0);                  
-              }
-              else{
-
-                  out.set(x, y, realVal, 0);
-                  out.set(x + sizeX, y, imVal, 0);
-              }
-          }
-              
-//      fftw_free(data);
-//      fftw_free(dataout);
-      fftw_destroy_plan(plan);
+      Image out=fft(in, polar);
 
       if (verbose) clog << "writing output image " << argv[optind + 1] << ", " << endl;
   
@@ -250,56 +203,7 @@ int main(int argc, char *argv[])
 	{
 	  if (verbose) clog << "inv. fft2D, " << endl;
     
-    fftw_complex *data = (fftw_complex *)fftw_malloc(in.sizeX() * in.sizeY()* sizeof(fftw_complex));
-    fftw_complex *dataout = (fftw_complex *)fftw_malloc(in.sizeX()* in.sizeY()* sizeof(fftw_complex));
-
-    assert(in.sizeX()%2==0);
-    const int sizeX=in.sizeX()/2;
-    const int sizeY=in.sizeY();
-
-    Image out(typeid(float), sizeX, sizeY);
-
-    for (int y = 0; y < sizeY; y ++)
-        for (int x = 0; x < sizeX; x ++){
-            double * s = (double *) &data[y*sizeX + x];
-            if (polar){
-                const double PI = acos(0)*2;
-                const double r=in.getFloat(x, y,0);
-                const double phi=in.getFloat(x+sizeX, y,0);
-                *(s++) = r*cos(phi);
-                *(s) = r*sin(phi);
-
-            }
-            else{
-                *(s++) = in.getFloat(x, y, 0);
-                *(s) = in.getFloat(x+sizeX, y, 0);
-            }
-        }
-    
-    fftw_plan plan = fftw_plan_dft_2d(sizeY, 
-                                      sizeX, 
-                                      data,
-                                      dataout,
-                                      FFTW_BACKWARD,
-                                      FFTW_ESTIMATE);
-    
-
-
-    fftw_execute(plan);
-
-    
-    for (int y = 0; y < sizeY; y ++)
-        for (int x = 0; x < sizeX; x ++){
-            double * val= (double *)&dataout[y * sizeX + x];
-            const double realVal = val[0]/sizeX/sizeY;// FFTW calculates non-normalized fft 
-            const double imVal = val[1]/sizeX/sizeY;  
-            out.set(x, y, val[0], 0);
-        }
-//    fftw_free(data);
-//    fftw_free(dataout);
-    fftw_destroy_plan(plan);
-    
-    if (verbose) clog << "writing output image " << argv[optind + 1] << ", " << endl;
+    Image out=ifft(in, polar);
     
     assert(fp = fopen(argv[optind + 1], "w"));
     out.write(fp);

@@ -10,6 +10,7 @@ set(headers gaall.h
            gadowindowt.h
            gadraw.h
            gadrawt.h
+					 gafft.h
            gagaussian.h
            gagradient.h
            gagradientt.h
@@ -18,6 +19,7 @@ set(headers gaall.h
            gaimagebase.h
            gaimaget.h
            gakirsch.h
+					 gapainter.h
            gapoint.h
            garegion.h
            garegionsplittert.h
@@ -28,7 +30,6 @@ set(headers gaall.h
            gaimaget.hpp
            gavariance.h
            gavectorizet.h
-	   gapainter.h
 )
 
 set(templateheaders
@@ -39,13 +40,15 @@ set(templateheaders
 
 set(sources gacanny.cpp
            gadraw.cpp 
+					 gafft.cpp
            gagaussian.cpp
            gagradient.cpp
            gahough.cpp
            gaimage.cpp
+					 gapainter.cpp			
            garegion.cpp
-           gavariance.cpp
-	   gapainter.cpp
+           gavariance.cpp					 
+
 )
 
 add_library(gaimage STATIC ${sources})
@@ -53,4 +56,4 @@ install(TARGETS gaimage DESTINATION lib)
 install(FILES ${headers} DESTINATION include)
 
 add_executable(painttest paint.cpp)
-target_link_libraries(painttest gaimage pfm pnm)
+target_link_libraries(painttest gaimage pfm pnm fftw3)
