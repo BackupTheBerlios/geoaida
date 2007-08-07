@@ -25,6 +25,7 @@
  */
 
 #include <stdarg.h>
+#include <math.h>
 namespace Ga {
 
   /** default constructor, defines a picture for later assignment */
@@ -520,6 +521,7 @@ inline void ImageT<PixTyp>::binaryPixelOp(const ImageT<PixTyp>& lval, const Imag
   // init result matrix
   (ImageBase&)*this=(ImageBase&)lval;
   resize(lval.sizeX_, lval.sizeY_, lval.noChannels_);
+
   for (int c=0; c<noChannels_; c++) {
     // can not connect matrices of distinct dimension
 	 assert(lval.pChannel_[c]!=0);
@@ -621,7 +623,7 @@ inline void ImageT<PixTyp>::mult(const ImageBase& lvalue, const ImageBase& rvalu
   const ImageT<PixTyp>& lval=(const ImageT<PixTyp>&) lvalue;
   const ImageT<PixTyp>& rval=(const ImageT<PixTyp>&) rvalue;
   (ImageBase&)*this=(ImageBase&)lval;
-  assert(lval.sizeX_==rval.sizeY_);
+   assert(lval.sizeX_==rval.sizeY_);
   resize( lval.sizeX_, rval.sizeY_, lval.noChannels_ );
   for (int c=0; c<noChannels_; c++) {
     assert(lval.pChannel_[c]!=0);
@@ -1357,7 +1359,15 @@ template <class PixTyp>
 inline void ImageT<PixTyp>::resize(int rx, int ry, int noChannels) {
   if( sizeY_ != ry || sizeX_ != rx || noChannels_ != noChannels ) {
     deinitialize();
+    int sxold=sizeX_;
+    int syold=sizeY_;
     alloc( rx, ry, noChannels );
+
+    for (int x=sxold; x < rx; x++)
+        for (int y=syold; y < ry; y++)
+            for (int c=0; c < noChannels; c++)
+                setInt(x, y, 0, c);
+
   }
 }
 
@@ -1635,6 +1645,8 @@ inline void ImageT<PixTyp>::getChannel(ImageBase& resultImg, int channel)
          }
      }
    }
+
+      
 
 /** get the hue of an 3 band color image */
 template <class PixTyp>

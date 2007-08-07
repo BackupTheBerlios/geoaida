@@ -1,3 +1,4 @@
+add_subdirectory(gi_arithmetic)
 add_subdirectory(gi_denoise)
 add_subdirectory(gi_grad)
 add_subdirectory(gi_merge)
@@ -16,3 +17,4 @@ add_subdirectory(gi_ndviimage)
 add_subdirectory(gi_gaussian)
 # add_subdirectory(gi_blackborder)
 add_subdirectory(gi_fft)
+

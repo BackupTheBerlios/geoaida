@@ -29,7 +29,7 @@
 
 #include <string>
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 
 #include <gaimage.h>
 #include <garegion.h>
@@ -48,7 +48,9 @@ const int verbose=0;
 int Ga::fft_real2compl(const Image& real,
                        const bool polar, 
                        Image& realout, Image& imagout) {  
-    const Image imag(real.typeId(), real.sizeX(), real.sizeY());
+    Image imag(typeid(float), real.sizeX(), real.sizeY());
+    imag.clear();
+
     return fft_compl2compl(real, imag, polar, realout, imagout);
 }
 
@@ -66,7 +68,7 @@ int Ga::fft_compl2compl(const Image& real, const Image& imag,
 
     if ((inreal.sizeX()!=inimag.sizeX()) ||     
         (inreal.sizeY()!=inimag.sizeY()))
-        return -1;
+        return EXIT_FAILURE;
     
     
     if (inreal.noChannels() != 1) {
@@ -79,6 +81,8 @@ int Ga::fft_compl2compl(const Image& real, const Image& imag,
     const int sizeX=inreal.sizeX();
     const int sizeY=inreal.sizeY();
     Image outreal(typeid(float), sizeX, sizeY); //Image contains two images   
+    outreal.clear();
+
    
     fftw_complex *data = (fftw_complex *)fftw_malloc(sizeX * sizeY * sizeof(fftw_complex));
     fftw_complex *dataout = (fftw_complex *)fftw_malloc(sizeX* sizeY * sizeof(fftw_complex));
@@ -99,7 +103,7 @@ int Ga::fft_compl2compl(const Image& real, const Image& imag,
                                         FFTW_ESTIMATE);
       
     if (!plan)
-        return 1;
+        return(EXIT_FAILURE);
 
     fftw_execute(plan);
 
@@ -131,7 +135,7 @@ int Ga::fft_compl2compl(const Image& real, const Image& imag,
     fftw_free(dataout);
     fftw_destroy_plan(plan);
         
-    return 0;
+    return(EXIT_SUCCESS);
 }
 
 /* 
@@ -154,11 +158,13 @@ int Ga::ifft_compl2compl(const Image& real, const Image& imag,
     const int sizeY=inreal.sizeY();
     Image outreal(typeid(float), sizeX, sizeY);
     Image outimag(typeid(float), sizeX, sizeY);
+    outreal.clear();
+    outimag.clear();
 
     
     if ((inreal.sizeX()!=inimag.sizeX()) ||     
         (inreal.sizeY()!=inimag.sizeY()))
-        return -1;
+        return(EXIT_FAILURE);
     
 
     
@@ -202,7 +208,7 @@ int Ga::ifft_compl2compl(const Image& real, const Image& imag,
     
 
     if (!plan)
-        return 1;
+        return(EXIT_FAILURE);
 
     fftw_execute(plan);
 
@@ -219,6 +225,6 @@ int Ga::ifft_compl2compl(const Image& real, const Image& imag,
     fftw_free(dataout);
     fftw_destroy_plan(plan);
     
-    return 0;
+    return(EXIT_SUCCESS);
 }    
 

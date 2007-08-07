@@ -25,7 +25,9 @@
  */
 
 // if defined asserts are deactivated
+#if 0
 #define NDEBUG
+#endif
 
 #include <assert.h>
 #include "gaimage.h"
@@ -1206,6 +1208,7 @@ Image Image::hsv()
 	pImage()->convert2ndvi(*result.pImage());
 	return result;
      }  
+
    
 /** resample the current image to size (x, y) */
 Image Image::resample(int nx, int ny) const

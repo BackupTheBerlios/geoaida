@@ -24,7 +24,7 @@
 
 #include <string>
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <getopt.h>
 
 #include <gaimage.h>
@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
           if (!in.read(argv[optind])){
               cerr << "Error: Could not open file " << argv[optind] << endl;
               cerr << "Abort." << endl;
-              return false;
+              return EXIT_FAILURE;
           }
 
           // This fft algorithm is designed to work on grayscale images, so make sure we have one.
@@ -220,12 +220,12 @@ int main(int argc, char *argv[])
     if (!realin.read(argv[optind])){
         cerr << "Error: Could not open file " << argv[optind] << endl;
         cerr << "Abort." << endl;
-        return false;
+        return EXIT_FAILURE;
     }
     if (!imagin.read(argv[optind+1])){
         cerr << "Error: Could not open file " << argv[optind] << endl;
         cerr << "Abort." << endl;
-        return false;
+        return EXIT_FAILURE;
     }
 
           // This fft algorithm is designed to work on grayscale images, so make sure we have one.
@@ -241,7 +241,7 @@ int main(int argc, char *argv[])
     Image imagout(typeid(int), realin.sizeX(), realin.sizeY());
     ifft_compl2compl(realin, imagin, polar, realout, imagout);
     
-    assert(fp = fopen(argv[optind + 1], "w"));
+    assert(fp = fopen(argv[optind + 2], "w"));
     realout.write(fp);
 	}
 /*
