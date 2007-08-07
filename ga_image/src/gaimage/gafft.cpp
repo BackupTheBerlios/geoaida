@@ -1,9 +1,9 @@
 /* -*- mode:c++ -*- */
 //*******************************************************************
-//  Filename:   gacorrelation.cpp
+//  Filename:   gafft.cpp
 //  Ort:    TNT, Uni. - Hannover, Germany
 //
-//  Info:	Correlation of two input images
+//  Info:	Fast Discrete Fourier Transform 
 //
 // Copyright (C) 2007 Christian Becker
 //
