@@ -152,7 +152,9 @@ void Painter::fillPolygon(const PointArray& points, double val)
 			int x1 = static_cast<int>((*ci).x); ++ci;
 			int x2 = static_cast<int>((*ci).x);
 
-			img_.fillRow(i, x1, x2, val, 0, true);
+			// x2-1 to make sure to neighbouring plys do not overlap
+			// This is important for drawing polys with holes
+			img_.fillRow(i, x1, x2-1, val, 0, true);
 
 			if (ci != active_edges.end()) ++ci;
 		}
