@@ -83,19 +83,20 @@ int main(int argc, char *argv[])
 
   // calculate the histogram of the image ...
   if (verbose) cout << "histogram, " << endl;
-
-  Image histo = in.calcHistogram(in.matrixMin(), in.matrixMax(), 1000);
+  
+  const int histoSteps=1000;
+  Image histo = in.calcHistogram(in.matrixMin(), in.matrixMax(), histoSteps);
 
   // ... and the pixel value at x percent of the total distribution
   int sumpixel = 0, tindex = 0;
-  while ((tindex < 1000) && (sumpixel < (int)(in.sizeImage() * threshold)))
+  while ((tindex < histoSteps) && (sumpixel < (int)(in.sizeImage() * threshold)))
     {
       sumpixel += histo.getInt(tindex, 0);
       tindex ++;
     }
 
   // memorize this value ...
-  threshold = tindex * (in.matrixMax() - in.matrixMin()) / 1000.0;
+  threshold = tindex * (in.matrixMax() - in.matrixMin()) / histoSteps * 1.0;
 
   if (verbose) cout << "histogram split: " << tindex << " " << threshold << ", " << endl;
 
