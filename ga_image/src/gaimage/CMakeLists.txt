@@ -6,11 +6,12 @@ set(headers gaall.h
            gaarray2dt.h
            gacanny.h
            gaconvert.h
+           gaconvolution.h
            gadefines.h
            gadowindowt.h
            gadraw.h
            gadrawt.h
-					 gafft.h
+	   gafft.h
            gagaussian.h
            gagradient.h
            gagradientt.h
@@ -19,7 +20,7 @@ set(headers gaall.h
            gaimagebase.h
            gaimaget.h
            gakirsch.h
-					 gapainter.h
+	   gapainter.h
            gapoint.h
            garegion.h
            garegionsplittert.h
@@ -39,6 +40,7 @@ set(templateheaders
 )
 
 set(sources gacanny.cpp
+           gaconvolution.cpp
            gadraw.cpp 
 					 gafft.cpp
            gagaussian.cpp

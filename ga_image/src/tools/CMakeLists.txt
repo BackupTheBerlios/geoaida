@@ -1,4 +1,5 @@
 add_subdirectory(gi_arithmetic)
+add_subdirectory(gi_convolution)
 add_subdirectory(gi_denoise)
 add_subdirectory(gi_grad)
 add_subdirectory(gi_merge)
