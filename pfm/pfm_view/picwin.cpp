@@ -550,11 +550,15 @@ void PicWin::histogram()
   int maxcount=1;
   int maxcl=0;
   int value[256];
+  int cl=0;
   for (int i=0; i<256; i++) value[i]=0;
   for (int y=tury; y<=tlly; y++) {
     for (int x=tllx; x<=turx; x++) {
       float v=pfm_data[y*cols+x];
-      int cl=int((v-min)/range*256);
+      if (range)
+          cl=int((v-min)/range*256);
+      else
+          cl=0;
       if (cl==256) cl=255;
       value[cl]++;
       if (value[cl]>maxcount) {

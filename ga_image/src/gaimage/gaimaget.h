@@ -399,7 +399,7 @@ namespace Ga {
      void convert2ndvi(ImageBase &pic);
      
     /** returns the same image, cropped to nx x ny, or padded with 0 to nx x ny */  
-      void resizeCanvas(ImageBase& result, int nx, int ny);
+//      void resizeCanvas(ImageBase& result, int nx, int ny);
 
   /** resample the current image to size (x, y) */
   void resample(ImageBase& result, int nx, int ny);

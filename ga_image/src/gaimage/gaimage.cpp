@@ -16,18 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 
-/*
- * $Source: /data/cvs/ga_image/ga_image/gaimage/gaimage.cpp,v $
- * $Revision: 1.33 $
- * $Date: 2006/07/12 09:01:30 $
- * $Author: mueller $
- * $Locker:  $
- */
 
 // if defined asserts are deactivated
-#if 0
 #define NDEBUG
-#endif
+
 
 #include <assert.h>
 #include "gaimage.h"
