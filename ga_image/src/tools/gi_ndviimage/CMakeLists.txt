@@ -9,7 +9,7 @@ set(data gi_ndviimage.mod)
 
 add_executable(gi_ndviimage ${sources})
 
-target_link_libraries(gi_ndviimage gaimage gsl gslcblas pfm pnm)
+target_link_libraries(gi_ndviimage gaimage pfm pnm)
 
 install(TARGETS gi_ndviimage DESTINATION bin)
 install(FILES ${data} DESTINATION share/data/modules)
