@@ -100,12 +100,12 @@ int Ga::fft_compl2compl(const Image& real, const Image& imag,
                                         data,
                                         dataout,
                                         FFTW_FORWARD,
-                                        FFTW_ESTIMATE);
+                                        FFTW_ESTIMATE); 
       
     if (!plan)
         return(EXIT_FAILURE);
 
-    fftw_execute(plan);
+    fftw_execute(plan); 
 
       
 

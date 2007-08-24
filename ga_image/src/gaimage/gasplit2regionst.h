@@ -11,6 +11,10 @@ int __isnanf(float);
 #endif
 
 #include <vector>
+#include <string>
+#include <iostream>
+#include <sstream>
+
 using namespace std;
 
 /*
@@ -37,11 +41,12 @@ using namespace std;
      valid(const DataPicT,const LabelPicT,x,y)
  */
 
+
 template <class RegDescT,
   class DataPicT,
   class LabelPicT,
   class TestClass>
-vector<RegDescT > *splitIntoRegions(const DataPicT &hpic,
+vector<RegDescT > *splitIntoRegionsT(const DataPicT &hpic,
                                     LabelPicT &lpic,
                                     TestClass tclass,
                                     int minSize, int maxSize);
@@ -52,16 +57,27 @@ void findNeighbours(LabelPic & lpic,
                     RegDescT &region,
                     int num_regions);
 
+
+
+
+
 #include "gasplit2regionst.hpp"
 
-
+#define USE_EXAMPLE_CLASSES
 #ifdef USE_EXAMPLE_CLASSES
 
+/*
+  Class to provide the basic region description for one region.
+  This class should be derived to get specified region descriptions
+  e.g. when having operator depending attributes which should  be 
+  included to the region description.
+
+*/
 template <class DataPicT, class LabelPicT>
-class RegDesc
+class RegDescT
 {
   public:
-    RegDesc()
+    RegDescT()
       {
         llx_=INT_MAX;
         ury_=INT_MAX;
@@ -71,6 +87,7 @@ class RegDesc
         sum_=0;
         numValidValues_=0;
         id_=0;
+        class_ = "undefined";
       };
     int setPixel(const DataPicT& dpic, LabelPicT& lpic, int x, int y, int val)
     {
@@ -98,7 +115,32 @@ class RegDesc
     int lly() {return lly_;}
     int urx() {return urx_;}
     int ury() {return ury_;}
-  protected:
+    
+    string attributes2string()
+        {            
+            ostringstream out;
+            out << "class=\"" << class_ << "\" ";
+            out << "id=\"" << id_ << "\" ";
+            out << "file=\"" << file_ << "\" ";
+            out << "llx=\"" << llx_ << "\" ";
+            out << "lly=\"" << lly_ << "\" ";
+            out << "urx=\"" << urx_ << "\" ";
+            out << "ury=\"" << ury_ << "\" ";
+            if (!name_.empty())
+                out << "name=\"" << name_ << "\" ";
+            return out.str();
+        }
+    
+    string toString(){
+        ostringstream out = "<region ";
+        out << attributes2string();
+        out << "/>" << endl;
+        return out;
+    }
+
+    string class_, file_, name_;    
+
+protected:
     int llx_,lly_,urx_,ury_;
     int id_;
     int size_, numValidValues_;
@@ -106,11 +148,12 @@ class RegDesc
 
 };
 
+
 template <class DataPicT, class LabelPicT>
-class Difference
+class DifferenceT
 {
  public:
-  Difference(float level) { level_=level;}
+  DifferenceT(float level) { level_=level;}
   bool operator()(const DataPicT &hpic,
 	     const LabelPicT &lpic,
 	     int x_center, int y_center,

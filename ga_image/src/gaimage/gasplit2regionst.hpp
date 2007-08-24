@@ -26,7 +26,7 @@ protected:
 
 #include <math.h>
 #include <limits.h>
-#include <stdio.h>
+#include <cstdio>
 
 #define sqr(x) ((x)*(x))
 
@@ -511,12 +511,31 @@ template < class RegDescT,
   return regionList_;
 }
 
+/*
+template < class RegDescT,
+  class DataPicT,
+  class LabelPicT,
+  class TestClass >
+int splitIntoRegions(const DataPicT &hpic,
+                     char* labelfilename,
+                     char* regionfilename,
+                     TestClass tclass,
+                     int minSize, int maxSize){
+
+    SIRprivate < RegDescT, DataPicT, LabelPicT, TestClass > pic(hpic,
+                                                                lpic,
+                                                                tclass);
+    vector <RegDescT>* regiond_ = pic.classify(minSize, maxSize);
+    
+    
+}
+*/
 
 template < class RegDescT,
   class DataPicT,
   class LabelPicT,
   class TestClass >
-  vector <RegDescT>* splitIntoRegions(const DataPicT & hpic, LabelPicT & lpic,
+  vector <RegDescT>* splitIntoRegionsT(const DataPicT & hpic, LabelPicT & lpic,
                      TestClass tclass, int minSize, int maxSize)
 {
   SIRprivate < RegDescT, DataPicT, LabelPicT, TestClass > pic(hpic,

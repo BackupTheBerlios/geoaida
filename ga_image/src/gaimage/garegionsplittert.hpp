@@ -1,9 +1,48 @@
+/* -*- mode:c++ -*- */
+//*******************************************************************
+//  Filename:   garegionsplittert.hpp
+//  Ort:        TNT, Leibniz Uni. - Hannover, Germany
+//
+//  Info:	Region Finding and Exporting Interface (Template Version)
+//
+// Copyright (C) 2002 Martin Pahl
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+//
+//           --------      
+//          /     ^ /      
+//         /  ^^   /--     
+//        / ^ ° ^^/  /
+//        --------  /--
+//         /  °  * /+ /
+//         --------  /
+//          /   ~~  /
+//          --------
+//
+//*******************************************************************
+
 #include "garegionsplittert.h"
 
 #define SMALL_REGIONS_TO_1 1
 
-template <class RegDescT, class TestClassT>
-RegionSplitterT<RegDescT,TestClassT>::RegionSplitterT(vector<RegDescT>& regList, Ga::Image& labelImg, TestClassT& testClass, int minSize, int maxSize, int llx, int lly, int urx, int ury)
+template <class RegDescT, class RegionFinderClassT>
+RegionSplitterT<RegDescT,RegionFinderClassT>::RegionSplitterT(vector<RegDescT>& regList, 
+                                                              Ga::Image& labelImg, 
+                                                              RegionFinderClassT& testClass, 
+                                                              int minSize, int maxSize, 
+                                                              int llx, int lly, int urx, int ury)
   : regionList_(regList), lpic_(labelImg), tclass_(testClass), minSize_(minSize), maxSize_(maxSize), llx_(llx), lly_(lly), urx_(urx), ury_(ury)
 {
   if (maxSize==-1) maxSize_=lpic_.sizeImage();
@@ -20,24 +59,24 @@ RegionSplitterT<RegDescT,TestClassT>::RegionSplitterT(vector<RegDescT>& regList,
 #endif
 }
 
-template <class RegDescT, class TestClassT>
-int RegionSplitterT<RegDescT,TestClassT>::startId(int id) {
+template <class RegDescT, class RegionFinderClassT>
+int RegionSplitterT<RegDescT,RegionFinderClassT>::startId(int id) {
   if (id!=-1) startId_=id;
   return startId_;
 }
 
-template <class RegDescT, class TestClassT>
-void RegionSplitterT<RegDescT,TestClassT>::setBgId(int id) {
+template <class RegDescT, class RegionFinderClassT>
+void RegionSplitterT<RegDescT,RegionFinderClassT>::setBgId(int id) {
   bgId_=id;
 }
 
-template <class RegDescT, class TestClassT>
-void RegionSplitterT<RegDescT,TestClassT>::setSmallRegionsId(int id) {
+template <class RegDescT, class RegionFinderClassT>
+void RegionSplitterT<RegDescT,RegionFinderClassT>::setSmallRegionsId(int id) {
   smallRegionsId_=id;
 }
 
-template <class RegDescT, class TestClassT>
-void RegionSplitterT<RegDescT,TestClassT>::setBBox(int llx, int lly, int urx, int ury)
+template <class RegDescT, class RegionFinderClassT>
+void RegionSplitterT<RegDescT,RegionFinderClassT>::setBBox(int llx, int lly, int urx, int ury)
 {
   if (urx>llx) {
     llx_=llx;
@@ -64,15 +103,16 @@ void RegionSplitterT<RegDescT,TestClassT>::setBBox(int llx, int lly, int urx, in
 
 #define sqr(x) ((x)*(x))
 
-template <class RegDescT, class TestClassT>
-inline int RegionSplitterT<RegDescT,TestClassT>::setPixel(int x, int y, int val)
+template <class RegDescT, class RegionFinderClassT>
+inline int RegionSplitterT<RegDescT,RegionFinderClassT>::setPixel(int x, int y, int val)
 {
-  return region_.setPixel(lpic_,x,y,val);
+    return region_.setPixel(lpic_,x,y,val);
+    
 }
 
 // #define DBG_MSG
-template <class RegDescT, class TestClassT>
-void RegionSplitterT<RegDescT,TestClassT>::goWest(int x, int y, int value, int def_val)
+template <class RegDescT, class RegionFinderClassT>
+void RegionSplitterT<RegDescT,RegionFinderClassT>::goWest(int x, int y, int value, int def_val)
 {
   rl_++;
 #ifdef DBG_MSG
@@ -122,8 +162,8 @@ void RegionSplitterT<RegDescT,TestClassT>::goWest(int x, int y, int value, int d
 #endif
 }
 
-template <class RegDescT, class TestClassT>
-void RegionSplitterT<RegDescT,TestClassT>::goNorth(int x, int y, int value, int def_val)
+template <class RegDescT, class RegionFinderClassT>
+void RegionSplitterT<RegDescT,RegionFinderClassT>::goNorth(int x, int y, int value, int def_val)
 {
   rl_++;
 #ifdef DBG_MSG
@@ -169,8 +209,8 @@ void RegionSplitterT<RegDescT,TestClassT>::goNorth(int x, int y, int value, int 
   rl_--;
 }
 
-template <class RegDescT, class TestClassT>
-void RegionSplitterT<RegDescT,TestClassT>::goEast(int x, int y, int value, int def_val)
+template <class RegDescT, class RegionFinderClassT>
+void RegionSplitterT<RegDescT,RegionFinderClassT>::goEast(int x, int y, int value, int def_val)
 {
   rl_++;
 #ifdef DBG_MSG
@@ -213,8 +253,8 @@ void RegionSplitterT<RegDescT,TestClassT>::goEast(int x, int y, int value, int d
   rl_--;
 }
 
-template <class RegDescT, class TestClassT>
-void RegionSplitterT<RegDescT,TestClassT>::goSouth(int x, int y, int value, int def_val)
+template <class RegDescT, class RegionFinderClassT>
+void RegionSplitterT<RegDescT,RegionFinderClassT>::goSouth(int x, int y, int value, int def_val)
 {
   rl_++;
 #ifdef DBG_MSG
@@ -257,8 +297,8 @@ void RegionSplitterT<RegDescT,TestClassT>::goSouth(int x, int y, int value, int 
   rl_--;
 }
 
-template <class RegDescT, class TestClassT>
-int RegionSplitterT<RegDescT,TestClassT>::split()
+template <class RegDescT, class RegionFinderClassT>
+int RegionSplitterT<RegDescT,RegionFinderClassT>::split()
 {
   // Regionen segmentieren
   int x, y, value;
@@ -391,16 +431,18 @@ int RegionSplitterT<RegDescT,TestClassT>::split()
   return startId_;
 }
 
-
-template <class RegDescT,class TestClassT>
-vector<RegDescT>* splitIntoRegions(Ga::Image& lpic,
-                                   TestClassT tclass, int minSize, int maxSize)
+/*
+template <class RegDescT,class RegionFinderClassT>
+vector<RegDescT>* splitIntoRegionsT(Ga::Image& lpic,
+                                    RegionFinderClassT tclass, 
+                                    int minSize, int maxSize)
 {
   vector<RegDescT>* regionList=new vector<RegDescT>();
-  RegionSplitterT<RegDescT, TestClassT> splitter(*regionList,lpic,tclass,minSize,maxSize);
+  RegionSplitterT<RegDescT, RegionFinderClassT> splitter(*regionList,lpic,tclass,minSize,maxSize);
   splitter.split();
   return regionList;
 }
+*/
 
 #if 0
 template <class RegDescT, class LabelPic>

@@ -28,6 +28,7 @@ set(headers gaall.h
            gashareddata.h
            gashareddatat.h
            gasplit2regionst.h
+           garegionsplitter.h
            gaimaget.hpp
            gavariance.h
            gavectorizet.h
