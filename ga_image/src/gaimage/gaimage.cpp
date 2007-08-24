@@ -20,7 +20,8 @@
 // if defined asserts are deactivated
 #define NDEBUG
 
-
+#include <cstdlib>
+#include <iostream>
 #include <assert.h>
 #include "gaimage.h"
 #include "gaimaget.h"
@@ -235,20 +236,29 @@ const char* Image::comment()
 
 void Image::write(const char* filename, int channel, const char* comment) {
   FILE *fp=fopen(filename,"w");
+
+  if (!fp){
+      std::cerr << "can't write to image file \"" << filename << "\"" << std::endl;
+      exit(EXIT_FAILURE);
+  }
+
   assert(fp);	
   write(fp, channel, comment);
   fclose(fp);
+  
+
+  
 }
 
 void Image::write(const char* filename, const char* comment) {
-  write(filename,0,comment);
+  return write(filename,0,comment);
 }
 
 void Image::write(FILE *fp, const char* comment) {
-  write(fp,0,comment);
+  return write(fp,0,comment);
 }
 
-  void Image::write(FILE *fp, int channel, const char* comment) {
+void Image::write(FILE *fp, int channel, const char* comment) {
   assert(pImage_);
   assert(fp);
   pImage()->write(fp, channel, comment);
