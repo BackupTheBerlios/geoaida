@@ -164,8 +164,9 @@ class RegDescT
     
     string toString(){
         ostringstream out("<region ");
+        out << "<region ";
         out << attributes2string();
-        out << "/>" << endl;
+        out << "/>";
         return out.str();
     }
 

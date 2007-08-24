@@ -316,7 +316,6 @@ int RegionSplitterT<RegDescT,RegionFinderClassT>::split()
 #ifdef SMALL_REGIONS_TO_1
   if (regionList_.size()==1) {
     region_=RegDescT();
-    region_.class_=regionClass_;
     region_.setId(1);
     regionList_.push_back(region_);
   }

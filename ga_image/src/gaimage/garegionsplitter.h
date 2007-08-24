@@ -42,6 +42,7 @@
 #include <sstream>
 #include <fstream>
 #include <iterator>
+#include <limits>
 
 #include <gaimage.h>
 #include <garegionsplittert.h>
@@ -78,7 +79,9 @@ namespace Ga{
           lpig: meaningless in this implementation
           x_center, y_center: coordinate1 in data image
           x_neighbour, y_neighbour: coordinate2 in data image
-          
+
+          Should return true iff the pixels at the two coordinates be in the same region.
+
           returns true when mask at coordinate1 equals mask at coordinate2
           AND coordinate1 in data differs from coordinate2 in data no more than level
           else false 
@@ -100,7 +103,7 @@ namespace Ga{
   Can be used to mask out pixels which should not 
   be in any region (eg background pixels).
   
-  In this implementation it always returns true.
+  In this implementation it returns true iff the value at pixel x, y is not equal 0.
 */
         bool valid(const Image &lpic,
                    int x, int y)
@@ -118,7 +121,9 @@ namespace Ga{
     vector<RegDesc> splitIntoRegions(Image &labelpic,  
                                      RegionFinder& regfind,
                                      string regionclass,
-                                     int minsize, int maxsize){
+                                     int minsize=0, int maxsize=INT_MAX){
+        if (maxsize <0 )
+            maxsize=INT_MAX;
         
         vector<RegDesc> rList;
         RegionSplitterT<RegDesc, RegionFinder> rSplitter(rList,labelpic,regfind,minsize,maxsize);
@@ -131,16 +136,17 @@ namespace Ga{
     vector<RegDesc> splitIntoRegions(Image &labelpic,  
                                      RegionFinder& regfind,
                                      int minsize, int maxsize){
-        splitIntoRegions(labelpic, regfind, "undefined", minsize, maxsize);
+        return splitIntoRegions(labelpic, regfind, "undefined", minsize, maxsize);
     }
     
     int regionsToFile(string filename, vector<RegDesc>& reglist){
 
         ostringstream out;
-        vector<RegDesc>::iterator regIter= reglist.begin();        
+//        vector<RegDesc>::iterator regIter= reglist.begin();        
 
-        for (int i=0; i<reglist.size(); i++){
-            RegDesc reg = regIter[i];        
+        for (int i=0; i < reglist.size(); i++){
+            RegDesc reg = reglist[i];        
+            clog << "Test" << reg.toString() << endl;
             out << reg.toString() << endl;
         }
         
@@ -150,8 +156,7 @@ namespace Ga{
             cerr << "can't open region output file \"" << filename << "\"" << endl;
             return EXIT_FAILURE;
         }
-        outputFile << out;
-        outputFile.close();
+        outputFile << out.str();
         
         return EXIT_SUCCESS;
     }

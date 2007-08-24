@@ -337,7 +337,7 @@ if (!haus){
 														}
 
  int max_size= sizeX*sizeY;
- vector<RegDesc>* regList=splitIntoRegions<RegDesc>(labelimg, out_im, SameRegion(), min_size, max_size);
+ vector<RegDesc>* regList=splitIntoRegionsT<RegDesc>(labelimg, out_im, SameRegion(), min_size, max_size);
 
  out_im.write(QString(label_name)+"_1");
 
@@ -358,7 +358,7 @@ if (!haus){
 				labelimg2.set(x, y,1);
 														}
 
- vector<RegDesc>* regList2=splitIntoRegions<RegDesc>(labelimg2, out_im2, SameRegion(), min_size, max_size);
+ vector<RegDesc>* regList2=splitIntoRegionsT<RegDesc>(labelimg2, out_im2, SameRegion(), min_size, max_size);
 
  out_im2.write(QString(label_name)+"_2");
 
@@ -379,7 +379,7 @@ if (!haus){
 				labelimg3.set(x, y,1);
 														}
 
- vector<RegDesc>* regList3=splitIntoRegions<RegDesc>(labelimg3, out_im3, SameRegion(), min_size, max_size);
+ vector<RegDesc>* regList3=splitIntoRegionsT<RegDesc>(labelimg3, out_im3, SameRegion(), min_size, max_size);
 
  out_im3.write(QString(label_name)+"_3");
 
@@ -402,7 +402,7 @@ else{
 														}
 
  int max_size= sizeX*sizeY;
- vector<RegDesc>* regList=splitIntoRegions<RegDesc>(labelimg, out_im, SameRegion(), min_size, max_size);
+ vector<RegDesc>* regList=splitIntoRegionsT<RegDesc>(labelimg, out_im, SameRegion(), min_size, max_size);
 
  out_im.write(label_name);
 

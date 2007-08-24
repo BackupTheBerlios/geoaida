@@ -17,7 +17,9 @@
 
 #include <getopt.h>
 #include <gaimage.h>
+#include <garegionsplitter.h>
 #include <garegionsplittert.h>
+
 
 using namespace Ga;
 void Usage(const char *prg)
@@ -25,7 +27,7 @@ void Usage(const char *prg)
   cout << "Usage:" << endl;
   cout << "  " << prg << " [-r <regionfile>] <src-image> <labelimage> <min-v-level> <h-level> <s-level> <v-level> <minsize> <maxsize>" << endl;
 }
-
+/*
 class RegDesc
 {
   public:
@@ -64,6 +66,8 @@ class RegDesc
     int id_;
     int size_;
 };
+*/
+ 
 
 class HRegion
 {
@@ -247,8 +251,10 @@ int main(int argc, char **argv)
   {
     vector<RegDesc> hList;
     HRegion hRegion(maskImage,hue,hLevel);
+
     RegionSplitterT<RegDesc,HRegion> hSplitter(hList,labelImage,hRegion,minsize,maxsize);
     hSplitter.split();
+
     maskImage=labelImage;
     labelImage=0;
   }

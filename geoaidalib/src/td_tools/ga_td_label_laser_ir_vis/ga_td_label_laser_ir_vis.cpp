@@ -411,7 +411,7 @@ out_im.write("out2");
  printf("labelimg\n");
  Image labelimg(typeid(int),sizeX,sizeY);
  if(max_size==0) max_size=sizeX*sizeY;
- vector<RegDesc>* regList=splitIntoRegions<RegDesc>(out_im,labelimg,SameRegion(),min_size,max_size);
+ vector<RegDesc>* regList=splitIntoRegionsT<RegDesc>(out_im,labelimg,SameRegion(),min_size,max_size);
  labelimg.write(label_name);
  FILE *fp=fopen(xml,"w");
  if (!fp) {
