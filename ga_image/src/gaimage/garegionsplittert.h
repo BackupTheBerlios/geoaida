@@ -62,34 +62,36 @@ public:
                   int maxSize=0, 
                   int llx=-1, int lly=-1, int urx=-1, int ury=-1);
 
-  /** split the data into regions and returns the next free id */
-  int split();
-  int startId(int id=-1);
-  void setBBox(int llx, int lly, int urx, int ury);
-  void setBgId(int id);
-  void setSmallRegionsId(int id);
+    /** split the data into regions and returns the next free id */
+    int split();
+    int startId(int id=-1);
+    void setBBox(int llx, int lly, int urx, int ury);
+    void setBgId(int id);
+    void setSmallRegionsId(int id);
+    void setRegionClass(string classname);
 protected:
-  void goWest(int x, int y, int value, int def_val);
-  void goNorth(int x, int y, int value, int def_val);
-  void goEast(int x, int y, int value, int def_val);
-  void goSouth(int x, int y, int value, int def_val);
-  vector<RegDescT>* classify(int minSize, int maxSize);
-  int setPixel(int x, int y, int val);
+    void goWest(int x, int y, int value, int def_val);
+    void goNorth(int x, int y, int value, int def_val);
+    void goEast(int x, int y, int value, int def_val);
+    void goSouth(int x, int y, int value, int def_val);
+    vector<RegDescT>* classify(int minSize, int maxSize);
+    int setPixel(int x, int y, int val);
 protected:
-  vector<RegDescT>& regionList_;
-  Ga::Image& lpic_;
-  RegionFinderClassT& tclass_;
-  int minSize_;
-  int maxSize_;
-  int llx_,lly_,urx_,ury_;
-  int startId_;
-  /* Pixel in the labelImg with this value are not bound to a region */
-  int bgId_;
-  /* Set regions smalle then minsize to this value */
-  int smallRegionsId_;
+    vector<RegDescT>& regionList_;
+    Ga::Image& lpic_;
+    RegionFinderClassT& tclass_;
+    int minSize_;
+    int maxSize_;
+    int llx_,lly_,urx_,ury_;
+    int startId_;
+    string regionClass_;
+    /* Pixel in the labelImg with this value are not bound to a region */
+    int bgId_;
+    /* Set regions smalle then minsize to this value */
+    int smallRegionsId_;
 private:
-  int rl_;
-  RegDescT region_;
+    int rl_;
+    RegDescT region_;
 };
 
 

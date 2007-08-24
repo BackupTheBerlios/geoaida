@@ -117,14 +117,21 @@ namespace Ga{
     
     vector<RegDesc> splitIntoRegions(Image &labelpic,  
                                      RegionFinder& regfind,
+                                     string regionclass,
                                      int minsize, int maxsize){
         
         vector<RegDesc> rList;
         RegionSplitterT<RegDesc, RegionFinder> rSplitter(rList,labelpic,regfind,minsize,maxsize);
+        rSplitter.setRegionClass(regionclass);
         rSplitter.split();
         
         return rList;
                         
+    }
+    vector<RegDesc> splitIntoRegions(Image &labelpic,  
+                                     RegionFinder& regfind,
+                                     int minsize, int maxsize){
+        splitIntoRegions(labelpic, regfind, "undefined", minsize, maxsize);
     }
     
     int regionsToFile(string filename, vector<RegDesc>& reglist){

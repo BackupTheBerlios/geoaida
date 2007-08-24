@@ -71,6 +71,12 @@ void RegionSplitterT<RegDescT,RegionFinderClassT>::setBgId(int id) {
 }
 
 template <class RegDescT, class RegionFinderClassT>
+void RegionSplitterT<RegDescT,RegionFinderClassT>::setRegionClass(string regionClass){
+    regionClass_ = regionClass;
+}
+
+
+template <class RegDescT, class RegionFinderClassT>
 void RegionSplitterT<RegDescT,RegionFinderClassT>::setSmallRegionsId(int id) {
   smallRegionsId_=id;
 }
@@ -310,6 +316,7 @@ int RegionSplitterT<RegDescT,RegionFinderClassT>::split()
 #ifdef SMALL_REGIONS_TO_1
   if (regionList_.size()==1) {
     region_=RegDescT();
+    region_.class_=regionClass_;
     region_.setId(1);
     regionList_.push_back(region_);
   }
@@ -318,7 +325,7 @@ int RegionSplitterT<RegDescT,RegionFinderClassT>::split()
   if (int(regionList_.size())<startId_) {
     int id=regionList_.size();
     regionList_.reserve(startId_);
-    RegDescT reg;
+    RegDescT reg;   
     while (int(regionList_.size())!=startId_) {
       reg.setId(id++);
       regionList_.push_back(reg);
@@ -331,6 +338,7 @@ int RegionSplitterT<RegDescT,RegionFinderClassT>::split()
       if (lpic_.getInt(x, y) == bgId_ && tclass_.valid(lpic_,x,y)) {
         value++;
         region_=RegDescT();
+        region_.class_=regionClass_;
         region_.setId(value);
         setPixel(x, y, value);
         goEast(x, y, value, bgId_);
