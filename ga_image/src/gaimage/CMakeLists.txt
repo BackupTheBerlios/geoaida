@@ -50,8 +50,8 @@ set(sources gacanny.cpp
            gaimage.cpp
            gapainter.cpp
            garegion.cpp
+           garegionsplitter.cpp
            gavariance.cpp
-
 )
 
 add_library(gaimage STATIC ${sources})
