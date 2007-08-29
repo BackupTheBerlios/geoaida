@@ -11,7 +11,7 @@ set(headers gaall.h
            gadowindowt.h
            gadraw.h
            gadrawt.h
-	   gafft.h
+           gafft.h
            gagaussian.h
            gagradient.h
            gagradientt.h
@@ -19,8 +19,9 @@ set(headers gaall.h
            gaimage.h
            gaimagebase.h
            gaimaget.h
+           gaimaget.hpp
            gakirsch.h
-	   gapainter.h
+           gapainter.h
            gapoint.h
            garegion.h
            garegionsplittert.h
@@ -29,28 +30,27 @@ set(headers gaall.h
            gashareddatat.h
            gasplit2regionst.h
            garegionsplitter.h
-           gaimaget.hpp
+           garegionsplittert.hpp
            gavariance.h
            gavectorizet.h
 )
 
 set(templateheaders
-           garegionsplittert.hpp
            gasplit2regionst.hpp
            gavectorizet.hpp
 )
 
 set(sources gacanny.cpp
            gaconvolution.cpp
-           gadraw.cpp 
-					 gafft.cpp
+           gadraw.cpp
+           gafft.cpp
            gagaussian.cpp
            gagradient.cpp
            gahough.cpp
            gaimage.cpp
-					 gapainter.cpp			
+           gapainter.cpp
            garegion.cpp
-           gavariance.cpp					 
+           gavariance.cpp
 
 )
 
