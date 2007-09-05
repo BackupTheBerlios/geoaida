@@ -103,12 +103,13 @@ namespace Ga{
   Can be used to mask out pixels which should not 
   be in any region (eg background pixels).
   
-  In this implementation it returns true iff the value at pixel x, y is not equal 0.
+  In this implementation it returns true iff the value in data image is greater than 1
 */
         bool valid(const Image &lpic,
                    int x, int y)
             {
-                return (data_.getFloat(x, y) != 0);
+//                return true;
+                return (data_.getFloat(x, y) > 1);
             }
         
     protected:
@@ -124,7 +125,7 @@ namespace Ga{
                                      int minsize=0, int maxsize=INT_MAX);
     vector<RegDesc> splitIntoRegions(Image &labelpic,  
                                      RegionFinder& regfind,
-                                     int minsize, int maxsize);
+                                     int minsize=0, int maxsize=INT_MAX);
     
     int regionsToFile(string filename, vector<RegDesc>& reglist);
 }

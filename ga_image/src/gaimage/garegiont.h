@@ -330,7 +330,7 @@ template<class PixTyp> void calcBoundingBoxes(ImageT<int>& result, ImageT<PixTyp
 /**
 blow or shrink binary image 'in'. The number of blow steps are given
 by 'blow'. The sign of 'blow' decides between blow or shrink.
-blow > 0 => blow label 1
+blow > 0 => blow labels != 0
 blow < 0 => blow label 0
 */
 template<class PixTyp> void blowshrink(ImageT<PixTyp> &in, int blow)
@@ -344,13 +344,23 @@ template<class PixTyp> void blowshrink(ImageT<PixTyp> &in, int blow)
     {
       for (int y = 0; y < in.sizeY(); y ++)
 				for (int x = 0; x < in.sizeX(); x ++)
-      	  if (!(in.get(x, y) ^ mode))
-      	    {
-      	      tmp.set(x - 1, y, mode, 0, true);
-      	      tmp.set(x + 1, y, mode, 0, true);
-      	      tmp.set(x, y + 1, mode, 0, true);
-      	      tmp.set(x, y - 1, mode, 0, true);
-      	    }
+            if (((in.get(x, y) == 0) && (mode == 0))
+                || ((in.get(x, y) != 0) && (mode == 1)))
+                {
+                    PixTyp v = in.get(x, y);
+                    tmp.set(x - 1, y, v, 0, true);
+                    tmp.set(x - 1, y - 1, v, 0, true);
+                    tmp.set(x - 1, y + 1, v, 0, true);
+
+                    tmp.set(x, y - 1, v, 0, true);
+                    tmp.set(x, y + 1, v, 0, true);
+
+                    tmp.set(x + 1, y, v, 0, true);
+                    tmp.set(x + 1, y - 1, v, 0, true);
+                    tmp.set(x + 1, y + 1, v, 0, true);
+
+
+                }
       in = tmp;
     }
 }

@@ -54,11 +54,11 @@ int regionsToFile(string filename, vector<RegDesc>& reglist)
 	ostringstream out;
 	// vector<RegDesc>::iterator regIter= reglist.begin();
 
-	for (int i=0; i < reglist.size(); i++)
+	for (int i=2; i < reglist.size(); i++) // Skip the first 2 elements because they contain id 0 and 1 (= background regions), 
+                                         // I'm not sure why they are included in the list at all...
 	{
 		RegDesc reg = reglist[i];
-		clog << "Test" << reg.toString() << endl;
-		out << reg.toString() << endl;
+    out << reg.toString() << endl;
 	}
 
 	ofstream outputFile(filename.c_str(), ios::out);

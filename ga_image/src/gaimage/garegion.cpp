@@ -107,5 +107,16 @@ void denoise(Image &in)
   ForEachTypeDo(in.typeId(),denoise,(*(in.pImage())));
 }
 
+
+template <class PixTyp> void blowshrink(ImageBase &in, int blow){
+    ImageT<PixTyp>& image=(ImageT<PixTyp>&) in;
+    blowshrink(image, blow);
+}
+
+void blowshrink(Image &in, int blow){
+    ForEachTypeDo(in.typeId(),blowshrink,(*(in.pImage()), blow));
+}
+
+
 } // namespace Ga
 

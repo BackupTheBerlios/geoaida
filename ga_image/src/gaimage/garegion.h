@@ -56,6 +56,15 @@ void despeckle(Image &in, int size, int label_val = 1, int label_set = 0);
 /** de-noise the current image. Remove noise from an image without removing the edges */
 void denoise(Image &in);
 
+
+/**
+blow or shrink binary image 'in'. The number of blow steps are given
+by 'blow'. The sign of 'blow' decides between blow or shrink.
+blow > 0 => blow labels != 0
+blow < 0 => blow label 0
+*/
+    void blowshrink(Image &in, int blow);
+
 } // namespace Ga
 
 
