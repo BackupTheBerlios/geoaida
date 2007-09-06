@@ -59,4 +59,5 @@ install(TARGETS gaimage DESTINATION lib)
 install(FILES ${headers} DESTINATION include)
 
 add_executable(painttest paint.cpp)
-target_link_libraries(painttest gaimage pfm pnm fftw3)
+target_link_libraries(painttest gaimage pfm pnm fftw3
+)

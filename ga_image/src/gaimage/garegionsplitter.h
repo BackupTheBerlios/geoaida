@@ -122,6 +122,7 @@ namespace Ga{
     vector<RegDesc> splitIntoRegions(Image &labelpic,  
                                      RegionFinder& regfind,
                                      string regionclass,
+                                     string labelfilename="",
                                      int minsize=0, int maxsize=INT_MAX);
     vector<RegDesc> splitIntoRegions(Image &labelpic,  
                                      RegionFinder& regfind,

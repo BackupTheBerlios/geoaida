@@ -69,6 +69,7 @@ public:
     void setBgId(int id);
     void setSmallRegionsId(int id);
     void setRegionClass(string classname);
+    void setLabelFile(string labelfilename);
 protected:
     void goWest(int x, int y, int value, int def_val);
     void goNorth(int x, int y, int value, int def_val);
@@ -85,6 +86,8 @@ protected:
     int llx_,lly_,urx_,ury_;
     int startId_;
     string regionClass_;
+    string labelfilename_;
+
     /* Pixel in the labelImg with this value are not bound to a region */
     int bgId_;
     /* Set regions smalle then minsize to this value */
@@ -117,6 +120,7 @@ class RegDescT
         numValidValues_=0;
         id_=0;
         class_ = "undefined";
+        file_="";
       };
     int setPixel(LabelPicT& lpic, int x, int y, int val)
     {

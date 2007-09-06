@@ -19,6 +19,7 @@ namespace Ga
 vector<RegDesc> splitIntoRegions(Image &labelpic,  
                                      RegionFinder& regfind,
                                      string regionclass,
+                                     string labelfile,
                                      int minsize, int maxsize)
 {
 	if (maxsize <0 )
@@ -27,6 +28,8 @@ vector<RegDesc> splitIntoRegions(Image &labelpic,
 	vector<RegDesc> rList;
 	RegionSplitterT<RegDesc, RegionFinder> rSplitter(rList,labelpic,regfind,minsize,maxsize);
 	rSplitter.setRegionClass(regionclass);
+	rSplitter.setLabelFile(labelfile);
+
 	rSplitter.split();
 
 	return rList;
@@ -37,7 +40,7 @@ vector<RegDesc> splitIntoRegions(Image &labelpic,
                                      RegionFinder& regfind,
                                      int minsize, int maxsize)
 {
-	return splitIntoRegions(labelpic, regfind, "undefined", minsize, maxsize);
+    return splitIntoRegions(labelpic, regfind, "undefined", "", minsize, maxsize);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -60,6 +63,7 @@ int regionsToFile(string filename, vector<RegDesc>& reglist)
 		RegDesc reg = reglist[i];
     out << reg.toString() << endl;
 	}
+
 
 	ofstream outputFile(filename.c_str(), ios::out);
 

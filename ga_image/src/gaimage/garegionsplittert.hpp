@@ -75,6 +75,10 @@ void RegionSplitterT<RegDescT,RegionFinderClassT>::setRegionClass(string regionC
     regionClass_ = regionClass;
 }
 
+template <class RegDescT, class RegionFinderClassT>
+void RegionSplitterT<RegDescT,RegionFinderClassT>::setLabelFile(string labelfilename){
+    labelfilename_=labelfilename;
+}
 
 template <class RegDescT, class RegionFinderClassT>
 void RegionSplitterT<RegDescT,RegionFinderClassT>::setSmallRegionsId(int id) {
@@ -338,6 +342,7 @@ int RegionSplitterT<RegDescT,RegionFinderClassT>::split()
         value++;
         region_=RegDescT();
         region_.class_=regionClass_;
+        region_.file_=labelfilename_;
         region_.setId(value);
         setPixel(x, y, value);
         goEast(x, y, value, bgId_);
