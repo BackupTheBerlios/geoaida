@@ -50,6 +50,7 @@
 #include "pfm.h"
 // other include ......
 //#include <ostream.h>
+#include <assert.h>
 // local include ......
 #include "combislider.h"
 
