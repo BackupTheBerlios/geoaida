@@ -7,6 +7,7 @@
  * $Locker:  $
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include "pfm.h"
 
 void Usage()

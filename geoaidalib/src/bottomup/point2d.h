@@ -19,7 +19,7 @@
 #define POINT2D_H
 
 #include <math.h>
-#include <iostream.h>
+#include <iostream>
 
 /**class for 2D points
   *@author juergen bueckner

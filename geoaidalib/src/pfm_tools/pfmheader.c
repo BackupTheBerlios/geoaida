@@ -15,6 +15,7 @@ int __isnanf(float);
 
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "pfm.h"
 
 void Usage()

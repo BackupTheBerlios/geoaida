@@ -16,9 +16,9 @@
  ***************************************************************************/
 //TEST ./ga_bu_maxdist test_in_maxdist test_out_maxdist /project/geoaida/share/data/images/region004.pgm 100 ALL
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream.h>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
 #ifdef WIN32
 #include "..\bottomup\bottomup.h"
 #include "..\bottomup\regionsensor.h"

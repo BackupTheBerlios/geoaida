@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <stdio.h>
-#include <iostream.h>
+#include <cstdio>
+#include <iostream>
 #include <gaimage.h>
 #include <gaimaget.h>
 #include <garegiont.h>
@@ -29,6 +29,7 @@
 //  #define DEBUG_MSG
 
 using namespace Ga;
+using namespace std;
 
 int combine (Image *in, Image &mask, char* eval_name, char *path);
 int compose_result (Image *in, char* eval_name, char* regdes_name, char *outimg_name);

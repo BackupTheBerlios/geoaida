@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "doubleslider.h"
-#include <iostream.h>
+#include <iostream>
 
 doubleslider::doubleslider(float val1, float val2 ,
 			   QWidget* parent, const char* name):

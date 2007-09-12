@@ -16,9 +16,9 @@
  ***************************************************************************/
 // ./ga_label2description out_label2description /project/geoaida/share/data/images/region001.pgm out_label2description.pgm testclass 100 0.4
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream.h>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
 #ifdef XXXXXXX
 #include "bottomup.h"
 //#include "gareadwrite.h"
@@ -27,6 +27,8 @@
 #include "nodelist.h"
 //#include "garegion.h"
 #endif
+
+using namespace std;
 
 void usage(char* prg)
 {
@@ -180,7 +182,7 @@ int main(int argc, char *argv[])
 	}	
 	
 	fp.close();
-#endif 0	
+#endif
 	cout << "FIN .. "<<endl;
 #ifdef WIN32
   return (0);

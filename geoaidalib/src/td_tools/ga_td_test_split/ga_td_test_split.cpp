@@ -17,7 +17,7 @@
 
 // #define DEBUG_PRG
 
-#include <fstream.h>
+#include <fstream>
 #include "pfm.h"
 #include "gaimage.h"
 #include "gagradient.h"

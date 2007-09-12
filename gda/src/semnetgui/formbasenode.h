@@ -20,7 +20,9 @@
 
 #include "treegnode.h"
 #include "treenode.h"
-#include "iostream.h"
+#include <iostream>
+
+using namespace std;
 
 /**Basisklasse für einen Knoten im Baum
   *@author Ulrike

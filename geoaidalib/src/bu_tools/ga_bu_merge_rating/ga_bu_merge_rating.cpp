@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <iostream.h>
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
 #ifdef WIN32
 #include "..\bottomup\bottomup.h"
 #include "..\bottomup\regionsensor.h"

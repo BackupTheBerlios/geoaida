@@ -31,6 +31,7 @@
 //#include "stackelemstring.h"
 
 using namespace Ga;
+using namespace std;
 
 class RegionSensor : public GASensor  {
 public:
@@ -1183,7 +1184,7 @@ int average_thickness(PixType label, QString sn="") {
 		}
 	  float s=((*node_)[sn])->toFloat();
     if (i) node_->stackPush(  new StackElemNumber( double(s) ));
-	  return s;
+	  return static_cast<int>(s);
 }
 
 //##################### MOMENTUM #####################
