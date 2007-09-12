@@ -1,0 +1,12 @@
+#
+# Theshold Segmentation
+# Segment Image according to NDVI thresholds 
+#
+<operator type=topdown class=misc name="NDVI Threshold Segmentation" 
+cmd="ga_threshold_segment @image_file@ @mask_file@ @output@.td.node.plm @output@ @min@ @max@ @Threshold_min@ @Threshold_max@ @Class@ @p@">
+
+  <attribute name="Threshold_min" type=int>
+  <attribute name=Threshold_max type=int>
+  <attribute name=p label="Sicherheit" type=double value=0.5>
+  <attribute name=image tip="1 Channel NDVI-Image or 3 Channel IrRG-Image" type=image imagetype=vis>
+</operator>
