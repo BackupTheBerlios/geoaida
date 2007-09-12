@@ -132,6 +132,7 @@ int main(int argc, char **argv)
       clog << "RegList Entry " << i << " Sum: " << avgValues[regList[i].id_] << " Count: " << regionSizes[regList[i].id_]  << endl;
       if (regionSizes[regList[i].id_]!=0)
           regList[i].average_ = avgValues[regList[i].id_]/((double)regionSizes[regList[i].id_]);
+          regList[i].regsize_ = regionSizes[regList[i].id_];
 
   }
 
