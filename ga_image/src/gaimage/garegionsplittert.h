@@ -175,10 +175,10 @@ class RegDescT
     }
 
     string class_, file_, name_;    
+    int id_;
 
 protected:
     int llx_,lly_,urx_,ury_;
-    int id_;
     int size_, numValidValues_;
     double sum_;
 

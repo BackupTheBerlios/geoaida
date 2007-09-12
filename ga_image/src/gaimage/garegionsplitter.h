@@ -75,6 +75,7 @@ namespace Ga{
         RegionFinder(const Image& mask, const Image& data, float level)
             : data_(data),mask_(mask),level_(level) {};
         
+
         /*
           lpig: meaningless in this implementation
           x_center, y_center: coordinate1 in data image
@@ -119,6 +120,8 @@ namespace Ga{
     };
     
     
+
+
     vector<RegDesc> splitIntoRegions(Image &labelpic,  
                                      RegionFinder& regfind,
                                      string regionclass,

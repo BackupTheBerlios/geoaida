@@ -254,6 +254,7 @@ void MainGui::resultLoad() {
       try {
         mapImage->load();
         mapViewer->set(iNode_,mapImage);
+	 //! to do: file selection instead of hard coded image
         mapViewer->setDataImage(geoImageList_["rmk001"]);
       }
       catch (FatalError err) {

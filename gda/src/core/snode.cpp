@@ -340,6 +340,8 @@ void SNode::execOperator(Operator * op, INode * iNode, AttribList & attribs,
   QFile fp(iNode->output()+".cmd");
   if (fp.open(IO_WriteOnly)) {
     fp.writeBlock(cmd,cmd.length());
+    char* n = "n";
+    fp.writeBlock(n, 1);
     fp.close();
   }
 //  cmd+=" >"+stdout_file+" 2>"+stderr_file;
