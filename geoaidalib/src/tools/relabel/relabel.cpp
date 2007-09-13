@@ -341,7 +341,7 @@ int compose_result (Image *in, char* eval_name, char* regdes_name, char *outimg_
 
 	for (int l=0; l<MAX_LEVEL; l++)
 		in[l]= Image();
-	free;
+// 	free; Don't know what this is for
 
 #ifdef DEBUG_MSG	
    printf("writing output image.\n");

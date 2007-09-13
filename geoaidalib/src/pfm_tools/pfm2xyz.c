@@ -6,6 +6,7 @@
     email                : bueckner@tnt.uni-hannover.de
  ***************************************************************************/
 #include <stdio.h>
+#include <stdlib.h>
 #include "pfm.h"
 
 void Usage(char *cmd)
