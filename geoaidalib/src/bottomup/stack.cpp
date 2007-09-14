@@ -16,6 +16,8 @@
  ***************************************************************************/
 //  #define DEBUGMSG
 
+#include <iostream>
+
 #include "stack.h"
 #include "stackelemnodelist.h"
 #include "stackelemnumber.h"
@@ -845,14 +847,10 @@ bool Stack::run(QString cmd)
   cmd = cmd.simplifyWhiteSpace();
   QStringList cmdList = QStringList::split(" ", cmd);
   for (QStringList::Iterator it = cmdList.begin(); it != cmdList.end(); ++it) {
-#ifdef WIN32                    //QT2.3
-    QMap < QString, bool(*)(Stack &) >::ConstIterator efit =
-      externFunctionTable_.find(*it);
-#else
+
     QMap < QString, bool(*)(Stack &) >::const_iterator efit =
       externFunctionTable_.find(*it);
-#endif
-#if 1
+
     // Debug Stack types
     cout << "(" << count() << "): ";
     {
@@ -862,7 +860,7 @@ bool Stack::run(QString cmd)
       }
       cout << endl;
     }
-#endif
+
     if (efit.data()) {
       cout << "(" << count() << ") Calling extern function " << *it << endl;
       ExternFunction *func = efit.data();
@@ -870,13 +868,10 @@ bool Stack::run(QString cmd)
         return false;
       continue;
     }
-#ifdef WIN32                    //QT2.3
-    QMap < QString, bool(Stack::*)() >::ConstIterator fit =
-      functionTable_.find(*it);
-#else
+
     QMap < QString, bool(Stack::*)() >::const_iterator fit =
       functionTable_.find(*it);
-#endif
+
     if (fit.data()) {
       cout << "(" << count() << ") Calling function " << *it << endl;
       StackFunction func = fit.data();
@@ -889,14 +884,10 @@ bool Stack::run(QString cmd)
     if (((*it).length() > 0) && (*it)[0] == '\"') {
       QString s = (*it);
       while (it != cmdList.end()) {
-#ifdef WIN32
-//error C2666: '[]' : 3 Ueberladungen haben aehnliche Konvertierungen
-        if ((s[(int) s.length() - 1] == '\"') && (s.length() >= 2)
-            && (s[(int) s.length() - 2] != '\\'))
-#else
+
         if ((s[s.length() - 1] == '\"') && (s.length() >= 2)
             && (s[s.length() - 2] != '\\'))
-#endif
+
           break;
         ++it;
         s += " " + (*it);
@@ -1234,6 +1225,7 @@ bool Stack::nodeGet()
 {
   StackElem *el1 = 0;
   StackElem *el2 = 0;
+
   try {
     if (count() < 2)
       throw CleanUp(false);     //sind noch genug da?
@@ -1246,6 +1238,11 @@ bool Stack::nodeGet()
       while (it.current()) {
         Node *node = it.current();      //nl.find(*it);
         QString *val = node->find(attribName);
+        
+        if (!val){
+            cerr << "Error: Attribute not set: " << attribName << endl;
+            throw CleanUp(false);
+        }
         bool ok;
         double d = val->toDouble(&ok);
         if (ok)
@@ -1255,7 +1252,7 @@ bool Stack::nodeGet()
         ++it;
       }
       push(new StackElemNodeList(nl));
-      throw CleanUp(true);
+     throw CleanUp(true);
     }
     else
       throw CleanUp(false);
@@ -1265,6 +1262,7 @@ bool Stack::nodeGet()
       delete el1;
     if (el2)
       delete el2;
+
     return e.status_;
   }
 }
