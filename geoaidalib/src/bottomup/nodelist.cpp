@@ -125,7 +125,10 @@ QString NodeList::get(QString name)
 {
   QString *val=attribList_[name];
   if (val) return *val;
-  else return "";
+  else {
+    cerr << "Warning: Attribute not set in nodelist: " << name << endl;
+    return "";
+  }
 }
 
 /** calculate new geo coordinates and resolution using all images belong to included nodes*/

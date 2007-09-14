@@ -1237,18 +1237,21 @@ bool Stack::nodeGet()
       QDictIterator < Node > it(nl);
       while (it.current()) {
         Node *node = it.current();      //nl.find(*it);
+	QString v;
         QString *val = node->find(attribName);
         
-        if (!val){
-            cerr << "Error: Attribute not set: " << attribName << endl;
-            throw CleanUp(false);
+	if (val) v=*val;
+	else {
+	  cerr << "Warning: Attribute not set: " 
+	       << node->classname() << "::" 
+	       << node->name() << "(" << attribName << ")" << endl;
         }
         bool ok;
-        double d = val->toDouble(&ok);
+        double d = v.toDouble(&ok);
         if (ok)
           node->stackPush(new StackElemNumber(d));
         else
-          node->stackPush(new StackElemString(*val));
+          node->stackPush(new StackElemString(v));
         ++it;
       }
       push(new StackElemNodeList(nl));
