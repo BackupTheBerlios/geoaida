@@ -1,7 +1,6 @@
 include_directories(.
         ${PROJECT_SOURCE_DIR}/src/gaimage
         ${CMAKE_SOURCE_DIR}/pfm/libpfm
-				/home/becker/.local/include
 )
 
 set(sources gi_arithmetic.cpp)
