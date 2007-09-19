@@ -8,7 +8,7 @@
     <item label="Load Result" connect=-main.resultLoad()>
     <item label="Save Result" connect=-main.resultSave()>
     <item label="Load Project" accel="Ctrl+P" connect=-main.prjLoad()>
-    <item label="Save Project" connect=-main.prjLoad()>
+    item label="Save Project" connect=-main.prjLoad()>
     <separator>
     <item label="&Quit" accel=Ctrl+Q connect=-qapp.quit()>
   </submenu>
@@ -29,7 +29,7 @@
   <button pixmap=filenew.xpm tip="New File">
   <button pixmap=fileopen.xpm tip="Load Net" connect=-main.fileLoad()>
   <button pixmap=filesave.xpm tip="Save Net" connect=-main.fileSave()>
-  <button label="Test" connect=-main.test() tip="i don't know">
+  button label="Test" connect=-main.test() tip="i don't know">
   <button pixmap=start.png connect=-main.analyze() connect=-sceneViewerWin.show() connect=main.readyToAna(bool)-enable(bool) tip="start the analysis">
   <button pixmap=cleanup.xpm connect=-main.cleanUp() tip="Clean up: remove temporary files">
 #  button label="Analyze" connect=-main.analyze() connect=-sceneViewerWin.show() connect=main.readyToAna(bool)-enable(bool) tip="start the analysis">
