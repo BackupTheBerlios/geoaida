@@ -563,7 +563,8 @@ void PicWin::histogram()
           cl=int((v-min)/range*256);
       else
           cl=0;
-      if (cl==256) cl=255;
+      if (cl>=256) cl=255;
+      if (cl<0) cl=0;
       value[cl]++;
       if (value[cl]>maxcount) {
         maxcount=value[cl];
