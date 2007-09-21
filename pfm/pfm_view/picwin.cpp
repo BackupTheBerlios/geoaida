@@ -425,6 +425,7 @@ void PicWin::absImg() {
  for (y=0; y<image.height(); y++)
    for (x=0; x<cols; x++) {
     v = pfm_data[y*cols+x];
+    if (isnan(v)) continue;
     if (v<0) v=-v;
     //printf("(%d,%d), f: %f, v: %f %f, min: %f, max: %f, fmin: %f, fmax: %f\n",
     //x,y,factor,v,(v-min)/factor*254+1,min,max,pfm_min_val,pfm_max_val);
@@ -510,6 +511,7 @@ void PicWin::autoContrast()
   for (int y=tury; y<=tlly; y++) {
     for (int x=tllx; x<=turx; x++) {
       float v=pfm_data[y*cols+x];
+      if (isnan(f)) continue;
       if (v<min) min=v;
       if (v>max) max=v;
     }
@@ -537,6 +539,7 @@ void PicWin::histogram()
 		meanx = 0.0;
     for (int x=tllx; x<=turx; x++) {
       float v=pfm_data[y*cols+x];
+      if (isnan(v)) continue;
       if (v<min) min=v;
       if (v>max) max=v;
 			meanx+=v;
@@ -555,6 +558,7 @@ void PicWin::histogram()
   for (int y=tury; y<=tlly; y++) {
     for (int x=tllx; x<=turx; x++) {
       float v=pfm_data[y*cols+x];
+      if (isnan(v)) continue;
       if (range)
           cl=int((v-min)/range*256);
       else
