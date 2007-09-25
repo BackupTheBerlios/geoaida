@@ -26,6 +26,8 @@
 #include "regionsensor.h"
 #include "qregexp.h"
 #include <qmap.h>
+#include <cstdio>
+#include <iostream>
 
 //######### NUMERIC FUNCTION  #########
 bool Stack::numfkt(double f(double, double))
@@ -904,8 +906,10 @@ bool Stack::run(QString cmd)
     }
     bool ok;
     double v = (*it).toDouble(&ok);
-    if (!ok)
+    if (!ok){
+      cerr << "Stack::run Error: " << *it << " neither command nor argument. Exiting. " << endl; 
       return false;
+    }
     cout << "(" << count() << ") Num:" << *it << endl;
     push(new StackElemNumber(v));
   }

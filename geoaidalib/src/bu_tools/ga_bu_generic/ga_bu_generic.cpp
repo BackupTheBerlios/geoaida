@@ -20,6 +20,10 @@
 #include "stack.h"
 #include "bottomup.h"
 #include "neighbour.h"
+#include <iostream>
+
+
+#include <cstdlib>
 
 //  #define DEBUG_PRG
 
@@ -69,7 +73,10 @@ int main(int argc, char *argv[])
 #endif
   qDebug("Command=%s",command.latin1());
   stack.registerFunction("neighbour", neighbour);
-  stack.run(command);
+  if (!stack.run(command)){
+    std::cerr << "ga_bu_generic: Error while running stack" << std::endl;
+    return EXIT_FAILURE;
+  }
 #ifndef DEBUG_PRG
   stack.write(argv[2]);
   nl->writeOutImage(QString(argv[2])+".bu.node.plm");
