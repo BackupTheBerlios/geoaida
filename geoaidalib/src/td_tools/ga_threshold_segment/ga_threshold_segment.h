@@ -40,9 +40,9 @@ using namespace Ga;
 
               // clog << "Old attributes " << s << endl;
               // clog << "New attribute Average: " << average_ << endl;
-
-              out << s << " average=\"" << average_ << "\" ";
-              out << s << " reg_size=\"" << regsize_ << "\" ";
+              out << s;
+              out << " average=\"" << average_ << "\" ";
+              out << " reg_size=\"" << regsize_ << "\" ";
 
               return out.str();
           }
