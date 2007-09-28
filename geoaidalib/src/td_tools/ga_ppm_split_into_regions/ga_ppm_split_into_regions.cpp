@@ -69,11 +69,13 @@ class RegDesc
 */
  
 
-class HRegion
+class HRegion:public RegionFinder
 {
   public:
     HRegion(const Image& mask, const Image& data, float level)
-      : data_(data),mask_(mask),level_(level) {};
+        : RegionFinder(mask, data, level) , 
+          data_(data),mask_(mask),level_(level)
+{};
     bool operator()(const Image &lpic,
                     int x_center, int y_center,
                     int x_neighbour, int y_neighbour)
@@ -92,11 +94,12 @@ class HRegion
     float level_;
 };
 
-class SRegion
+class SRegion: public RegionFinder
 {
   public:
     SRegion(const Image& mask, const Image& data, float level)
-      : data_(data),mask_(mask),level_(level) {};
+      : RegionFinder(mask, data, level) , 
+        data_(data),mask_(mask),level_(level) {};
     bool operator()(const Image &lpic,
                     int x_center, int y_center,
                     int x_neighbour, int y_neighbour)
@@ -115,11 +118,12 @@ class SRegion
     float level_;
 };
 
-class VRegion
+class VRegion:public RegionFinder
 {
   public:
     VRegion(const Image& mask, const Image& data, float level)
-      : data_(data),mask_(mask),level_(level) {};
+      : RegionFinder(mask, data, level) , 
+        data_(data),mask_(mask),level_(level) {};
     bool operator()(const Image &lpic,
                     int x_center, int y_center,
                     int x_neighbour, int y_neighbour)
