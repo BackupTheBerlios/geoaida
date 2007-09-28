@@ -34,6 +34,7 @@
 //*******************************************************************
 
 #include "garegionsplittert.h"
+#include "garegionsplitter.h"
 
 #define SMALL_REGIONS_TO_1 1
 
@@ -307,6 +308,7 @@ void RegionSplitterT<RegDescT,RegionFinderClassT>::goSouth(int x, int y, int val
   rl_--;
 }
 
+
 template <class RegDescT, class RegionFinderClassT>
 int RegionSplitterT<RegDescT,RegionFinderClassT>::split()
 {
@@ -341,7 +343,15 @@ int RegionSplitterT<RegDescT,RegionFinderClassT>::split()
       if (lpic_.getInt(x, y) == bgId_ && tclass_.valid(lpic_,x,y)) {
         value++;
         region_=RegDescT();
-        region_.class_=regionClass_;
+                
+        if (region_.class_==""){
+            if (tclass_.getRegionClass() != "")
+                region_.class_ = tclass_.getRegionClass();
+            else
+                region_.class_=regionClass_;
+
+        }
+
         region_.file_=labelfilename_;
         region_.setId(value);
         setPixel(x, y, value);

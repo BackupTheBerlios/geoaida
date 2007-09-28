@@ -61,6 +61,9 @@ namespace Ga{
   The RegionFinder class is responsible for determining
   regions in the data image. It's the only entity knowing
   about the data image in the region finding process.
+  
+  By deriving from this class it is possible to 
+  affect the region classification.
 */
     class RegionFinder
     {
@@ -87,7 +90,7 @@ namespace Ga{
           AND coordinate1 in data differs from coordinate2 in data no more than level
           else false 
         */
-        bool operator()(const Image &lpic,
+        virtual bool operator()(const Image &lpic,
                         int x_center, int y_center,
                         int x_neighbour, int y_neighbour)
             {
@@ -99,20 +102,34 @@ namespace Ga{
                              data_.getFloat(x_neighbour, y_neighbour)) 
                         <= level_);
             }
-        
+                
 /*
   Can be used to mask out pixels which should not 
   be in any region (eg background pixels).
   
   In this implementation it returns true iff the value in data image is greater than 1
 */
-        bool valid(const Image &lpic,
+        virtual bool valid(const Image &lpic,
                    int x, int y)
             {
 //                return true;
                 return (data_.getFloat(x, y) > 1);
             }
         
+        /*
+          Can be used to give the regions names, depending
+          on the value in the input image.
+          
+          Return empty string when the region name
+          in RegionSplitterT should be used;
+        */
+        
+        virtual string getRegionClass(){
+            string out = "";
+            return out;
+        }
+
+
     protected:
         const Image& data_;
         const Image& mask_;

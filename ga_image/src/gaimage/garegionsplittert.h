@@ -68,8 +68,28 @@ public:
     void setBBox(int llx, int lly, int urx, int ury);
     void setBgId(int id);
     void setSmallRegionsId(int id);
+
+    /*
+      Is only used when the class name in the region description
+      is empty and when RegionFinder returns an empty string.
+      This is only the fall back name, but necessary for backward 
+      compability.
+    */
     void setRegionClass(string classname);
     void setLabelFile(string labelfilename);
+
+    /**
+       if 
+           true 
+       the RegionClass name is used as class attribute
+       in the region description.
+       if 
+           false
+       the pixel value in the input file is used for the class attribute
+       Thus, it can be redefined later for multiclass class names.
+    */
+    void setSplitMode(bool multiclass=false);
+
 protected:
     void goWest(int x, int y, int value, int def_val);
     void goNorth(int x, int y, int value, int def_val);
@@ -87,6 +107,7 @@ protected:
     int startId_;
     string regionClass_;
     string labelfilename_;
+    bool splitmode_multiclass_;
 
     /* Pixel in the labelImg with this value are not bound to a region */
     int bgId_;
@@ -119,7 +140,7 @@ class RegDescT
         sum_=0;
         numValidValues_=0;
         id_=0;
-        class_ = "undefined";
+        class_ = "";
         file_="";
       };
     int setPixel(LabelPicT& lpic, int x, int y, int val)
