@@ -85,18 +85,29 @@ void Painter::drawPolygon(const PointArray& points, double val)
 /// \param points array of points defining the polygon
 /// \param val value for pixels of polygon
 ///
+/// \return Returns -1 if polygon is outside
+///
 ////////////////////////////////////////////////////////////////////////////////
-void Painter::fillPolygon(const PointArray& points, double val)
+int Painter::fillPolygon(const PointArray& points, double val)
 {
 	IndexArray			indices;
+	IndexArray			indices_x;
 	std::vector<Edge>	edges;
 	std::list<Edge>		active_edges;
 
 	// create index array
 	for (int i=0; i<points.size(); ++i) indices.push_back(i);
+	indices_x=indices; // indices_x is just for outlier detection
 
 	// sort points by their y coordinate
 	qSortPointsY(points, indices, 0, points.size()-1);
+
+	// Outlier detection
+	if ((points[indices[0]].y() >= img_.sizeY()) || (points[indices.back()].y() < 0))
+		return -1;
+	qSortPointsX(points, indices_x, 0, points.size()-1);
+	if ((points[indices_x[0]].x() >= img_.sizeX()) || (points[indices_x.back()].x() < 0))
+		return -1;
 
 	// create and sort edges by their topmost point
 	for (int i=0; i<indices.size()-1; ++i)
@@ -160,6 +171,7 @@ void Painter::fillPolygon(const PointArray& points, double val)
 		}
 
 	}
+	return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -175,6 +187,43 @@ void Painter::fillPolygon(const PointArray& points, double val)
 bool EdgeSortX(const Painter::Edge& e1, const Painter::Edge& e2)
 {
   return e1.x < e2.x;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+/// \brief method to sort points by their x position using quicksort
+///
+/// \param points array of points to be sorted
+/// \param indices array of indices for sorted point array
+///
+////////////////////////////////////////////////////////////////////////////////
+void Painter::qSortPointsX(const PointArray& points, IndexArray& indices, int min, int max) const
+{
+	if (min < max)
+	{
+		int px = points[indices[max]].x();
+
+		int i = min-1;
+		int j = max;
+		while (true)
+		{
+			do ++i; while (points[indices[i]].x() < px);
+			do --j; while ((points[indices[j]].x() > px) && (j>0));
+			if (i<j)
+			{
+				unsigned int k = indices[i];
+				indices[i] = indices[j];
+				indices[j] = k;
+			}
+			else break;
+		}
+		unsigned int k = indices[i];
+		indices[i] = indices[max];
+		indices[max] = k;
+
+		qSortPointsX(points, indices, min, i-1);
+		qSortPointsX(points, indices, i+1, max);
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////

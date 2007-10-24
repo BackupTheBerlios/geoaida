@@ -53,7 +53,7 @@ class Painter
 		void drawGeoLine(Image&, double, double, double, double, double, double, bool);
 
 		void drawPolygon(const PointArray&, double);
-		void fillPolygon(const PointArray&, double);
+		int fillPolygon(const PointArray&, double);
 
 		void setImage(Image&, int channel=0);
 		void setChannel(int);
@@ -84,6 +84,7 @@ class Painter
 		};
 
 		//--- const methods [private] ----------------------------------------//
+		void qSortPointsX(const PointArray&, IndexArray&, int, int) const;
 		void qSortPointsY(const PointArray&, IndexArray&, int, int) const;
 
 		//--- friend functions [private] -------------------------------------//
