@@ -27,7 +27,10 @@
 #include <stdlib.h> // für exit
 #include <qmessagebox.h>
 #endif
+
+#ifdef DEBUG
 #define DEBUG_MSG
+#endif
 
 static QString GetTmpFilename(QString prefix = "", QString path = "")
 {

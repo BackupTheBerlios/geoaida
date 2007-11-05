@@ -22,7 +22,9 @@
 #include "treeitem.h"
 #endif
 
-#define DEBUG_MSG
+#ifdef DEBUG
+ #define DEBUG_MSG
+#endif
 
 const static QString nullString("");
 

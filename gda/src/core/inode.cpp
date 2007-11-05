@@ -50,7 +50,10 @@ const char *const INode::iTypeName[] = {
   PI -> IM
   IH -> HI
 */
+#ifdef DEBUG
 #define DEBUGMSG
+#def 
+
 INode::INode(SNode * node)
 {
   init();

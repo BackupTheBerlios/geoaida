@@ -30,7 +30,9 @@
 #include "treeitem.h"
 
 //#define DEBUG_PRG
+#ifdef DEBUG
 #define DEBUG_MSG
+#endif
 
 using namespace Ga;
 
@@ -87,6 +89,7 @@ MainGui::MainGui(int argc, char **argv)
   mainwidget_=(QMainWindow*)qtapp.create();
   mainwidget_->show();
   app.setMainWidget(mainwidget_);
+
 
 #ifdef DEBUG_PRG
 	netfile_="/home/martin/project/building/building/multilevel/detectbuilding.regs";

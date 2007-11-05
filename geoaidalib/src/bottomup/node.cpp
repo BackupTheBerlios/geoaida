@@ -15,7 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef DEBUG
 #define DEBUGMSG
+#endif
 
 #include "node.h"
 #include "nodelist.h"
