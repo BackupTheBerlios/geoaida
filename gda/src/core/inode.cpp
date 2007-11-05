@@ -52,7 +52,7 @@ const char *const INode::iTypeName[] = {
 */
 #ifdef DEBUG
 #define DEBUGMSG
-#def 
+#endif 
 
 INode::INode(SNode * node)
 {
