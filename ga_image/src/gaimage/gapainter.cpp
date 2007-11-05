@@ -82,10 +82,13 @@ void Painter::drawPolygon(const PointArray& points, double val)
 ///
 /// \brief method to draw a filled polygon
 ///
+/// \todo Eventually, concave polygons that are outside the image won't return
+///       -1, nevertheless they are not drawn.
+///
 /// \param points array of points defining the polygon
 /// \param val value for pixels of polygon
 ///
-/// \return Returns -1 if polygon is outside
+/// \return Returns -1 if polygon is outside, -2 if polygon is partly outside
 ///
 ////////////////////////////////////////////////////////////////////////////////
 int Painter::fillPolygon(const PointArray& points, double val)
@@ -94,6 +97,7 @@ int Painter::fillPolygon(const PointArray& points, double val)
 	IndexArray			indices_x;
 	std::vector<Edge>	edges;
 	std::list<Edge>		active_edges;
+	int					ret_val = 0;
 
 	// create index array
 	for (int i=0; i<points.size(); ++i) indices.push_back(i);
@@ -108,6 +112,13 @@ int Painter::fillPolygon(const PointArray& points, double val)
 	qSortPointsX(points, indices_x, 0, points.size()-1);
 	if ((points[indices_x[0]].x() >= img_.sizeX()) || (points[indices_x.back()].x() < 0))
 		return -1;
+
+	// Polygon partly outside?
+	if ((points[indices_x[0]].x() >= 0) && (points[indices_x.back()].x() < img_.sizeX()) &&
+		(points[indices[0]].y() >= 0) && (points[indices.back()].y() < img_.sizeY()))
+		ret_val = 0;
+	else
+		ret_val = -2;
 
 	// create and sort edges by their topmost point
 	for (int i=0; i<indices.size()-1; ++i)
@@ -171,7 +182,7 @@ int Painter::fillPolygon(const PointArray& points, double val)
 		}
 
 	}
-	return 0;
+	return ret_val;
 }
 
 //////////////////////////////////////////////////////////////////////////////
