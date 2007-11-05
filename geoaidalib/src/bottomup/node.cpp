@@ -152,7 +152,7 @@ void Node::load(NodeList& nodeList) {
   FILE *fp;
   fp=fopen(filename_,"r");
   if (!fp) {
-    qDebug("#  (ERROR)Node::load(%s) Can't open file for reading!",(const char*)filename_);
+    qWarning("#  (ERROR)Node::load(%s) Can't open file for reading!",(const char*)filename_);
     return;
   }
   int pxmtype;
@@ -190,7 +190,7 @@ Ga::Image* Node::data() {
   FILE *fp;
   fp=fopen(filename_,"r");
   if (!fp) {
-    qDebug("#  (ERROR)Node::load(%s) Can't open file for reading!",(const char*)filename_);
+    qWarning("#  (ERROR)Node::load(%s) Can't open file for reading!",(const char*)filename_);
     return 0;
   }
   int cols, rows;
@@ -225,7 +225,7 @@ Ga::Image* Node::data() {
 bool Node::testSize(int cols, int rows, IMGTYPE type) {
   if (cols!=cols_ || rows!=rows_) {
 #if 0
-    qDebug("##  (ERROR) inconsistent image data!");
+    qWarning("##  (ERROR) inconsistent image data!");
     if (type_ <= PFM_UINT16) delete (float*)data_;
     if (type_ == PBM) delete (bit*)data_;
     if (type_ == PGM) delete (gray*)data_;
@@ -264,7 +264,7 @@ QString Node::part(float north, float south, float west, float east, QString fna
   geo2pic(west, south, &rx1, &ry2);
   dx = rx2 - rx1;
   dy = ry2 - ry1;
-  if (dx<=0 || dy<=0) qDebug("#  (ERROR) Node::part: (dx=%d=%d-%d || dy=%d=%d-%d)",dx, rx2, rx1,dy, ry2, ry1);
+  if (dx<=0 || dy<=0) qWarning("#  (ERROR) Node::part: (dx=%d=%d-%d || dy=%d=%d-%d)",dx, rx2, rx1,dy, ry2, ry1);
 
   FILE *of=fopen(fname,"w");
   if (!of) {

@@ -161,7 +161,7 @@ public:
 		for (;it.current(); ++it)
 		  if(it.currentKey())
 		  	printf("%s=\"%s\" ",it.currentKey().latin1(),(it.current())->latin1() );
-		  else qDebug("(WARNING) Node::info - currentKey() is unreadably");
+		  else qWarning("(WARNING) Node::info - currentKey() is unreadably");
 	};
   /** return stack - for bottom-up */
   Stack& stack(void);

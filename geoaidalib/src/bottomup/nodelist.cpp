@@ -276,7 +276,7 @@ QString NodeList::part(QString imgKey, float north, float south, float west, flo
   if (find(imgKey))
     return (find(imgKey))->part(north, south, west, east, fname);
   else
-    qDebug("## (Warning) NodeList::part(%s, %f, %f, %f, %f) no entry",
+    qWarning("## (Warning) NodeList::part(%s, %f, %f, %f, %f) no entry",
           (const char*)imgKey, north, south, west, east);
 }
 #endif
@@ -330,7 +330,7 @@ void NodeList::calcForSelect (QString classname, QString term, int (*fkt)(void))
 			QString *val = new QString;
 			val->setNum(fkt());
 			if (!find(term)) node->insert(term, val);
-			else qDebug("##. (Warning) NodeList::calcForSelect: %s - exist",term.latin1());
+			else qWarning("##. (Warning) NodeList::calcForSelect: %s - exist",term.latin1());
 		} //else qDebug("## %s ##",node->classname().latin1());
 	}
 }
