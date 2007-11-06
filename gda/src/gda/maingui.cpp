@@ -55,6 +55,24 @@ void dumpObjectTreeInfo(QObject* obj)
 /* Debug function only */
 #endif
 
+#ifdef QT_NO_DEBUG
+void myMessageOutput( QtMsgType type, const char *msg )
+{
+    switch ( type ) {
+    case QtDebugMsg:
+//        fprintf( stderr, "Debug: %s\n", msg );
+        break;
+    case QtWarningMsg:
+        fprintf( stderr, "Warning: %s\n", msg );
+        break;
+    case QtFatalMsg:
+        fprintf( stderr, "Fatal: %s\n", msg );
+        abort();                    // deliberately core dump
+    }
+}
+#endif
+
+
 MainGui::MainGui(int argc, char **argv)
 {
 
@@ -72,6 +90,9 @@ MainGui::MainGui(int argc, char **argv)
       case '?': usage(); break;
     }
 
+#ifdef QT_NO_DEBUG
+  qInstallMsgHandler( myMessageOutput );
+#endif
   QApplication app(argc, argv);
   QtGuiApplication qtapp("share/data/application/gda.app",PRGDIR);
   cleanUp_.prefix(qtapp.prefix());

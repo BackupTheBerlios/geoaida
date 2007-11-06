@@ -28,7 +28,9 @@
 #include "treeitem.h"
 #include "inode.h"
 
- #define DEBUGMSG
+#ifdef DEBUG
+  #define DEBUGMSG
+#endif
 
 TreeEditor::TreeEditor(QWidget * parent, const char *name)
 :QListView(parent, name)

@@ -345,8 +345,8 @@ int RegionSplitterT<RegDescT,RegionFinderClassT>::split()
         region_=RegDescT();
                 
         if (region_.class_==""){
-            if (tclass_.getRegionClass() != "")
-                region_.class_ = tclass_.getRegionClass();
+            if (tclass_.getRegionClass(x, y) != "")
+                region_.class_ = tclass_.getRegionClass(x, y);
             else
                 region_.class_=regionClass_;
 

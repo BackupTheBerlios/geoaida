@@ -59,7 +59,7 @@ public:
     }
     {
       QString options[]={"NOMARKS","ABOVE","LEFT","BELOW","RIGHT","BOTH",""};
-      int val;
+      int val=0;
       setOption(val,argdict_,"tickmarks",options);
       switch (val) {
       case 2:

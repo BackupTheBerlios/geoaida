@@ -124,7 +124,7 @@ namespace Ga{
           in RegionSplitterT should be used;
         */
         
-        virtual string getRegionClass(){
+        virtual string getRegionClass(int x, int y, int channel=0){
             string out = "";
             return out;
         }

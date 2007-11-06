@@ -23,7 +23,9 @@
  * $Locker:  $
  */
 
-#define DEBUGMSG
+#ifdef DEBUG
+  #define DEBUGMSG
+#endif
 
 #include "analysis.h"
 #include "task.h"
