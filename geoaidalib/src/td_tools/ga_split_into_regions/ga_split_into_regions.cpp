@@ -53,7 +53,7 @@ int main(int argc, char **argv)
   Image maskimg(typeid(int),src.sizeX(),src.sizeY());
   maskimg= 1;
   RegionFinder rf(maskimg, src, 0);
-  vector<RegDesc> regList = splitIntoRegions(labelimg, rf, minsize,maxsize);
+  vector<RegDesc> regList = splitIntoRegions(labelimg, rf, resultClass, labelname, minsize,maxsize);
   labelimg.write(labelname);
   int t=regionsToFile(regionname, regList);
   if (t == EXIT_FAILURE){
