@@ -132,6 +132,8 @@ public:
   bool gt();
   bool lt();
   bool get();
+  bool andop();
+  bool orop();
   /** Push the nodelist on the stack*/
   bool pushNodeList();
 

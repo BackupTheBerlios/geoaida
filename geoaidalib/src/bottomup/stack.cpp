@@ -354,6 +354,18 @@ static inline bool let_(double d1, double d2)
   return d1 <= d2;
 }
 
+static inline bool and_(double d1, double d2)
+{
+  return ((d1!=0.0) && (d2!=0.0));
+}
+
+static inline bool or_(double d1, double d2)
+{
+  return ((d1!=0.0) || (d2!=0.0));
+}
+
+
+
 // logic fkt for string values
 /**Returns TRUE if s1 is equal to s2 or FALSE if they are different. */
 static inline bool seq_(QString d1, QString d2)
@@ -457,6 +469,31 @@ bool Stack::let()
   return lofkt(let_, slet_);
 }
 
+/** and-operation on two stack elements.
+  * possible types:
+  * scalar, scalar - push the result [0,1] back to stack
+  * scalar, list - push new list back to stack where the comparison 'local stack in node' and 'scalar' is true
+  * list, list - push new list back to stack where the comparison 'local stack in node1' and 'local stack in node2' is true
+  * does not work for strings 
+  */
+
+bool Stack::andop()
+{
+  return lofkt(and_, seq_);
+}
+
+/** or-operation on two stack elements.
+  * possible types:
+  * scalar, scalar - push the result [0,1] back to stack
+  * scalar, list - push new list back to stack where the comparison 'local stack in node' and 'scalar' is true
+  * list, list - push new list back to stack where the comparison 'local stack in node1' and 'local stack in node2' is true
+  * does not work for strings 
+  */
+bool Stack::orop()
+{
+  return lofkt(or_, seq_);
+}
+
 
 
 //#########  FUNCTION  #########
@@ -489,6 +526,12 @@ void Stack::initFunctionTable() const
   functionTable_.insert(QString("+"), &Stack::add);
   functionTable_.insert(QString("concat"), &Stack::concat);
   functionTable_.insert(QString("-"), &Stack::sub);
+  functionTable_.insert(QString("&"), &Stack::andop);
+  functionTable_.insert(QString("&&"), &Stack::andop);
+  functionTable_.insert(QString("and"), &Stack::andop);
+  functionTable_.insert(QString("|"), &Stack::orop);
+  functionTable_.insert(QString("||"), &Stack::orop);
+  functionTable_.insert(QString("or"), &Stack::orop);
   functionTable_.insert(QString("calc"), &Stack::calcAttribute);
   functionTable_.insert(QString("nodelist"), &Stack::pushNodeList);
   functionTable_.insert(QString("list2stack"), &Stack::list2stack);
