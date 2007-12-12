@@ -133,7 +133,9 @@ public:
   bool lt();
   bool get();
   bool andop();
+  bool nandop();
   bool orop();
+  bool norop();
   /** Push the nodelist on the stack*/
   bool pushNodeList();
 

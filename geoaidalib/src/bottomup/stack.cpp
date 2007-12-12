@@ -359,9 +359,19 @@ static inline bool and_(double d1, double d2)
   return ((d1!=0.0) && (d2!=0.0));
 }
 
+static inline bool nand_(double d1, double d2)
+{
+  return (!((d1!=0.0) && (d2!=0.0)));
+}
+
 static inline bool or_(double d1, double d2)
 {
   return ((d1!=0.0) || (d2!=0.0));
+}
+
+static inline bool nor_(double d1, double d2)
+{
+  return (!((d1!=0.0) || (d2!=0.0)));
 }
 
 
@@ -482,6 +492,11 @@ bool Stack::andop()
   return lofkt(and_, seq_);
 }
 
+bool Stack::nandop()
+{
+  return lofkt(nand_, seq_);
+}
+
 /** or-operation on two stack elements.
   * possible types:
   * scalar, scalar - push the result [0,1] back to stack
@@ -492,6 +507,11 @@ bool Stack::andop()
 bool Stack::orop()
 {
   return lofkt(or_, seq_);
+}
+
+bool Stack::norop()
+{
+  return lofkt(nor_, seq_);
 }
 
 
