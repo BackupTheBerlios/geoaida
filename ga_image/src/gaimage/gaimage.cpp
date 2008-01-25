@@ -36,24 +36,6 @@ typedef const void* ConstIterator;
 typedef void* Iterator;
 
 //--------------------------------- constructors ----------------------------
-#define GenClassesIf(classname,t,type,elsepart) \
-( t==typeid(type)            \
-  ? new classname<type>     \
-  : elsepart \
-  )
-#define GenClasses(classname,t,baseclass) \
-  GenClassesIf(classname, t, bool,  \
-  GenClassesIf(classname, t, char,  \
-  GenClassesIf(classname, t, signed char,  \
-  GenClassesIf(classname, t, unsigned char,  \
-  GenClassesIf(classname, t, short,   \
-  GenClassesIf(classname, t, signed short,   \
-  GenClassesIf(classname, t, unsigned short, \
-  GenClassesIf(classname, t, int,     \
-  GenClassesIf(classname, t, signed int,     \
-  GenClassesIf(classname, t, unsigned int,   \
-  GenClassesIf(classname, t, float,          \
-  (baseclass*)0 )))))))))))
 
   /** defines a template matrix class Image for operations between matrices and vectors.
      Vector is a friend of Image and Image is the base class for Image

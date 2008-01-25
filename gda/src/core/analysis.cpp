@@ -270,6 +270,7 @@ void Analysis::ready()
   else {
     if (!no_map_)
       prepareResultImage();
+    iNodeRoot_->status(CI);
     emit message("Analysis finished");
 
   }

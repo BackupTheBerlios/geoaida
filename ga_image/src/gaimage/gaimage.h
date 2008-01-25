@@ -94,7 +94,7 @@ public:
   void write(const char* filename, int channel=0, const char* comment=0);
   void write(const char* filename, const char* comment);
   void write(FILE *fp, const char* comment);
-  void write(FILE *fp, int channnel=0, const char* comment=0);
+  void write(FILE *fp, int channel=0, const char* comment=0);
 	
   //------------------------------ Iterators ----------------------
   void* begin(int row=0, int channel=0);
@@ -464,6 +464,25 @@ protected:
   ForTypeDo(unsigned int, function, args)   \
   ForTypeDo(float, function, args)          \
 }
+
+#define GenClassesIf(classname,t,type,elsepart) \
+( t==typeid(type)            \
+  ? new classname<type>     \
+  : elsepart \
+  )
+#define GenClasses(classname,t,baseclass) \
+  GenClassesIf(classname, t, bool,  \
+  GenClassesIf(classname, t, char,  \
+  GenClassesIf(classname, t, signed char,  \
+  GenClassesIf(classname, t, unsigned char,  \
+  GenClassesIf(classname, t, short,   \
+  GenClassesIf(classname, t, signed short,   \
+  GenClassesIf(classname, t, unsigned short, \
+  GenClassesIf(classname, t, int,     \
+  GenClassesIf(classname, t, signed int,     \
+  GenClassesIf(classname, t, unsigned int,   \
+  GenClassesIf(classname, t, float,          \
+  (baseclass*)0 )))))))))))
 
 } // namespace Ga
 
