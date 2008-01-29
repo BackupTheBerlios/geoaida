@@ -27,6 +27,7 @@
 using namespace Ga;
 void Usage(const char *prg)
 {
+   cout << "Segments image depending on min- and max thresholds. If a three-channel image is given it gets converted into a ndvi-image (ie grey-scale image)." <<endl;
   cout << "Usage:" << endl;
   cout << "  " << prg << " <src-image> <maskimage> <labelimage> <regionfile> <minsize> <maxsize> <minval> <maxval> [<class>] " << endl;
 }
