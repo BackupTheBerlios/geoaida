@@ -22,16 +22,28 @@ class ClusterAnalysis
 		
 		typedef graph_traits<GraphType>::vertex_descriptor VertexDescriptor;
 		typedef graph_traits<GraphType>::edge_descriptor EdgeDescriptor;
+		typedef graph_traits<GraphType>::adjacency_iterator AdjacencyIterator;
 		
 		void startFresh();
 		VertexDescriptor addFeature(Feature &feature);
 
 		std::vector<std::vector<Feature> > getClusters();
-		void findClusters_AbsEdge(double minWeight);
+		void findClusters_AbsEdge(double minWeight, double maxWeight);
 		void findClusters_ClusterCount(int noCluster);
+		void findClusters_NNAbsEdge(int nnCount, double maxWeight);
+		void findClusters_FLAME(int nnCount, int iterations, double maxWeight, double densityThreshold);
 		
 	private:
-		void computeSpanningTree();
+		struct NeighbourSort
+		{
+			bool operator ()(const std::pair<VertexDescriptor, double> &node1, const std::pair<VertexDescriptor, double> &node2)
+			{
+				return node1.second < node2.second;
+			}
+		};
+
+		void computeSpanningTree(double maxWeight);
+		void computeKNNTree(int nnCount, double maxWeight);
 		void printClusters();
 		
 		GraphType graph;

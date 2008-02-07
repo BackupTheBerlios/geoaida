@@ -59,6 +59,16 @@ template<class T>
 	return sum;
 }
 
+template<class T>
+		double Vertex<T>::volume() const
+{
+	double volume = 1.0;
+	for (int i=0; i<dimension(); i++)
+		volume *= static_cast<double>(std::abs((*this)[i]));
+
+	return volume;
+}
+
 // Operators
 template<class T>
 		const T &Vertex<T>::operator [](int index) const
@@ -145,4 +155,26 @@ template<class T>
 {
 	Vertex<T> returnValue();
 	return returnValue;
+}
+
+template<class T>
+		Vertex<T> Vertex<T>::minimize(Vertex<T> &arg1, Vertex<T> &arg2)
+{
+	Vertex<T> retValue;
+	
+	for (int i=0; i<std::max(arg1.dimension(), arg2.dimension()); i++)
+		retValue.at(i) = std::min(arg1[i], arg2[i]);
+	
+	return retValue;
+}
+
+template<class T>
+		Vertex<T> Vertex<T>::maximize(Vertex<T> &arg1, Vertex<T> &arg2)
+{
+	Vertex<T> retValue;
+	
+	for (int i=0; i<std::max(arg1.dimension(), arg2.dimension()); i++)
+		retValue.at(i) = std::max(arg1[i], arg2[i]);
+	
+	return retValue;
 }

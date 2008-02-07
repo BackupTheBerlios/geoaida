@@ -23,5 +23,6 @@ class Segment
 };
 
 void segmentImage(Ga::Image &image, std::vector<Segment> &segments);
+void segmentImageNCC(Ga::Image &image, Ga::Image &match, double threshold, std::vector<Segment> &segments, Ga::Image &cutoutImage);
 
 #endif
