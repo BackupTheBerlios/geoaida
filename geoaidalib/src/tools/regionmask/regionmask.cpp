@@ -153,6 +153,10 @@ bool processRegion(ArgDict & args, GaMaskImage & mask, int mask_x, int mask_y,
   lly -= labelImage->offset_y;
   urx -= labelImage->offset_x;
   ury -= labelImage->offset_y;
+
+#if 0 
+  // Does not work e.g. if two regions have the same bounding box, but have no overlapping region.
+  //! Delete this 
   if (mask.getFloat(llx, lly, 0, false)
       && mask.getFloat(llx, ury, 0, false)
       && mask.getFloat(urx, ury, 0, false)
@@ -163,6 +167,7 @@ bool processRegion(ArgDict & args, GaMaskImage & mask, int mask_x, int mask_y,
     args.replace("ury", ury);
     return true;;               // Boundingbox is within mask
   }
+#endif
 
   // adjust boundingbox to mask
   DefFloat(geoWest);
