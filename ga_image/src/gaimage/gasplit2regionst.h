@@ -15,7 +15,7 @@ int __isnanf(float);
 #include <iostream>
 #include <sstream>
 
-using namespace std;
+
 
 /*
   RegDescT
@@ -46,7 +46,7 @@ template <class RegDescT,
   class DataPicT,
   class LabelPicT,
   class TestClass>
-vector<RegDescT > *splitIntoRegionsT(const DataPicT &hpic,
+std::vector<RegDescT > *splitIntoRegionsT(const DataPicT &hpic,
                                     LabelPicT &lpic,
                                     TestClass tclass,
                                     int minSize, int maxSize);
@@ -116,9 +116,9 @@ class RegDescT
     int urx() {return urx_;}
     int ury() {return ury_;}
     
-    string attributes2string()
+    std::string attributes2string()
         {            
-            ostringstream out;
+            std::ostringstream out;
             out << "class=\"" << class_ << "\" ";
             out << "id=\"" << id_ << "\" ";
             out << "file=\"" << file_ << "\" ";
@@ -131,14 +131,14 @@ class RegDescT
             return out.str();
         }
     
-    string toString(){
-        ostringstream out = "<region ";
+    std::string toString(){
+        std::ostringstream out = "<region ";
         out << attributes2string();
         out << "/>" << endl;
         return out;
     }
 
-    string class_, file_, name_;    
+    std::string class_, file_, name_;    
 
 protected:
     int llx_,lly_,urx_,ury_;

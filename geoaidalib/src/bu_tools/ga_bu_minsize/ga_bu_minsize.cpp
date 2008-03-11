@@ -26,7 +26,7 @@
 #include "regionsensor.h"
 #endif
 
-
+using namespace std;
 void usage(char* prg)
 {
   cout << "usage: "<< prg << " infile outfile maxdist [classes ...]" << endl

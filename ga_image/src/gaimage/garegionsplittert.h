@@ -49,13 +49,13 @@ int __isnanf(float);
 #include <string>
 #include <sstream>
 
-using namespace std;
+
 
 
 template <class RegDescT, class RegionFinderClassT>
 class RegionSplitterT{
 public:
-  RegionSplitterT(vector<RegDescT>& regList, 
+    RegionSplitterT(std::vector<RegDescT>& regList, 
                   Ga::Image& labelImg, 
                   RegionFinderClassT& testClass, 
                   int minSize=1, 
@@ -75,8 +75,8 @@ public:
       This is only the fall back name, but necessary for backward 
       compability.
     */
-    void setRegionClass(string classname);
-    void setLabelFile(string labelfilename);
+    void setRegionClass(std::string classname);
+    void setLabelFile(std::string labelfilename);
 
     /**
        if 
@@ -95,18 +95,18 @@ protected:
     void goNorth(int x, int y, int value, int def_val);
     void goEast(int x, int y, int value, int def_val);
     void goSouth(int x, int y, int value, int def_val);
-    vector<RegDescT>* classify(int minSize, int maxSize);
+    std::vector<RegDescT>* classify(int minSize, int maxSize);
     int setPixel(int x, int y, int val);
 protected:
-    vector<RegDescT>& regionList_;
+    std::vector<RegDescT>& regionList_;
     Ga::Image& lpic_;
     RegionFinderClassT& tclass_;
     int minSize_;
     int maxSize_;
     int llx_,lly_,urx_,ury_;
     int startId_;
-    string regionClass_;
-    string labelfilename_;
+    std::string regionClass_;
+    std::string labelfilename_;
     bool splitmode_multiclass_;
 
     /* Pixel in the labelImg with this value are not bound to a region */
@@ -172,9 +172,9 @@ class RegDescT
     int urx() {return urx_;}
     int ury() {return ury_;}
     
-    virtual string attributes2string()
+    virtual std::string attributes2string()
         {            
-            ostringstream out;
+            std::ostringstream out;
             out << "class=\"" << class_ << "\" ";
             out << "id=\"" << id_ << "\" ";
             out << "file=\"" << file_ << "\" ";
@@ -187,15 +187,15 @@ class RegDescT
             return out.str();
         }
     
-    string toString(){
-        ostringstream out("<region ");
+    std::string toString(){
+        std::ostringstream out("<region ");
         out << "<region ";
         out << attributes2string();
         out << "/>";
         return out.str();
     }
 
-    string class_, file_, name_;    
+    std::string class_, file_, name_;    
     int id_;
 
 protected:

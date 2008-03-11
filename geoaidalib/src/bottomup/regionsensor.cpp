@@ -18,6 +18,7 @@
 #define DEBUGMSG
 
 #include "regionsensor.h"
+using namespace std;
 
 RegionSensor::RegionSensor(){
 	init();

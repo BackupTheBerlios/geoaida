@@ -31,7 +31,7 @@
 //#include "stackelemstring.h"
 
 using namespace Ga;
-using namespace std;
+
 
 class RegionSensor : public GASensor  {
 public:
@@ -779,7 +779,7 @@ void calc_average_thickness(PixType label){
     
     //  Berechnung der mittleren Breite
 
-    cout<<"Berechnung der mittleren Breite"<<endl;
+  std::cout<<"Berechnung der mittleren Breite"<<endl;
     int box=5;
     float mx=0.0, count=0.0;
     for (int y=0+box; y<dy-box; y++)
@@ -1064,7 +1064,7 @@ void calc_average_thickness(PixType label){
     //  Umrechnung Pixel->m
     av_thickness*=xd;
         
-    cout<<"Mittlere BRIAN-Breite="<<av_thickness<<" Meter"<<endl;
+    std::cout<<"Mittlere BRIAN-Breite="<<av_thickness<<" Meter"<<endl;
 
 
     //  Erzeuge gen-file der Skelettlinie   
@@ -1073,9 +1073,9 @@ void calc_average_thickness(PixType label){
     float ge = node()->geoEast();
     float gw = node()->geoWest();
     
-    cout<<"Globale Lage der BB: north="<<gn<<" south="<<gs<<" west="<<gw<<" east="<<ge<<" file="<<node()->filename()<<endl;
-    cout<<"Lage der BB: llx="<<x1<<" urx="<<x2<<" ury="<<y1<<" lly="<<y2<<endl;
-    cout<<"BB: x-dim="<<dx<<" ydim="<<dy<<endl;
+    std::cout<<"Globale Lage der BB: north="<<gn<<" south="<<gs<<" west="<<gw<<" east="<<ge<<" file="<<node()->filename()<<endl;
+    std::cout<<"Lage der BB: llx="<<x1<<" urx="<<x2<<" ury="<<y1<<" lly="<<y2<<endl;
+    std::cout<<"BB: x-dim="<<dx<<" ydim="<<dy<<endl;
 
     //  gen-file oeffnen
     FILE *gen_fp;
@@ -1094,7 +1094,7 @@ void calc_average_thickness(PixType label){
         //  fuer alle sicheren Skelettpunkte
         if (Matrix2[x+y*dx]>3.0){
           skeleton_list.append(QPoint(x,y));
-          cout<<"Skelettpunktliste: ("<<x<<","<<y<<")"<<endl;
+          std::cout<<"Skelettpunktliste: ("<<x<<","<<y<<")"<<endl;
           }
 
     //  write skeleton list to gen file with correct topology
@@ -1115,7 +1115,7 @@ void calc_average_thickness(PixType label){
     float min_dist_all= diag;
     int startp_nr;
     for (int i=0; i<4; i++){
-      cout<<"Startpunkt "<<i<<"=("<<startp[i].x()<<","<<startp[i].y()<<") Dist="<<min_dist[i]<<endl;
+        std::cout<<"Startpunkt "<<i<<"=("<<startp[i].x()<<","<<startp[i].y()<<") Dist="<<min_dist[i]<<endl;
       if (min_dist[i]<min_dist_all){
         min_dist_all= min_dist[i];
         startp_nr= i;
@@ -1145,13 +1145,13 @@ void calc_average_thickness(PixType label){
       //  avoid backsteps and write to gen-file        
 //    if ((!avoid_back) || (min_dist < 1.5*m_step)){
       if ((!avoid_back) || (min_dist < 10.0*av_thickness_pixel)){
-        cout<<"Skelettpunkt Label: ("<<center.x()<<","<<center.y()<<")"<<endl;
-        cout<<"Skelettpunkt global: ("<<(node()->llx()+center.x())*xd+gw<<","<<gn-(node()->ury()+center.y())*xd<<")"<<endl;          
+          std::cout<<"Skelettpunkt Label: ("<<center.x()<<","<<center.y()<<")"<<endl;
+          std::cout<<"Skelettpunkt global: ("<<(node()->llx()+center.x())*xd+gw<<","<<gn-(node()->ury()+center.y())*xd<<")"<<endl;          
         fprintf (gen_fp,"%f %f\n",(node()->llx()+center.x())*xd+gw, gn-(node()->ury()+center.y())*xd);        
         }
       //  delete outlier new_center
       else{
-      cout<<"delete "<<new_center.x()<<","<<new_center.y()<<")"<<endl;
+          std::cout<<"delete "<<new_center.x()<<","<<new_center.y()<<")"<<endl;
       for (it= skeleton_list.begin(); it!= skeleton_list.end(); ++it)
         if (dist(new_center, *it)==0.0)
           it= skeleton_list.remove(it);
@@ -1177,8 +1177,8 @@ int average_thickness(PixType label, QString sn="") {
   if (sn.isEmpty()) {sn=sensor_name;i=1;}
 	if (!node_->find(sn)){
     int labelnummer= label;
- 		cout<<"in average_thickness"<<endl;
-    cout<<"labelnummer= "<<labelnummer<<endl;
+ 		std::cout<<"in average_thickness"<<endl;
+    std::cout<<"labelnummer= "<<labelnummer<<endl;
     
 	  calc_average_thickness(label);
 		}

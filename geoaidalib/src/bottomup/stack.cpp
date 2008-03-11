@@ -16,6 +16,7 @@
  ***************************************************************************/
 //  #define DEBUGMSG
 
+using namespace std;
 #include <iostream>
 
 #include "stack.h"
@@ -28,6 +29,8 @@
 #include <qmap.h>
 #include <cstdio>
 #include <iostream>
+
+
 
 //######### NUMERIC FUNCTION  #########
 bool Stack::numfkt(double f(double, double))

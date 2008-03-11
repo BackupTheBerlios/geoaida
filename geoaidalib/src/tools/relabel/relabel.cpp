@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <relabel.h>
+using namespace std;
 
 ImageT<int> *relabelOutput (Image &Img, char *labelname, char *descr)
 {

@@ -27,6 +27,7 @@
 #include "regionsensor.h"
 #endif
 #include <qlist.h>
+using namespace std;
 
 void usage(char* prg)
 {

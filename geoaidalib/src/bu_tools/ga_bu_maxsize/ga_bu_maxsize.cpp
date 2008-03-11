@@ -26,6 +26,7 @@
 #include "regionsensor.h"
 #endif
 
+using namespace std;
 
 void usage(char* prg)
 {

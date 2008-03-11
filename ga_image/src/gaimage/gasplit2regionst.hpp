@@ -1,4 +1,5 @@
 #include "gasplit2regionst.h"
+using namespace std;
 
 #define SMALL_REGIONS_TO_1 1
 

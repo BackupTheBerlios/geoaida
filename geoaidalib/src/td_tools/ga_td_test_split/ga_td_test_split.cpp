@@ -27,6 +27,7 @@
 #include <gasplit2regionst.h>
 
 using namespace Ga;
+using namespace std;
 
 void usage(char* prg)
 {

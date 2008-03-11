@@ -17,6 +17,8 @@
 
 #include "formoperator.h"
 
+using namespace std;
+
 FormOperator::FormOperator(){
 }
 FormOperator::~FormOperator(){

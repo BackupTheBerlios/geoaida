@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "formbasenode.h"
+using namespace std;
 
 FormBaseNode::FormBaseNode(){
 }

@@ -29,6 +29,7 @@
 #include <qlist.h>
 
 using namespace Ga;
+using namespace std;
 
 //#define _TEST_DB_
 

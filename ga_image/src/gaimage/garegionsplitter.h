@@ -124,8 +124,8 @@ namespace Ga{
           in RegionSplitterT should be used;
         */
         
-        virtual string getRegionClass(int x, int y, int channel=0){
-            string out = "";
+        virtual std::string getRegionClass(int x, int y, int channel=0){
+            std::string out = "";
             return out;
         }
 
@@ -139,16 +139,16 @@ namespace Ga{
     
 
 
-    vector<RegDesc> splitIntoRegions(Image &labelpic,  
+    std::vector<RegDesc> splitIntoRegions(Image &labelpic,  
                                      RegionFinder& regfind,
-                                     string regionclass,
-                                     string labelfilename="",
+                                     std::string regionclass,
+                                     std::string labelfilename="",
                                      int minsize=0, int maxsize=INT_MAX);
-    vector<RegDesc> splitIntoRegions(Image &labelpic,  
+    std::vector<RegDesc> splitIntoRegions(Image &labelpic,  
                                      RegionFinder& regfind,
                                      int minsize=0, int maxsize=INT_MAX);
     
-    int regionsToFile(string filename, vector<RegDesc>& reglist);
+    int regionsToFile(std::string filename, std::vector<RegDesc>& reglist);
 }
 
 #endif

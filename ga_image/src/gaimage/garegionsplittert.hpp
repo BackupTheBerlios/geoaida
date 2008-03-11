@@ -35,6 +35,7 @@
 
 #include "garegionsplittert.h"
 #include "garegionsplitter.h"
+using namespace std;
 
 #define SMALL_REGIONS_TO_1 1
 
