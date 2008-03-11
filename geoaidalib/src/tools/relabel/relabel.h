@@ -28,8 +28,8 @@
 //	outputs unlabeled and extra outputs in all resolution levels
 //  #define DEBUG_MSG
 
-using namespace Ga;
 
-int combine (Image *in, Image &mask, char* eval_name, char *path);
-int compose_result (Image *in, char* eval_name, char* regdes_name, char *outimg_name);
-ImageT<int> *relabelOutput (Image &Img, char *labelname, char *descr);
+
+int combine (Ga::Image *in, Ga::Image &mask, char* eval_name, char *path);
+int compose_result (Ga::Image *in, char* eval_name, char* regdes_name, char *outimg_name);
+Ga::ImageT<int> *relabelOutput (Ga::Image &Img, char *labelname, char *descr);

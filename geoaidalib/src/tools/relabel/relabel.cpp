@@ -17,6 +17,7 @@
 
 #include <relabel.h>
 using namespace std;
+using namespace Ga;
 
 ImageT<int> *relabelOutput (Image &Img, char *labelname, char *descr)
 {

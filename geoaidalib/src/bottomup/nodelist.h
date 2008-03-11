@@ -36,7 +36,7 @@
 #define  QPtrListIterator QListIterator
 #endif
 
-//using namespace Ga;
+
 
 
 /**class to handel a list of image informations

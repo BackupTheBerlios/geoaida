@@ -21,8 +21,8 @@
 #include <garegionsplittert.h>
 #include <garegionsplitter.h>
 #include <gaimage.h>
-using namespace Ga;
 
+namespace Ga{
   class RegDescThres : public RegDesc
   {
   public: 
@@ -33,10 +33,10 @@ using namespace Ga;
       double average_;
       int regsize_;
 
-      virtual string attributes2string()
+      virtual std::string attributes2string()
           {            
-              string s = RegDesc::attributes2string();
-              ostringstream out;
+              std::string s = RegDesc::attributes2string();
+              std::ostringstream out;
 
               // clog << "Old attributes " << s << endl;
               // clog << "New attribute Average: " << average_ << endl;
@@ -50,10 +50,10 @@ using namespace Ga;
 
 class RegionFinderThres : public RegionFinder{
 public:
-    RegionFinderThres(const Image& mask, const Image& data, float level)
+    RegionFinderThres(const Ga::Image& mask, const Ga::Image& data, float level)
         : RegionFinder(mask, data, level){};
 
-    bool valid(const Image &lpic, int x, int y){
+    bool valid(const Ga::Image &lpic, int x, int y){
         bool retval=true;
         retval &= (mask_.getInt(x, y)>0);
         retval &= (data_.getFloat(x, y) > 1);
@@ -64,6 +64,6 @@ public:
 protected:
     
 };
-
+};
 
 #endif
