@@ -456,7 +456,7 @@ int main(int argc, char *argv[])
              maskFile.latin1(),
              mask_x,mask_y,mask_size_x,mask_size_y);
       fflush(stdout);
-      sleep(1);
+      sleep(0);
       DoIt(outFile,regFile,maskFile,resultImage,mask_x,mask_y,mask_size_x,mask_size_y);
       printf("Done -- Removing lockfile %s\n",lockName);
       if (lockName) {

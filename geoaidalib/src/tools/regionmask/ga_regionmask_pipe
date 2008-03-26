@@ -26,6 +26,6 @@ then
   regionmask -p $pipename -l $filename.lock >/tmp/regionmask.$$.log 2>&1 &
 #  regionmask -p $pipename -l $filename.lock &
   echo $! >$filename.pid
-  echo "numCalls 10" >$pipename
+#  echo "numCalls 10" >$pipename
   watch_pipe $pipename $filename.lock $filename.pid 150 &
 fi
