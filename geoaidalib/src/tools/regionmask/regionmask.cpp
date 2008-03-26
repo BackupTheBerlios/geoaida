@@ -46,6 +46,7 @@ struct LabelImage
 
 QDict <Image> imageDict;
 QDict <LabelImage> labelImageDict;
+QDict <QList < ArgDict > > regionFileDict;
 
 void Usage(const char *prg)
 {
@@ -229,31 +230,22 @@ bool processRegion(ArgDict & args, GaMaskImage & mask, int mask_x, int mask_y,
 #undef DefFloat
 }
 
-int DoIt(const char* outFile, const char* regFile, const char* maskFile, const char* resultFile,
-          int mask_x, int mask_y, int mask_size_x, int mask_size_y)
+QList<ArgDict>* readRegionFile(const char* filename)
 {
-  // Read maskfile
-  FILE *mfp = fopen(maskFile, "r");
-//      FILE *mfp=fopen("/project/geoaida/tmp/mask.pbm","r");
-
-  if (!mfp) {
-    fprintf(stderr, "mask file %s not found\n", maskFile);
-    return 1;
-  }
-  GaMaskImage mask;
-  mask.read(mfp);
-  fclose(mfp);
+  QList <ArgDict>* region=regionFileDict[filename];
+  if (region) 
+    return region;
 
   // read regionfile
 //  QFile rfp("/project/geoaida/tmp/reglist.dest");
-  QFile rfp(regFile);
+  QFile rfp(filename);
   if (!rfp.open(IO_ReadOnly)) {
-    fprintf(stderr, "regionfile %s not founed\n", regFile);
-    return 1;
+    fprintf(stderr, "regionfile %s not found\n", filename);
+    return 0;
   }
   // Read and process regions
-  QList < ArgDict > regionList;
-  regionList.setAutoDelete(true);
+  QList < ArgDict > *regionList=new QList < ArgDict >();
+  regionList->setAutoDelete(true);
   MLParser parser(&rfp);
   QString keywords[] = { "region", "" };
   const MLTagTable nodeTagTable(keywords);
@@ -265,11 +257,7 @@ int DoIt(const char* outFile, const char* regFile, const char* maskFile, const c
     switch (tag) {
     case TOK_REGION:{
         args = parser.args();
-        if (processRegion
-            (*args, mask, mask_x, mask_y, mask_size_x, mask_size_y))
-          regionList.append(args);
-        else
-          delete args;
+	regionList->append(args);
         break;
       }
     case -TOK_REGION:
@@ -286,7 +274,42 @@ int DoIt(const char* outFile, const char* regFile, const char* maskFile, const c
     }
   } while (tag != MLParser::END_OF_FILE);
   rfp.close();
+  regionFileDict.insert(filename,regionList);
+}
+
+int DoIt(const char* outFile, const char* regFile, const char* maskFile, const char* resultFile,
+          int mask_x, int mask_y, int mask_size_x, int mask_size_y)
+{
+  // Read maskfile
+  FILE *mfp = fopen(maskFile, "r");
+//      FILE *mfp=fopen("/project/geoaida/tmp/mask.pbm","r");
+
+  if (!mfp) {
+    fprintf(stderr, "mask file %s not found\n", maskFile);
+    return 1;
+  }
+  GaMaskImage mask;
+  mask.read(mfp);
+  fclose(mfp);
+
+  QList<ArgDict> *regionSourceList=readRegionFile(regFile);
+  if (!regionSourceList) return 1;
+  QList<ArgDict> regionList;
+
+  // Process regions
+  for (ArgDict* arg = regionSourceList->first();
+       arg;
+       arg=regionSourceList->next()) {
+    ArgDict* args=new ArgDict(*arg);
+    if (processRegion
+	(*args, mask, mask_x, mask_y, mask_size_x, mask_size_y))
+      regionList.append(args);
+    else
+      delete args;
+  }
+  
   // Write labels
+  QFile rfp(outFile ? outFile : regFile);
   if (outFile) {
     if (labelImageDict.count() > 1) {
       fprintf(stderr, "regionmask: Cannot generate multiple labelfiles\n");
@@ -311,7 +334,6 @@ int DoIt(const char* outFile, const char* regFile, const char* maskFile, const c
         }
       }
     }
-    rfp.setName(outFile);
   }
   else {
     printf("regionmask: overwriting %s\n",regFile);
