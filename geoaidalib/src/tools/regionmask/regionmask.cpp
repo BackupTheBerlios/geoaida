@@ -275,6 +275,7 @@ QList<ArgDict>* readRegionFile(const char* filename)
   } while (tag != MLParser::END_OF_FILE);
   rfp.close();
   regionFileDict.insert(filename,regionList);
+  return regionList;
 }
 
 int DoIt(const char* outFile, const char* regFile, const char* maskFile, const char* resultFile,
