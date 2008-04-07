@@ -28,6 +28,7 @@
 #include <qtextedit.h>
 #include "treeitem.h"
 #include "operatorlist.h"
+#include "filelist.h"
 #include "inode.h"
 #include "cleanup.h"
 #include "fatalerror.h"
@@ -375,15 +376,18 @@ void MainGui::loadPrjFile(QString fname)
                       "geosemnet",
                       "geoimagelist",
                       "geoinstancenet",
-  							 "geoinstnethist",
-							 "geoinstnetfut",""};
+		      "geoinstnethist",
+		      "geoinstnetfut",
+		      "geofilelist",
+		      ""};
   enum {
     TOK_GEOPROJECT=1,
     TOK_GEOSEMNET,
     TOK_GEOIMAGELIST,
     TOK_GEOINSTANCENET,
     TOK_GEOINSTNETHIST,
-    TOK_GEOINSTNETFUT
+    TOK_GEOINSTNETFUT,
+    TOK_GEOFILELIST
   };
   const MLTagTable nodeTagTable(keywords);
   int tag, flag = 0;
@@ -410,6 +414,12 @@ void MainGui::loadPrjFile(QString fname)
     case TOK_GEOIMAGELIST: {
       if (flag == 1) { //da 'analysis' je Durchlauf neu erzeugt wird
         geoImageList_.read(parser);  //lesen wir das mal hier ein
+      }
+      break;
+    } 
+    case TOK_GEOFILELIST: {
+      if (flag == 1) { 
+        fileList_.read(parser);  
       }
       break;
     } 

@@ -76,6 +76,8 @@ public:
   QString typeOfOperator();
   /** Returns the image type */
   QString imageType();
+  /** Returns the file type */
+  QString fileType();
   /** returns true, if changing this attribute requires an update of other attributes */
   bool updateOther();
   /** returns the full name of this attribute containing the prefix and name */
@@ -98,7 +100,8 @@ public:
     ENUM,
     OPERATOR,
     IMAGE,
-    COLOR
+    COLOR,
+    FILE
   };
 protected:                     // Protected methods
   /** Initialize attribute */
@@ -136,6 +139,11 @@ protected:                     // Protected attributes
       QString *imageType_;
     }
     im_;
+    struct
+    {
+      QString *fileType_;
+    }
+    file_;
   };
   /** name of attribute */
   QString name_;

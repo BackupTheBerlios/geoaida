@@ -18,6 +18,7 @@ set(headers analysis.h
             geoimage.h
             geoimagecache.h
             geoimagelist.h
+	    filelist.h
             gnode.h
             inode.h
             judge.h
@@ -35,6 +36,7 @@ set(sources
            geoimage.cpp
            geoimagecache.cpp
            geoimagelist.cpp
+	   filelist.cpp
            gnode.cpp
            inode.cpp
            judge.cpp

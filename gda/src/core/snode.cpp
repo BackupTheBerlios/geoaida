@@ -18,6 +18,7 @@
 #include "snode.h"
 #include "task.h"
 #include "operatorlist.h"
+#include "filelist.h"
 #include "qcolor.h"
 #include <qdir.h>
 #include <qregexp.h>
@@ -343,7 +344,7 @@ void SNode::execOperator(Operator * op, INode * iNode, AttribList & attribs,
   QFile fp(iNode->output()+".cmd");
   if (fp.open(IO_WriteOnly)) {
     fp.writeBlock(cmd,cmd.length());
-    char* n = "\n";
+    const char* n = "\n";
     fp.writeBlock(n, 1);
     fp.close();
   }
@@ -427,6 +428,19 @@ void SNode::execTopDownOp(INode * iNode)
                                      parent->attributeFloat("geoSouth"));
             cleanUp_.append(partName);
             attribs.replace(keyName + "_file", partName);
+          }
+        }
+        break;
+      case Attribute::FILE:{
+          QString fileName = attribute((**it).fullname());
+          QString keyName = (**it).name();
+          ArgDict *args = fileList_.find(fileName);
+          if (args) {
+            QDictIterator < QString > it(*args);
+            for (; it.current(); ++it) {
+              attribs.replace(keyName + "_" + it.currentKey(),
+                              (it.current()));
+            }
           }
         }
         break;
