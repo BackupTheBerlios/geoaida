@@ -276,8 +276,8 @@ void MainGui::resultLoad() {
       try {
         mapImage->load();
         mapViewer->set(iNode_,mapImage);
-	 //! to do: file selection instead of hard coded image
-        mapViewer->setDataImage(geoImageList_["rmk001"]);
+	if (geoImageList_.count())
+	  mapViewer->setDataImage(geoImageList_[geoImageList_.list()[0]]);
       }
       catch (FatalError err) {
         delete mapImage;
@@ -484,7 +484,8 @@ void MainGui::loadPrjFile(QString fname)
             try {
               mapImage->load();
               mapViewer->set(iNode_,mapImage);
-              mapViewer->setDataImage(geoImageList_["rmk001"]);
+	      if (geoImageList_.count())
+		mapViewer->setDataImage(geoImageList_[geoImageList_.list()[0]]);
             }
             catch (FatalError err) {
               delete mapImage;
@@ -640,7 +641,8 @@ void MainGui::slotAnalysisReady(INode* iNode, GeoImage* map) {
   trashViewer->rootNode(analysis_->trashNode());
   trashViewer->connectSlots();
   mapViewer->set(iNode_,map_);
-  mapViewer->setDataImage(geoImageList_["rmk001"]);
+  if (geoImageList_.count())
+    mapViewer->setDataImage(geoImageList_[geoImageList_.list()[0]]);
   QFile fp("result.net");
   fp.open(IO_WriteOnly);
 	QTextStream str(&fp);
