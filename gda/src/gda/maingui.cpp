@@ -446,7 +446,8 @@ void MainGui::loadPrjFile(QString fname)
             try {
               mapImage->load();
               mapViewer->set(iNode_,mapImage);
-              mapViewer->setDataImage(geoImageList_["rmk001"]);
+	      if (geoImageList_.count())
+		mapViewer->setDataImage(geoImageList_[geoImageList_.list()[0]]);
             }
             catch (FatalError err) {
               delete mapImage;
