@@ -1079,10 +1079,8 @@ inline double ImageT<PixTyp>::maxValue() const {
     usage: \code  PixTyp xmax = A.Max( channel=0 ); PixTyp xmax = A.Max( x, y, channel=0 ); \endcode */
 template <class PixTyp>
 inline double ImageT<PixTyp>::matrixMax(int& x, int& y, int channel) {
-#if 0
-  if(nSize_ < 0)
-    return *pMatData[0];
-#endif
+  if(nSize_ <= 0)
+    return 0.0;
 
   ConstIterator index = constBegin(0, channel);
   PixTyp max = *index;
@@ -1104,8 +1102,8 @@ inline double ImageT<PixTyp>::matrixMax(int& x, int& y, int channel) {
 
 template <class PixTyp>
 inline double ImageT<PixTyp>::matrixMax(int channel) {
-  if(nSize_ < 0)
-    return *(begin());
+  if (nSize_ <= 0)
+    return 0.0;
 
   ConstIterator index = constBegin(0, channel);
   PixTyp max = *index;
@@ -1126,10 +1124,8 @@ inline double ImageT<PixTyp>::matrixMax(int channel) {
     usage: \code PixTyp xmax = A.MaxAbs( channel=0 ); PixTyp xmax = A.MaxAbs( x, y, channel=0 ); \endcode */
 template <class PixTyp>
 inline double ImageT<PixTyp>::matrixAbsMax(int& x, int& y, int channel) {
-#if 0
-  if(nSize_ < 0)
-    return *pMatData[0];
-#endif
+  if(nSize_ <= 0)
+    return 0.0;
 
   ConstIterator index = constBegin(0, channel);
   PixTyp max = *index;
@@ -1153,10 +1149,8 @@ inline double ImageT<PixTyp>::matrixAbsMax(int& x, int& y, int channel) {
     usage: \code PixTyp xmin = A.Min( channel=0 ); \endcode */
 template <class PixTyp>
 inline double ImageT<PixTyp>::matrixMin(int& x, int& y, int channel) {
-#if 0
-  if(nSize_ < 0)
-    return *(begin());
-#endif
+  if(nSize_ <= 0)
+    return 0.0;
 
   ConstIterator index = constBegin(0, channel);
   PixTyp min = *index;
@@ -1178,8 +1172,8 @@ inline double ImageT<PixTyp>::matrixMin(int& x, int& y, int channel) {
 
 template <class PixTyp>
 inline double ImageT<PixTyp>::matrixMin(int channel) {
-  if(nSize_ < 0)
-    return *(begin());
+  if(nSize_ <= 0)
+    return 0.0;
 
   ConstIterator index = constBegin(0, channel);
   PixTyp min = *index;
@@ -1201,8 +1195,8 @@ inline double ImageT<PixTyp>::matrixMin(int channel) {
     usage: \code PixTyp xmin = A.MinAbs( channel=0 ); PixTyp xmin = A.MinAbs( x, y, channel=0 ); \endcode */
 template <class PixTyp>
 inline double ImageT<PixTyp>::matrixAbsMin(int& x, int& y, int channel) {
-  if (nSize_ < 0)
-    return *(begin());
+  if (nSize_ <= 0)
+    return 0.0;
 
   ConstIterator index = begin(0, channel);
   PixTyp min = *index;
