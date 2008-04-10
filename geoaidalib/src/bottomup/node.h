@@ -50,119 +50,130 @@ class Ga::Image;
 class Node : public ArgDict {
 public: 
   /** default constructor */
-	Node();
-
+  Node();
+  
   /** constructor read attributes for this Node through parser*/
-	Node(MLParser& parser);
-
+  Node(MLParser& parser);
+  
   /** denstructor */
-	~Node();
-
-protected: // Protected attributes
-	enum IMGTYPE {
+  ~Node();
+  
+ protected: // Protected attributes
+  enum IMGTYPE {
     PFM_FLOAT=0,
     PFM_SINT,
     PFM_UINT,
     PFM_SINT16,
     PFM_UINT16,
-		PBM,
-		PGM,
-		PPM,	
-		UNKNOWN
-	};
-	
-public:
-	/** init routine */
-	void init();
-
+    PBM,
+    PGM,
+    PPM,	
+    UNKNOWN
+  };
+  
+ public:
+  /** init routine */
+  void init();
+  
   /** read attributes for this Node through parser */
   void read(MLParser& parser);
-
+  
   /** load image info - not the data */
-	void load(NodeList& nodeList);
-
+  void load(NodeList& nodeList);
+  
   /** write data to file */
-	void write(QTextStream& fp, QString keyword="node");
-
+  void write(QTextStream& fp, QString keyword="node");
+  
   /** return the image filename */
   QString filename();
+
   /** set the image filename */
   void filename(QString);
-
+  
   /** return data */
-	Ga::Image* data();
+  Ga::Image* data();
 #if 0	
   /** write a scrap of the data.
-  * return the filename.
-  * if the file exist do nothing .
-  * argument fname is optional .
-  * the coordinates of the image part are geodata e.g. Gauss Krueger */
-	QString part(float north, float south, float west, float east, QString fname = "");
+   * return the filename.
+   * if the file exist do nothing .
+   * argument fname is optional .
+   * the coordinates of the image part are geodata e.g. Gauss Krueger */
+  QString part(float north, float south, float west, float east, QString fname = "");
 #endif	
   //** set value in node */
   void setValue(QString key, QString val);
+
   //** get value from node */
   QString* getValue(const QString key);
+
   /** return data label id */
-	int id() {return id_;}
+  int id() {return id_;}
   /** set label id */
-	void id(int l);
+  void id(int l);
   /** set label weighing */
-	void p(float f);
+  void p(float f);
   /** get label weighing */
-	float p(void) {return valuation_;}
+  float p(void) {return valuation_;}
 #if 0	
   /** return data typ */
-	int dataTyp() {return type_;}	
+  int dataTyp() {return type_;}	
   /** set data typ */
-	void dataTyp(int t);
+  void dataTyp(int t);
 #endif	
   /** return cols */
-	int sizeX() {return cols_;}
+  int sizeX() {return cols_;}
   /** return rows */
-	int sizeY() {return rows_;}
+  int sizeY() {return rows_;}
   /** return cols */
-	int cols() {return cols_;}
+  int cols() {return cols_;}
   /** return rows */
-	int rows() {return rows_;}
+  int rows() {return rows_;}
+  /** set  geoNorth*/
+  void geoNorth(float value);
   /** return  geoNorth*/
-	float geoNorth() {return geoNorth_;}
+  float geoNorth() {return geoNorth_;}
+  /** set  geoSouth*/
+  void geoSouth(float value);
   /** return  geoSouth*/
-	float geoSouth() {return geoSouth_;}
+  float geoSouth() {return geoSouth_;}
+  /** set  geoEast*/
+  void geoEast(float value);
   /** return  geoEast*/
-	float geoEast() {return geoEast_;}
+  float geoEast() {return geoEast_;}
+  /** set  geoWest*/
+  void geoWest(float value);
   /** return  geoWest*/
-	float geoWest() {return geoWest_;}
+  float geoWest() {return geoWest_;}
   /** return lower left x-value*/
-	int llx(int v=-1) {if (v==-1) return llx_; else llx_=v; return v;}
+  int llx(int v=-1) {if (v==-1) return llx_; else llx_=v; return v;}
   /** return lower left y-value*/
-	int lly(int v=-1) {if (v==-1) return lly_; else lly_=v; return v;}
+  int lly(int v=-1) {if (v==-1) return lly_; else lly_=v; return v;}
   /** return upper right x-value*/
-	int urx(int v=-1) {if (v==-1) return urx_; else urx_=v; return v;}
+  int urx(int v=-1) {if (v==-1) return urx_; else urx_=v; return v;}
   /** return upper right y-value*/
-	int ury(int v=-1) {if (v==-1) return ury_; else ury_=v; return v;}
+  int ury(int v=-1) {if (v==-1) return ury_; else ury_=v; return v;}
   /** return x-resolution of the image*/
-	float xResolution();
+  float xResolution();
   /** return y-resolution of the image*/
-	float yResolution();
+  float yResolution();
   /** set class name*/
-	void classname(QString str);
+  void classname(QString str);
   /** return class name*/
-	QString classname() {return class_;}
+  QString classname() {return class_;}
   /** return identifier name*/
-	QString name() {return name_;}
+  QString name() {return name_;}
   /** return node address*/
-	QString addr() {return addr_;}
+  QString addr() {return addr_;}
   /** return node address*/
-	QString key() {return key_;}
+  QString key() {return key_;}
   /** return info about this node*/
-	void info() {
- 		QDictIterator<QString> it(*this);
-		for (;it.current(); ++it)
-		  if(it.currentKey())
-		  	printf("%s=\"%s\" ",it.currentKey().latin1(),(it.current())->latin1() );
-		  else qWarning("(WARNING) Node::info - currentKey() is unreadably");
-	};
+  void info() {
+    QDictIterator<QString> it(*this);
+    for (;it.current(); ++it)
+      if(it.currentKey())
+	printf("%s=\"%s\" ",it.currentKey().latin1(),(it.current())->latin1() );
+      else qWarning("(WARNING) Node::info - currentKey() is unreadably");
+  };
   /** return stack - for bottom-up */
   Stack& stack(void);
   /** Removes the top item from the local stack and returns it. */
@@ -174,24 +185,24 @@ public:
   /** Returns TRUE is the local stack contains no elements to be popped; otherwise returns FALSE.  */
   bool stackIsEmpty ();
   /** Removes the top item from the local stack and deletes it if autoDelete() is TRUE. Returns TRUE if there was an item to pop;
-otherwise returns FALSE.  */
+      otherwise returns FALSE.  */
   bool stackRemove (void) ;
   /** Removes all items from the local stack, deleting them if autoDelete() is TRUE.  */
   void stackClear(void);
   /** update the internal variables using the dictionary */
   void update();
-
-	//Operatoren:
+  
+  //Operatoren:
   /** return class name*/
-	//friend ostream& operator<< (ostream& os, Node& node);
-
-protected: // Protected attributes
-	QString filename_, class_, name_, addr_, key_;
-	Ga::Image* data_;
-	int cols_, rows_, id_, llx_, lly_, urx_, ury_;
-	float geoNorth_, geoSouth_, geoEast_, geoWest_, valuation_;
-	float minval_, maxval_;
- 	
+  //friend ostream& operator<< (ostream& os, Node& node);
+  
+ protected: // Protected attributes
+  QString filename_, class_, name_, addr_, key_;
+  Ga::Image* data_;
+  int cols_, rows_, id_, llx_, lly_, urx_, ury_;
+  float geoNorth_, geoSouth_, geoEast_, geoWest_, valuation_;
+  float minval_, maxval_;
+  
 private:	 // Private attributes
   /** test the consistent of the image date */
   bool testSize(int cols, int rows, IMGTYPE type);
@@ -199,7 +210,7 @@ private:	 // Private attributes
   int geo2pic(float x, float y, int *rx, int *ry);
   /** stack for bottom-up operator */
   Stack stack_;
-
+  
 };
 
 #endif

@@ -133,25 +133,25 @@ QString NodeList::get(QString name)
 
 /** calculate new geo coordinates and resolution using all images belong to included nodes*/
 void NodeList::calcNewGEOValues(float &gN,float &gS,float &gW,float &gE,
-    int &sizeX,int &sizeY,float &xRes,float &yRes) {
-	sizeX = sizeY = 0;
-	gN = gS = gW = gE = 0.0;
-	xRes=0;
-	yRes=0;
-	if (isEmpty()) return;
-	Node* node;
-	QStringList::Iterator it = list_.begin();
-	node = find(*it);
-	if (node) { //initialize variables
-	  gN=node->geoNorth();
-	  gS=node->geoSouth();
-	  gW=node->geoWest();
-	  gE=node->geoEast();
+				int &sizeX,int &sizeY,float &xRes,float &yRes) {
+  sizeX = sizeY = 0;
+  gN = gS = gW = gE = 0.0;
+  xRes=0;
+  yRes=0;
+  if (isEmpty()) return;
+  Node* node;
+  QStringList::Iterator it = list_.begin();
+  node = find(*it);
+  if (node) { //initialize variables
+    gN=node->geoNorth();
+    gS=node->geoSouth();
+    gW=node->geoWest();
+    gE=node->geoEast();
     yRes = (gN-gS) / float(node->sizeY()); //(node->lly() - node->ury()); //resolution
-	  xRes = (gE-gW) / float(node->sizeX()); //(node->urx() - node->llx()); //resolution
-	}
+    xRes = (gE-gW) / float(node->sizeX()); //(node->urx() - node->llx()); //resolution
+  }
   for ( it = list_.begin(); it != list_.end(); ++it ) {
-  	node = find(*it);
+    node = find(*it);
     if (gN < node->geoNorth()) gN = node->geoNorth();// calculate coordinates of the corner points
     if (gS > node->geoSouth()) gS = node->geoSouth();
     if (gW > node->geoWest()) gW = node->geoWest();
@@ -160,7 +160,7 @@ void NodeList::calcNewGEOValues(float &gN,float &gS,float &gW,float &gE,
     float yr = (node->geoNorth()-node->geoSouth()) / float(node->sizeY());
     if (xr < xRes) xRes = xr;
     if (yr < yRes) yRes = yr;
-	  qDebug("#+#+#geoNorth: %f,geoSouth: %f,geoWest: %f, geoEast: %f, rows: %d, cols: %d, lly: %d, ury: %d, llx: %d, urx: %d, dy: %f, dx: %f (%f,%f)",
+    qDebug("#+#+#geoNorth: %f,geoSouth: %f,geoWest: %f, geoEast: %f, rows: %d, cols: %d, lly: %d, ury: %d, llx: %d, urx: %d, dy: %f, dx: %f (%f,%f)",
            node->geoNorth(),node->geoSouth(),node->geoWest(),node->geoEast(),
            node->sizeX(),node->sizeY(), node->lly(), node->ury(), node->llx(), node->urx(),
            yr, xr,xRes,yRes);
@@ -169,56 +169,56 @@ void NodeList::calcNewGEOValues(float &gN,float &gS,float &gW,float &gE,
   sizeX = int((gE-gW) / xRes+0.5);//calculate new image size
   sizeY = int((gN-gS) / yRes+0.5);//calculate new image size
   qDebug("#+#+#newX: %d, newY: %d, xRes: %f, yRes: %f, gN: %f, gS: %f, gE: %f, gW: %f",
-  sizeX, sizeY, xRes, yRes, gN, gS, gE, gW);
- }
+	 sizeX, sizeY, xRes, yRes, gN, gS, gE, gW);
+}
 
 /** read a list of Node and the attributes through parser */
 void NodeList::read(MLParser& parser) {
   qDebug("NodeList::read(parser)");
   list_.clear();
-	QString keywords[]={"node","region",""};
-	const MLTagTable nodeTagTable(keywords);
-	const int TOK_NODE=1;
+  QString keywords[]={"node","region",""};
+  const MLTagTable nodeTagTable(keywords);
+  const int TOK_NODE=1;
   const int TOK_REGION=2;
-	const int TOK_ARG_LIST=3;
-	int tag;
-	do {
-		tag=parser.tag(nodeTagTable);
-		switch (tag) {
-			case TOK_NODE:
-      case TOK_REGION: {
-					Node* gi=new Node(parser); //parse node
-					if (gi->filename()=="") {
-            qDebug("NodeList::read() Missing filename");
-					  delete gi;
-					  break;
-					}
-          this->insert(gi->key(),gi); //insert read node
-         	qDebug("####### %s (%s)",gi->key().latin1(),gi->name().latin1());
-					break;
-				}
-			default: {
-					ArgDict* args=parser.args();
-					delete args;
-					break;
-				}
-		}
-	} while ((tag!=MLParser::END_OF_FILE ) && (tag != -TOK_ARG_LIST));
-
-	qDebug("NodeList::read: num nodes=%d",count());
-	if (isEmpty()) return;
-	//test images and create a structure for the images
-	QString key;
+  const int TOK_ARG_LIST=3;
+  int tag;
+  do {
+    tag=parser.tag(nodeTagTable);
+    switch (tag) {
+    case TOK_NODE:
+    case TOK_REGION: {
+      Node* gi=new Node(parser); //parse node
+      if (gi->filename()=="") {
+	qDebug("NodeList::read() Missing filename");
+	delete gi;
+	break;
+      }
+      this->insert(gi->key(),gi); //insert read node
+      qDebug("####### %s (%s)",gi->key().latin1(),gi->name().latin1());
+      break;
+    }
+    default: {
+      ArgDict* args=parser.args();
+      delete args;
+      break;
+    }
+    }
+  } while ((tag!=MLParser::END_OF_FILE ) && (tag != -TOK_ARG_LIST));
+  
+  qDebug("NodeList::read: num nodes=%d",count());
+  if (isEmpty()) return;
+  //test images and create a structure for the images
+  QString key;
   for ( QStringList::Iterator it = list_.begin(); it != list_.end(); ++it ) {
     key = *it;
     Node *img = find(key);
     //qDebug("## NodeList::read(parser)" + img->filename());
     img->load(*this);
   }
-	calcNewGEOValues(gN_,gS_,gW_,gE_,sizeX_, sizeY_, xRes_,yRes_);
-	qDebug("$$read gN_:%f gS_:%f gW_:%f gE_:%f sizeX_:%d sizeY_:%d xRes_:%f yRes_:%f ",gN_,gS_,gW_,gE_,sizeX_, sizeY_, xRes_,yRes_);
-	
-	outImage_=Image(typeid(signed int),sizeX_,sizeY_,1);
+  calcNewGEOValues(gN_,gS_,gW_,gE_,sizeX_, sizeY_, xRes_,yRes_);
+  qDebug("$$read gN_:%f gS_:%f gW_:%f gE_:%f sizeX_:%d sizeY_:%d xRes_:%f yRes_:%f ",gN_,gS_,gW_,gE_,sizeX_, sizeY_, xRes_,yRes_);
+  
+  outImage_=Image(typeid(signed int),sizeX_,sizeY_,1);
   outImage_.setGeoCoordinates(gW_, gN_, gE_, gS_);
 }
 
@@ -299,108 +299,108 @@ void NodeList::insert(QString key, Node* node){
 
 /** return a list of pointer to the objects of specified class type */
 NodeList* NodeList::selectClass (QString classname){
-	NodeList* nl = new NodeList;
-	Node* node;
+  NodeList* nl = new NodeList;
+  Node* node;
   for ( QStringList::Iterator it = list_.begin(); it != list_.end(); ++it ) {
-  	node = find(*it);
+    node = find(*it);
     if (!node) {
-        qDebug("NodeList::selectClass: %s Warning: %s not found in nodelist",
-               classname.latin1(),(*it).latin1());
+      qDebug("NodeList::selectClass: %s Warning: %s not found in nodelist",
+	     classname.latin1(),(*it).latin1());
       continue;
     }
-		if (classname.compare(node->classname()) == 0) {
-			nl->insert (node->key(), node );//insert node
-		}
-	}
-	return nl;
+    if (classname.compare(node->classname()) == 0) {
+      nl->insert (node->key(), node );//insert node
+    }
+  }
+  return nl;
 }
 
 /** calculate for all classes 'classname' the term 'term' with the function 'fkt'.
 		Fkt. return int*/
 void NodeList::calcForSelect (QString classname, QString term, int (*fkt)(void)) {
-	Node* node;
-	//NodeList* nl = selectClass(classname);
+  Node* node;
+  //NodeList* nl = selectClass(classname);
   for ( QStringList::Iterator it = list_.begin(); it != list_.end(); ++it ) {
-  	node = find(*it);
+    node = find(*it);
     if (!node) {
       qDebug("NodeList::calcForSelect: node %s not found",(*it).latin1());
       continue;
     }
-		if (classname.compare(node->classname()) == 0) {
-			QString *val = new QString;
-			val->setNum(fkt());
-			if (!find(term)) node->insert(term, val);
-			else qWarning("##. (Warning) NodeList::calcForSelect: %s - exist",term.latin1());
-		} //else qDebug("## %s ##",node->classname().latin1());
-	}
+    if (classname.compare(node->classname()) == 0) {
+      QString *val = new QString;
+      val->setNum(fkt());
+      if (!find(term)) node->insert(term, val);
+      else qWarning("##. (Warning) NodeList::calcForSelect: %s - exist",term.latin1());
+    } //else qDebug("## %s ##",node->classname().latin1());
+  }
 }
 
 /** calculate for all classes 'classname' the term 'term' with the function 'fkt'.*/
 void NodeList::calcForSelect (QString classname, QString term, QString (*fkt)(void)) {
-	Node* node;
+  Node* node;
   for ( QStringList::Iterator it = list_.begin(); it != list_.end(); ++it ) {
-  	node = find(*it);
+    node = find(*it);
     if (!node) {
       qDebug("NodeList::calcForSelect: node %s not found",(*it).latin1());
       continue;
     }
-		if (classname.compare(node->classname()) == 0) {
-			QString *val = new QString;
-			*val=fkt();
-			if (!find(term)) node->insert(term, val);
-			else qDebug("## (Warning) NodeList::calcForSelect: %s - exist",term.latin1());
-		} //else qDebug("## .%s. ##",node->classname().latin1());
-	}
+    if (classname.compare(node->classname()) == 0) {
+      QString *val = new QString;
+      *val=fkt();
+      if (!find(term)) node->insert(term, val);
+      else qDebug("## (Warning) NodeList::calcForSelect: %s - exist",term.latin1());
+    } //else qDebug("## .%s. ##",node->classname().latin1());
+  }
 }
 
 /** calculate for all classes 'classname' the term 'term' with the fun*/
 void NodeList::calcForSelect (QString classname, QString term, GASensor* sensor) {
-	Node* node;
+  Node* node;
   for ( QStringList::Iterator it = list_.begin(); it != list_.end(); ++it ) {
-  	node = find(*it);
+    node = find(*it);
     if (!node) {
       qDebug("NodeList::calcForSelect: node %s not found",(*it).latin1());
       continue;
     }
-		if (classname.compare(node->classname())==0 || classname.compare("ALL")==0) {
-  	  Image* img=node->data();
-  	  if (!img) {
-	      cerr << "NodeList::calcForSelect: node data not read" << endl;
-	      exit(1);
-	    }
-	    sensor->image(*img);
+    if (classname.compare(node->classname())==0 || classname.compare("ALL")==0) {
+      Image* img=node->data();
+      if (!img) {
+	cerr << "NodeList::calcForSelect: node data not read" << endl;
+	exit(1);
+      }
+      sensor->image(*img);
 #if 0		
-			sensor->readImage(*((*node)["file"])); //["labelpic"]));
+      sensor->readImage(*((*node)["file"])); //["labelpic"]));
 #endif
-			sensor->node(node);
-			sensor->calc(term);
-		} else qDebug("## .%s. ##",node->classname().latin1());
-	}
+      sensor->node(node);
+      sensor->calc(term);
+    } else qDebug("## .%s. ##",node->classname().latin1());
+  }
 }
 
 /** calculate for all classes 'classname' the term 'term' with the fun*/
 void NodeList::calcForSelect (QString term, GASensor* sensor) {
-	Node* node;
+  Node* node;
   for ( QStringList::Iterator it = list_.begin(); it != list_.end(); ++it ) {
-  	node = find(*it);
+    node = find(*it);
     if (!node) {
       qDebug("NodeList::calcForSelect: node %s not found",(*it).latin1());
       continue;
     }
-		//if (classname.compare(node->classname())==0 || classname.compare("ALL")==0) {
-  	  Image* img=node->data();
-  	  if (!img) {
-	      cerr << "NodeList::calcForSelect: node data not read" << endl;
-	      exit(1);
-	    }
-	    sensor->image(*img);
+    //if (classname.compare(node->classname())==0 || classname.compare("ALL")==0) {
+    Image* img=node->data();
+    if (!img) {
+      cerr << "NodeList::calcForSelect: node data not read" << endl;
+      exit(1);
+    }
+    sensor->image(*img);
 #if 0
-			sensor->readImage(*((*node)["file"])); //["labelpic"]));
+    sensor->readImage(*((*node)["file"])); //["labelpic"]));
 #endif
-			sensor->node(node);
-			sensor->calc(term);
-		//} else qDebug("## .%s. ##",node->classname().latin1());
-	}
+    sensor->node(node);
+    sensor->calc(term);
+    //} else qDebug("## .%s. ##",node->classname().latin1());
+  }
 }
 
 /** merge for all images in list (scale to a common resulution)
@@ -412,19 +412,19 @@ void NodeList::calcForSelect (QString term, GASensor* sensor) {
 //NodeList* NodeList::merge (QString outImgName, bool newReg = 0) {
 NodeList* NodeList::merge (bool newReg, QString outImgName) {
   //calc new geo coordinates using all nodes of liste 'this'
-if (gN_==0.0 || gS_==0.0) calcNewGEOValues(gN_,gS_,gW_,gE_,sizeX_, sizeY_, xRes_,yRes_);
-qDebug("$#$merge gN_:%f gS_:%f gW_:%f gE_:%f sizeX_:%d sizeY_:%d xRes_:%f yRes_:%f ",gN_,gS_,gW_,gE_,sizeX_,sizeY_,xRes_,yRes_);
-
-	//generate a sorted list of nodes using 'p' the weighing
-	SortPtrList sortlist;
-	QDictIterator<Node> it( *this ); //iterator for nodelist
-	it.toFirst();
-	while(it.current()) {
-	  Node *node = it.current();
-	  //float ff = ((*node)["p"])->toFloat();
-	  //SortEle* e = new SortEle(it.current(),(it.current())->p(),it.currentKey());
-	  SortEle* e;
-	  if (node->find( "p" ))
+  if (gN_==0.0 || gS_==0.0) calcNewGEOValues(gN_,gS_,gW_,gE_,sizeX_, sizeY_, xRes_,yRes_);
+  qDebug("$#$merge gN_:%f gS_:%f gW_:%f gE_:%f sizeX_:%d sizeY_:%d xRes_:%f yRes_:%f ",gN_,gS_,gW_,gE_,sizeX_,sizeY_,xRes_,yRes_);
+  
+  //generate a sorted list of nodes using 'p' the weighing
+  SortPtrList sortlist;
+  QDictIterator<Node> it( *this ); //iterator for nodelist
+  it.toFirst();
+  while(it.current()) {
+    Node *node = it.current();
+    //float ff = ((*node)["p"])->toFloat();
+    //SortEle* e = new SortEle(it.current(),(it.current())->p(),it.currentKey());
+    SortEle* e;
+    if (node->find( "p" ))
       e = new SortEle(it.current(),((*node)["p"])->toFloat(),it.currentKey());
     else
       e = new SortEle(it.current(),(it.current())->p(),it.currentKey());
@@ -432,7 +432,7 @@ qDebug("$#$merge gN_:%f gS_:%f gW_:%f gE_:%f sizeX_:%d sizeY_:%d xRes_:%f yRes_:
     ++it;
   }
   sortlist.sort();
-
+  
   //merge and relabel the images of all nodes in nodelist
   int freeID=maxID_;
   maxID_++; //label count -> all label are relabeled / label 1 is reserved
@@ -447,23 +447,23 @@ qDebug("$#$merge gN_:%f gS_:%f gW_:%f gE_:%f sizeX_:%d sizeY_:%d xRes_:%f yRes_:
     Image& img=readLabelFile(node->filename(),node->geoWest(), node->geoNorth(), node->geoEast(), node->geoSouth());
     if (img.isEmpty()) continue;
     qDebug("NodeList::merge: geoMerge: %4d %4d %4d %4d",
-                       node->llx(),node->lly(),node->urx(),node->ury());
-
+	   node->llx(),node->lly(),node->urx(),node->ury());
+    
     outImage_.geoMerge(img, node->id(), maxID_,
                        node->llx(),node->lly(),node->urx(),node->ury(),
                        &nllx, &nlly, &nurx, &nury,
                        (int*)(&changeVec));//merge to out image
     qDebug("Done                        %4d %4d %4d %4d",
-            nllx,nlly,nurx,nury);
+	   nllx,nlly,nurx,nury);
     node->id(maxID_);
     se->setGeoPos(nllx, nlly, nurx, nury);
     maxID_++;
   } //variable maxID is used later ([2..maxID-1] = count_of_old_regions)
   outImage_.write(outImgName);	//NEW
-
+  
   //calculate new Node attibutes and look for divided regions
   NodeList* selected=new NodeList(*this, false);// new nodelist for result, no deep copy
-//  int *pic=(int*)outImage_.begin();
+  //  int *pic=(int*)outImage_.begin();
   for ( se=sortlist.first(); se != 0; se=sortlist.next() ) {
     Node *node=se->node();
     int oldID = node->id(); //urspruengliche ID der region - bleibt in der Schleife immer gleich
@@ -584,12 +584,11 @@ void NodeList::write(QTextStream &fp, QString groupFileName)
     fp << "file_geoNorth=\"" <<gN_<< "\"file_geoWest=\"" <<gW_<< "\"file_geoEast=\"" <<gE_<< "\"file_geoSouth=\"" <<gS_<< "\"";
     fp << " >" << endl;
     for (;it.current();++it) {
-   (*it)->write(fp);
+      (*it)->write(fp);
     }
     
     fp << "</group>" << endl;
   }
-
 }
 
 /** write a nodelist as a regionsfile */

@@ -36,15 +36,15 @@ Node::~Node() {
 }
 
 void Node::init() {
-	setAutoDelete(true);
-	data_ = 0;
+  setAutoDelete(true);
+  data_ = 0;
 #if 0	
-	type_ = UNKNOWN;
+  type_ = UNKNOWN;
 #endif	
-	cols_ = rows_ = id_ = 0;
-	geoSouth_ = geoNorth_ = geoEast_ = geoWest_ = 0.0;
+  cols_ = rows_ = id_ = 0;
+  geoSouth_ = geoNorth_ = geoEast_ = geoWest_ = 0.0;
   valuation_ = 1.0;
-	filename_ = ""; class_ = "";
+  filename_ = ""; class_ = "";
 }
 
 //** set value in node */
@@ -62,39 +62,71 @@ QString* Node::getValue(const QString key) {
 
 /** set label id */
 void Node::id(int l) {
-	id_ = l;
-	QString *s = new QString;
-	s->setNum(l);
-	replace("id",s);
+  id_ = l;
+  QString *s = new QString;
+  s->setNum(l);
+  replace("id",s);
 }
 
 /** set label weighing */
 void Node::p(float f) {
-	QString *s = new QString;
-	s->setNum(f);
-	replace("p",s);
+  QString *s = new QString;
+  s->setNum(f);
+  replace("p",s);
 }
 
 #if 0
 /** set data typ */
 void Node::dataTyp(int t) {
-	type_ = (IMGTYPE)t;
-	QString *s = new QString;
-	s->setNum(type_);
-	replace("type",s);
+  type_ = (IMGTYPE)t;
+  QString *s = new QString;
+  s->setNum(type_);
+  replace("type",s);
 }
 #endif
 
 /** set the image filename */
 void Node::filename(QString fn) {
-	filename_ = fn;	
-	replace("file",&filename_);
+  filename_ = fn;	
+  replace("file",&filename_);
 }
 
 /** set class name*/
 void Node::classname(QString str) {
   class_ = str;
   replace("class",&class_);
+}
+
+/** set  geoNorth*/
+void Node::geoNorth(float value) 
+{
+  geoNorth_=value;
+  if (getValue("file_geoNorth"))
+    replace("file_geoNorth",value);
+}
+
+/** set  geoSouth*/
+void Node::geoSouth(float value)
+{
+  geoSouth_=value;
+  if (getValue("file_geoSouth"))
+    replace("file_geoSouth",value);
+}
+
+/** set  geoEast*/
+void Node::geoEast(float value)
+{
+  geoEast_=value;
+  if (getValue("file_geoEast"))
+    replace("file_geoEast",value);
+}
+
+/** set  geoWest*/
+void Node::geoWest(float value)
+{
+  geoWest_=value;
+  if (getValue("file_geoWest"))
+    replace("file_geoWest",value);
 }
 
 /** return x-resolution of the image*/
@@ -106,8 +138,8 @@ float Node::xResolution() {
 
 /** return y-resolution of the image*/
 float Node::yResolution() {
- if(rows_)
-   return float(geoEast_-geoWest_) / float(cols_);
+  if(rows_)
+    return float(geoEast_-geoWest_) / float(cols_);
   else return 0.0;
 }
 
@@ -146,6 +178,13 @@ void Node::load(NodeList& nodeList) {
   data_=&(nodeList.readLabelFile(filename_,geoWest_,geoNorth_,geoEast_,geoSouth_));
   cols_=data_->sizeX();
   rows_=data_->sizeY();
+  if ((geoNorth_==geoSouth_) || (geoWest_==geoEast_)) {
+    geoNorth_=rows_;
+    geoSouth_=0;
+    geoWest_=0;
+    geoEast_=cols_;
+    data_->setGeoCoordinates(geoWest_,geoNorth_,geoEast_,geoSouth_);
+  }
   if (!(*this)["llx"]) llx_=0;
   if (!(*this)["urx"]) urx_=cols_-1;
   if (!(*this)["lly"]) lly_=rows_-1;
@@ -366,11 +405,23 @@ int Node::geo2pic(float x, float y, int *rx, int *ry) {
 
 /** write data to file */
 void Node::write(QTextStream& fp, QString keyword) {
-  QDictIterator<QString> it(*this);
-	fp <<"  <" << keyword << " ";
-		for (;it.current(); ++it)
-			fp<<it.currentKey().latin1()<<"=\""<<(it.current())->latin1()<<"\" ";
-	fp <<" />"<<endl;
+  if (keyword=="region") {
+    QDictIterator<QString> it(*this);
+    fp <<"  <" << keyword << " ";
+    for (;it.current(); ++it) {
+      if (! it.currentKey().contains("file_geo",false)) 
+	fp<<it.currentKey().latin1()<<"=\""<<(it.current())->latin1()<<"\" ";
+    }
+    fp <<" />"<<endl;
+  }
+  else {
+    QDictIterator<QString> it(*this);
+    fp <<"  <" << keyword << " ";
+    for (;it.current(); ++it) {
+      fp<<it.currentKey().latin1()<<"=\""<<(it.current())->latin1()<<"\" ";
+    }
+    fp <<" />"<<endl;
+  }
 }
 /** return stack - for bottom-up */
 Stack& Node::stack(void){
