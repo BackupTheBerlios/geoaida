@@ -649,27 +649,29 @@ void NodeList::genGroupImage()
     groupImage_=Image(outImage_.typeId(),outImage_.sizeX(),outImage_.sizeY());
   }
   groupId_=++groupIdCounter_;
-	QDictIterator<Node> it( *this );
-	for (;it.current();++it) {
-	  Node* node=it.current();
-	  int id=node->id();
-	  int llx=node->llx();
-	  int urx=node->urx();
-	  int lly=node->lly();
-	  int ury=node->ury();
-	  for (int y=ury; y<=lly; y++) {
-	    void *ptr=outImage_.begin(y,0);
-	    outImage_.nextCol(ptr,llx);
-	    for (int x=llx; x<=urx; x++) {
+  QDictIterator<Node> it( *this );
+  for (;it.current();++it) {
+    Node* node=it.current();
+    int id=node->id();
+    int llx=node->llx();
+    int urx=node->urx();
+    if (urx>=outImage_.sizeX()) urx=outImage_.sizeX()-1;
+    int lly=node->lly();
+    if (lly>=outImage_.sizeY()) lly=outImage_.sizeY()-1;
+    int ury=node->ury();
+    for (int y=ury; y<=lly; y++) {
+      void *ptr=outImage_.begin(y,0);
+      outImage_.nextCol(ptr,llx);
+      for (int x=llx; x<=urx; x++) {
         int v=outImage_.getInt(ptr);
         if (v==id) {
           groupImage_.set(x,y,groupIdCounter_);
-	      }
-	      outImage_.nextCol(ptr);
-	    }
-	  }
- 
 	}
+	outImage_.nextCol(ptr);
+      }
+    }
+    
+  }
 }
 
 /** return stack - for bottom-up */
