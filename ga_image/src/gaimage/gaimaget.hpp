@@ -1568,8 +1568,9 @@ inline void ImageT<PixTyp>::merge(ImageBase& image, double img_label, double new
   PixTyp *p_data = this->begin();
   int size = this->sizeImage();
   if (size == img.sizeImage())
-    for (int i=0; i<=size; i++) {
-      if (*p_img == label) *p_data = newLabel;
+    for (int i=0; i<size; i++) {
+      if (*p_img == label) 
+	*p_data = newLabel;
       p_img++;
       p_data++;
     }
