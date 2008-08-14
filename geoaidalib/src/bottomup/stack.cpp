@@ -915,39 +915,42 @@ bool Stack::run(QString cmd)
   cmd = cmd.simplifyWhiteSpace();
   QStringList cmdList = QStringList::split(" ", cmd);
   for (QStringList::Iterator it = cmdList.begin(); it != cmdList.end(); ++it) {
+    if (externFunctionTable_.find(*it) != externFunctionTable_.end()){
+      QMap < QString, bool(*)(Stack &) >::const_iterator efit =
+	externFunctionTable_.find(*it);
 
-    QMap < QString, bool(*)(Stack &) >::const_iterator efit =
-      externFunctionTable_.find(*it);
-
-    // Debug Stack types
-    cout << "(" << count() << "): ";
-    {
-      QPtrStackIterator < StackElem > it(*this);
-      for (; it.current(); ++it) {
-        cout << (*it)->typeName() << " ";
+      // Debug Stack types
+      cout << "(" << count() << "): ";
+      {
+	QPtrStackIterator < StackElem > it(*this);
+	for (; it.current(); ++it) {
+	  cout << (*it)->typeName() << " ";
+	}
+	cout << endl;
       }
-      cout << endl;
-    }
 
-    if (efit.data()) {
-      cout << "(" << count() << ") Calling extern function " << *it << endl;
-      ExternFunction *func = efit.data();
-      if (!(*func) (*this))
-        return false;
-      continue;
-    }
-
-    QMap < QString, bool(Stack::*)() >::const_iterator fit =
-      functionTable_.find(*it);
-
-    if (fit.data()) {
-      cout << "(" << count() << ") Calling function " << *it << endl;
-      StackFunction func = fit.data();
-      if (!(*this.*func) ()) {
-        cerr << "function " << (*it) << " failed!" << endl;
-        return false;
+      if (efit.data()) {
+	cout << "(" << count() << ") Calling extern function " << *it << endl;
+	ExternFunction *func = efit.data();
+	if (!(*func) (*this))
+	  return false;
+	continue;
       }
-      continue;
+    }
+    
+    if (functionTable_.find(*it) != functionTable_.end()){
+      QMap < QString, bool(Stack::*)() >::const_iterator fit =
+	functionTable_.find(*it);
+    
+      if (fit.data()) {
+	cout << "(" << count() << ") Calling function " << *it << endl;
+	StackFunction func = fit.data();
+	if (!(*this.*func) ()) {
+	  cerr << "function " << (*it) << " failed!" << endl;
+	  return false;
+	}
+	continue;
+      }
     }
     if (((*it).length() > 0) && (*it)[0] == '\"') {
       QString s = (*it);

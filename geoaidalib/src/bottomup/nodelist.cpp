@@ -101,7 +101,7 @@ NodeList::~NodeList()
 void NodeList::read(QString filename) {
   QFile fp(filename);
   if (!fp.open(IO_ReadOnly)) {
-    qDebug("NodeList::read(%s): file not founed\n",(const char*)filename);
+    qDebug("NodeList::read(%s): file not found\n",(const char*)filename);
     return;
   }
 	read(fp);
