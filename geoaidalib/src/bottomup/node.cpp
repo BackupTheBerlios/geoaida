@@ -33,6 +33,8 @@ Node::Node(MLParser& parser) {
 }
 
 Node::~Node() {
+  if (data_)
+    delete data_;
 }
 
 void Node::init() {
@@ -175,6 +177,10 @@ void Node::update()
 /** load image info - not the data */
 void Node::load(NodeList& nodeList) {
   //qDebug("Node::load(%s)",(const char*)filename_);
+  if (data_){
+    delete data_;
+    data_=0;
+  }
   data_=&(nodeList.readLabelFile(filename_,geoWest_,geoNorth_,geoEast_,geoSouth_));
   cols_=data_->sizeX();
   rows_=data_->sizeY();

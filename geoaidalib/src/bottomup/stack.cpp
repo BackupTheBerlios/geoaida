@@ -842,6 +842,7 @@ bool Stack::selectClass()
       throw CleanUp(false);
     //selected->info();
     push(new StackElemNodeList(*selected));
+
     //XXXXXXXXXXXXX delete selected;
     throw CleanUp(true);
   }

@@ -424,6 +424,7 @@ NodeList* NodeList::merge (bool newReg, QString outImgName) {
     //float ff = ((*node)["p"])->toFloat();
     //SortEle* e = new SortEle(it.current(),(it.current())->p(),it.currentKey());
     SortEle* e;
+
     if (node->find( "p" ))
       e = new SortEle(it.current(),((*node)["p"])->toFloat(),it.currentKey());
     else

@@ -147,7 +147,10 @@ void MLTagTable::set(QString *table)
 
 MLTagTable::~MLTagTable()
 {
-  if (tagtable_) delete tagtable_;
+  if (tagtable_){ 
+    delete[] tagtable_;
+    tagtable_ = 0;
+  }
 }
 
 /*****************************************************************
@@ -309,11 +312,12 @@ ArgDict *MLParser::args(ArgDict *argdict, bool insertMode)
     //  qDebug("lastchar=%c\n",data_->lc_);
 #endif
     if (!argname.isEmpty()) {
-      QString *argval = new QString();
+      QString argval;
       if (data_->lc_=='=') {
-	*argval=data_->readWord(true);
+	argval=data_->readWord(true);
       } else
-	*argval="";
+	argval="";
+	
       if (insertMode)
 	dict->insert(argname,argval);
       else
