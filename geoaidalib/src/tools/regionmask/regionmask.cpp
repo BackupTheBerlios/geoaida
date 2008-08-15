@@ -154,8 +154,7 @@ bool processRegion(ArgDict & args, GaMaskImage & mask, int mask_x, int mask_y,
   lly -= labelImage->offset_y;
   urx -= labelImage->offset_x;
   ury -= labelImage->offset_y;
-  if (ury<0) ury=0;
-  if (llx<0) llx=0;
+
 #if 0 
   // Does not work e.g. if two regions have the same bounding box, but have no overlapping region.
   //! Delete this 
@@ -185,7 +184,6 @@ bool processRegion(ArgDict & args, GaMaskImage & mask, int mask_x, int mask_y,
   int nurx = llx;
   int nury = lly;
   bool found = false;
-
   for (int y = ury; y <= lly; y++) {
     for (int x = llx; x <= urx; x++) {
       if (labelImage->image.getFloat(x, y, 0, 0.0) == id) {
@@ -203,7 +201,7 @@ bool processRegion(ArgDict & args, GaMaskImage & mask, int mask_x, int mask_y,
   }
 //  qDebug("id=%05d: (%03d/%03d) (%03d/%03d)",id,nllx,nlly,nurx,nury);
   if (!found)
-    return false;
+    return found;
 //  qDebug("id=%05d: (%03d/%03d) (%03d/%03d)",id,nllx,nlly,nurx,nury);
 
   args.replace("llx", nllx);
@@ -488,6 +486,4 @@ int main(int argc, char *argv[])
     }
     DoIt(outfile,argv[optind],argv[1 + optind],resultImage,mask_x, mask_y, mask_size_x, mask_size_y);
   }
-
-
 }

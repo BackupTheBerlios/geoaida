@@ -18,25 +18,19 @@
 #include "bottomup.h"
 
 BottomUp::BottomUp(){
-  nodelist_=0;
-  init();
+	init();
 }
 
 BottomUp::BottomUp(QString filename){
-  nodelist_=0;
-  init();
+	init();
   read(filename);
 }
 
 BottomUp::~BottomUp(){
-  if (nodelist_)
-    delete nodelist_;
 }
 
 void BottomUp::init() {
-  if (nodelist_)
-    delete nodelist_;
-  nodelist_ = 0;
+	nodelist_ = 0;
 }
 
 /** Read the infos from the provided file */

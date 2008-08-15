@@ -205,8 +205,8 @@ void basic(PixType label) {
   //}
 	//qDebug("#....# area:%d  dx:%f  dy:%f  l:%d",area,dx,dy,label);
 	//convert results to string and replace in NODE
-	QString area_ps;
-	area_ps.setNum(area);
+	QString *area_ps = new QString;
+	area_ps->setNum(area);
 	node_->replace("size", area_ps);
 	float xd = node()->xResolution();
   float yd = node()->yResolution();
