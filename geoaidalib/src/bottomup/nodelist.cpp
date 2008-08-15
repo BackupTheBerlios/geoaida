@@ -612,12 +612,7 @@ Image& NodeList::readLabelFile(QString filename, double gW, double gN, double gE
   Image *im = imageDict_[filename];
   if (im)
     return *im;                  // image found in dictionary
-#ifdef alt
-  im = new Image();
-  im->read(filename.latin1());
-  im->setGeoCoordinates(gW, gN, gE, gS);
-  imageDict_.insert(filename, im);
-#else
+
   printf("###### read new\t%s\n",filename.latin1());
   im = new Image(typeid(int));
   im->read(filename.latin1()); //DAS GEHT HIER NICHT!!!!!!!!!!!!!!!!!!!!!!!!
@@ -625,7 +620,7 @@ Image& NodeList::readLabelFile(QString filename, double gW, double gN, double gE
     im->setGeoCoordinates(gW, gN, gE, gS);
     imageDict_.replace(filename, im);
   }
-#endif
+
   return *im;
 }
 

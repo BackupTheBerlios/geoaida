@@ -1568,7 +1568,7 @@ inline void ImageT<PixTyp>::merge(ImageBase& image, double img_label, double new
   PixTyp *p_data = this->begin();
   int size = this->sizeImage();
   if (size == img.sizeImage())
-    for (int i=0; i<size; i++) {
+    for (int i=0; i < size; i++) {
       if (*p_img == label) 
 	*p_data = newLabel;
       p_img++;
@@ -2251,14 +2251,14 @@ inline bool ImageT<PixTyp>::write(FILE *fp, int channel, const char* comment) {
    	  delete row;
   		}
 			break;
-		default:
+	default:
 //  		pfm_writepfm_type(fp,constBegin(),sizeX(),sizeY(),minValue(),maxValue(),storageType);
-  		// Let the pfm library calculate min and max
-      if (geoNorth()!=geoSouth() && geoWest()!=geoEast())
-        pfm_geo_set(geoWest(),geoNorth(),geoEast(),geoSouth());
-      if (comment)
-        pfm_comment_set(comment);
-  		pfm_writepfm_type(fp,constBegin(0,channel),sizeX(),sizeY(),1,-1,storageType);
+	  // Let the pfm library calculate min and max
+	  if (geoNorth()!=geoSouth() && geoWest()!=geoEast())
+	    pfm_geo_set(geoWest(),geoNorth(),geoEast(),geoSouth());
+	  if (comment)
+	    pfm_comment_set(comment);
+	  pfm_writepfm_type(fp,constBegin(0,channel),sizeX(),sizeY(),1,-1,storageType);
 	}
 	return true;
 }
