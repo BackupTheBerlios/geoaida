@@ -147,7 +147,7 @@ void MLTagTable::set(QString *table)
 
 MLTagTable::~MLTagTable()
 {
-  if (tagtable_) delete tagtable_;
+
 }
 
 /*****************************************************************
