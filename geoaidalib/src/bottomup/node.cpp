@@ -63,15 +63,15 @@ QString* Node::getValue(const QString key) {
 /** set label id */
 void Node::id(int l) {
   id_ = l;
-  QString *s = new QString;
-  s->setNum(l);
+  QString s;
+  s.setNum(l);
   replace("id",s);
 }
 
 /** set label weighing */
 void Node::p(float f) {
-  QString *s = new QString;
-  s->setNum(f);
+  QString s;
+  s.setNum(f);
   replace("p",s);
 }
 
@@ -79,8 +79,8 @@ void Node::p(float f) {
 /** set data typ */
 void Node::dataTyp(int t) {
   type_ = (IMGTYPE)t;
-  QString *s = new QString;
-  s->setNum(type_);
+  QString s;
+  s.setNum(type_);
   replace("type",s);
 }
 #endif

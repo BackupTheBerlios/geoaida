@@ -600,8 +600,8 @@ Image& NodeList::readLabelFile(QString filename, double gW, double gN, double gE
 
   printf("###### read new\t%s\n",filename.latin1());
   im = new Image(typeid(int));
-  im->read(filename.latin1()); //DAS GEHT HIER NICHT!!!!!!!!!!!!!!!!!!!!!!!!
-  if (!im->isEmpty()) {//ODER DAS !!!!!!!!!!!!!!!!!!!!!!!!
+  im->read(filename.latin1()); 
+  if (!im->isEmpty()) {
     im->setGeoCoordinates(gW, gN, gE, gS);
     imageDict_.replace(filename, im);
   }
