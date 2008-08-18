@@ -175,6 +175,8 @@ void Node::update()
 /** load image info - not the data */
 void Node::load(NodeList& nodeList) {
   //qDebug("Node::load(%s)",(const char*)filename_);
+  if (data_)
+    delete data_;
   data_=&(nodeList.readLabelFile(filename_,geoWest_,geoNorth_,geoEast_,geoSouth_));
   cols_=data_->sizeX();
   rows_=data_->sizeY();

@@ -32,7 +32,7 @@ QDict<Ga::Image> NodeList::imageDict_;
 /** default constructor */
 NodeList::NodeList()
 {
-  setAutoDelete(FALSE);
+
 #if 0
   p_=0.0;
 #endif
@@ -104,8 +104,8 @@ void NodeList::read(QString filename) {
     qDebug("NodeList::read(%s): file not found\n",(const char*)filename);
     return;
   }
-	read(fp);
-	fp.close();
+  read(fp);
+  fp.close();
 }
 
 /** read a list of Node and the attributes from the provided filepointer */
@@ -417,6 +417,8 @@ NodeList* NodeList::merge (bool newReg, QString outImgName) {
   
   //generate a sorted list of nodes using 'p' the weighing
   SortPtrList sortlist;
+  sortlist.setAutoDelete(TRUE);
+
   QDictIterator<Node> it( *this ); //iterator for nodelist
   it.toFirst();
   while(it.current()) {
@@ -542,25 +544,12 @@ NodeList* NodeList::merge (bool newReg, QString outImgName) {
 //    bb.getInt(node->id(),1),
 //    bb.getInt(node->id(),2),
 //    bb.getInt(node->id(),3));
-#ifdef WIN32
-    qDebug("nodelist.cpp 459:llx, llyl urx, ury");
 
-//Was denn??
-  /** get a pixel */
-//  int getInt(int x, int y, int channel=0);
-  /** get a pixel */
-//  int getInt(const void *ptr);
-//Quelltyp konnte von keinem Konstruktor angenommen werden, oder die Ueberladungsaufloesung des Konstruktors ist mehrdeutig
-    node->replace("llx",&QString((float)(bb.getInt(node->id(),0))));
-    node->replace("lly",&QString((float)(bb.getInt(node->id(),1))));
-    node->replace("urx",&QString((float)(bb.getInt(node->id(),2))));
-    node->replace("ury",&QString((float)(bb.getInt(node->id(),3))));
-#else
     node->replace("llx",bb.getInt(node->id(),0));
     node->replace("lly",bb.getInt(node->id(),1));
     node->replace("urx",bb.getInt(node->id(),2));
     node->replace("ury",bb.getInt(node->id(),3));
-#endif
+
     // XXX Was ist mit voellig ueberdeckten regionen ??
     if( bb.getInt(node->id(),0)==0 && bb.getInt(node->id(),1)==0 &&
         bb.getInt(node->id(),2)==0 && bb.getInt(node->id(),3)==0 )
@@ -597,11 +586,7 @@ void NodeList::writeRegionFile(QTextStream &fp)
   QDictIterator<Node> it(*this);
   if (it.current()) {
     for (;it.current();++it) {
-#ifdef WIN32
-      (*it).write(fp,"region");
-#else
-   (*it)->write(fp,"region");
-#endif
+      (*it)->write(fp,"region");
     }
   }
 

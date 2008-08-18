@@ -102,7 +102,7 @@ inline void Array2DT<T>::alloc(int sizeX, int sizeY, T* data) {
 	}
 	sizeX_=sizeX;
 	sizeY_=sizeY;
-	int size=sizeX_*sizeY_;
+	const int size=sizeX_*sizeY_;
 	if (size>0) {
 		data_=new T*[sizeY_+1];
 		T* ptr=data;
