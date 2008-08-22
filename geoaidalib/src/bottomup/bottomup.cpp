@@ -27,7 +27,6 @@ BottomUp::BottomUp(QString filename){
 }
 
 BottomUp::~BottomUp(){
-  if (nodelist_) delete nodelist_;
 }
 
 void BottomUp::init() {
@@ -39,7 +38,6 @@ void BottomUp::read(QString filename)
 {
 	if (nodelist_) delete nodelist_;
 	nodelist_ = new NodeList(filename);
-	nodelist_->setAutoDelete(TRUE);
 
 }
 
@@ -47,7 +45,6 @@ void BottomUp::read(QString filename)
 void BottomUp::read(QIODevice& fp){
 	if (nodelist_) delete nodelist_;
 	nodelist_ = new NodeList();
-	nodelist_->setAutoDelete(TRUE);
 	nodelist_->read(fp);
 }
 /** return the number of classes read into 'nodelist'  */

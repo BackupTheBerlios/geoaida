@@ -63,15 +63,15 @@ QString* Node::getValue(const QString key) {
 /** set label id */
 void Node::id(int l) {
   id_ = l;
-  QString s;
-  s.setNum(l);
+  QString *s = new QString;
+  s->setNum(l);
   replace("id",s);
 }
 
 /** set label weighing */
 void Node::p(float f) {
-  QString s;
-  s.setNum(f);
+  QString *s = new QString;
+  s->setNum(f);
   replace("p",s);
 }
 
@@ -79,8 +79,8 @@ void Node::p(float f) {
 /** set data typ */
 void Node::dataTyp(int t) {
   type_ = (IMGTYPE)t;
-  QString s;
-  s.setNum(type_);
+  QString *s = new QString;
+  s->setNum(type_);
   replace("type",s);
 }
 #endif
@@ -175,8 +175,6 @@ void Node::update()
 /** load image info - not the data */
 void Node::load(NodeList& nodeList) {
   //qDebug("Node::load(%s)",(const char*)filename_);
-  if (data_)
-    delete data_;
   data_=&(nodeList.readLabelFile(filename_,geoWest_,geoNorth_,geoEast_,geoSouth_));
   cols_=data_->sizeX();
   rows_=data_->sizeY();
