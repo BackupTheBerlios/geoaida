@@ -55,13 +55,16 @@ int regionsToFile(string filename, vector<RegDesc>& reglist)
 {
 
 	ostringstream out;
-	// vector<RegDesc>::iterator regIter= reglist.begin();
+	vector<RegDesc>::iterator regIter= reglist.begin();
 
-	for (int i=2; i < reglist.size(); i++) // Skip the first 2 elements because they contain id 0 and 1 (= background regions), 
-                                         // I'm not sure why they are included in the list at all...
+	for (; regIter != reglist.end(); ++regIter) 
+                                         
 	{
-		RegDesc reg = reglist[i];
-    out << reg.toString() << endl;
+	   
+	   RegDesc reg = *regIter;
+	   if (reg.id_ < 2) // Skip the first 2 elements because they contain id 0 and 1 (= background regions), 
+	     continue;// I'm not sure why they are included in the list at all...
+	   out << reg.toString() << endl;
 	}
 
 
