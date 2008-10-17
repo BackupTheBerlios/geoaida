@@ -164,6 +164,23 @@ class RegDescT
         lly_ = y;
       return val;
     }
+    void setLlx(int llx) 
+     {
+	llx_=llx;
+     }
+    void setLly(int lly) 
+     {
+	lly_=lly;
+     }   
+   void setUrx(int urx) 
+     {
+	urx_=urx;
+     }
+      void setUry(int ury) 
+     {
+	ury_=ury;
+     }
+   
     int setId(int val) {id_=val;return val;}
     int size() {return size_;}
     int id() {return id_;}
@@ -195,11 +212,11 @@ class RegDescT
         return out.str();
     }
 
-    std::string class_, file_, name_;    
-    int id_;
+   std::string class_, file_, name_;    
+   int llx_,lly_,urx_,ury_;
+   int id_;
 
 protected:
-    int llx_,lly_,urx_,ury_;
     int size_, numValidValues_;
     double sum_;
 
