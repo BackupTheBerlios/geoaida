@@ -62,8 +62,8 @@ int regionsToFile(string filename, vector<RegDesc>& reglist)
 	{
 	   
 	   RegDesc reg = *regIter;
-	   if (reg.id_ < 2) // Skip the first 2 elements because they contain id 0 and 1 (= background regions), 
-	     continue;// I'm not sure why they are included in the list at all...
+	   if (reg.id_ < 1) // Skip the first element because they contain id 0 (= background regions), 
+	     continue;// I'm not sure why they are included in the list at all... (there was a time when id 0 and 1 were excluded)
 	   out << reg.toString() << endl;
 	}
 
