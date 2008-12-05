@@ -74,7 +74,6 @@ pfm_tool(pgm2pfm "")
 pfm_tool(pfm2pfm "")
 pfm_tool(pfmcutregion "")
 pfm_tool(pgm2pgm "")
-pfm_tool(plm2pbm "")
 pfm_tool(ppm2ppm "")
 
 pfm_tool_cpp(pfmcutgeoregion "")

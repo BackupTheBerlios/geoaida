@@ -21,7 +21,7 @@
 
 #include <math.h>
 
-#include <string>
+#include <string.h>
 #include <iostream>
 #include <cstdlib>
 #include <getopt.h>

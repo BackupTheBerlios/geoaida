@@ -17,6 +17,7 @@
 
 #include <gaimage.h>
 #include <gavariance.h>
+#include <string.h>
 using namespace Ga;
 
 void Usage(int argc, char **argv)

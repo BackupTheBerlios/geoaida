@@ -18,6 +18,7 @@
 //#define DEBUG_PRG
 
 #include <fstream>
+#include <string.h>
 #include "pfm.h"
 #include "gaimage.h"
 #include <gavariance.h>

@@ -1,6 +1,6 @@
 #include "Array2D.h"
 #include <typeinfo>
-#include <string>
+#include <string.h>
 #include "pfm.h"
 
 template <class Value>

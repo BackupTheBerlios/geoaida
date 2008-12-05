@@ -186,7 +186,7 @@ public:
   virtual void div(const ImageBase& lval, double rval)=0;
   virtual void div(double lval, const ImageBase& rval)=0;
   virtual void mult(const ImageBase& lval, double rval)=0;
-  virtual void mult(double lval, const ImageBase& lval)=0;
+  virtual void mult(double lval, const ImageBase& rval)=0;
   virtual void neg(const ImageBase& rval)=0;
   virtual void concat(const ImageBase& im1, const ImageBase& im2, bool horizontal=true)=0;
   virtual void copyInto(const ImageBase& im1, int offsetX, int offsetY)=0;
