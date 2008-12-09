@@ -253,7 +253,7 @@ QString MLParserPrivate::readTagWord()
     break;
   }
   incLineNumber();
-  while (isalnum(lc_) && !isspace(lc_) && !istr_->atEnd()) {
+  while (isgraph(lc_) && !isspace(lc_) && lc_!='>' && !istr_->atEnd()) {
     keyword+=lc_;
     readOneChar();
 #ifdef DEBUGMSG
