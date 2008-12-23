@@ -50,7 +50,7 @@ public:
     Attribute(QString name, QString defaultValue, double min, double max,
               QString label = "", QString tip = "");
         /** Constructor for ENUM-Attribute */
-    Attribute(QString name, QString defaultValue, QStringList * options,
+    Attribute(QString name, QString defaultValue, QStringList * keys, QStringList * options,
               QString label = "", QString tip = "");
         /** Constructor for OPERATOR-Attribute */
     Attribute(QString name, QString defaultValue, QString typeOfOp,
@@ -72,6 +72,8 @@ public:
   int type();
   /** Returns the options for an enum attribute, otherwise 0 */
   QStringList *options();
+  /** Returns the keys for an enum attribute, otherwise 0 */
+  QStringList* keys();
   /** Returns the type of operator */
   QString typeOfOperator();
   /** Returns the image type */
@@ -126,6 +128,7 @@ protected:                     // Protected attributes
     b_;
     struct
     {
+      QStringList *keys_;
       QStringList *options_;
     }
     e_;

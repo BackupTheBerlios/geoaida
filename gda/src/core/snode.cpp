@@ -144,7 +144,7 @@ void SNode::init()
     (*o) += "DebugInfo";
     (*o) += "NoDebugInfo";
     genericAttributes_.insert("debug",
-                              new Attribute("debug", "DebugInfo", o, "Debug",
+                              new Attribute("debug", "DebugInfo", o, o, "Debug",
                                             "<ul>"
                                             "<li>TopDown - Start single step when topdown is executed</li>"
                                             "<li>BottomUp - Start single step when bottomup is executed</li>"

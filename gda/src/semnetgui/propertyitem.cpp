@@ -247,10 +247,20 @@ PropertyItem::editDone()
     type = attrib_->type();
   if (editor_) {
     switch (type) {
-    case Attribute::ENUM:
     case Attribute::OPERATOR:
     case Attribute::IMAGE:
       value_ = ((QComboBox *) editor_)->currentText();
+      addToolTip();
+      break;
+    case Attribute::ENUM: 
+      { 
+	int index=((QComboBox *) editor_)->currentItem();
+	QStringList* keys=attrib_->keys();
+	if (index<keys->count())
+	  value_ = (*keys)[index];
+	else
+	  value_ = "";
+      }
       addToolTip();
       break;
     case Attribute::BOOL:
