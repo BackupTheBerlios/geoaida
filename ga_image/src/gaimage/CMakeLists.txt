@@ -30,6 +30,7 @@ set(headers gaall.h
            gashareddatat.h
            gasplit2regionst.h
            garegionsplitter.h
+	   garegionsplitter_multiclass.h	
            garegionsplittert.hpp
            gavariance.h
            gavectorizet.h
@@ -51,6 +52,7 @@ set(sources gacanny.cpp
            gapainter.cpp
            garegion.cpp
            garegionsplitter.cpp
+	   garegionsplitter_multiclass.cpp		   
            gavariance.cpp
 )
 
