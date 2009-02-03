@@ -135,7 +135,7 @@ bool processRegion(ArgDict & args, GaMaskImage & mask, int mask_x, int mask_y,
   QString labelFileName;
   MLParser::setString(labelFileName, &args, "file");
   if (labelFileName.isEmpty())
-    return true;                // no label file given
+    return false;                // no label file given (had been true, becker)
   LabelImage *labelImage =
     readLabelFile(labelFileName, mask, mask_x, mask_y, mask_size_x,
                   mask_size_y);
