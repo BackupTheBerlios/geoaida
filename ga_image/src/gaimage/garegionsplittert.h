@@ -134,14 +134,15 @@ class RegDescT
       {
         llx_=INT_MAX;
         ury_=INT_MAX;
-        urx_=INT_MIN;
-        lly_=INT_MIN,
+        urx_=0;
+        lly_=0;
         size_=0;
         sum_=0;
         numValidValues_=0;
         id_=0;
         class_ = "";
         file_="";
+
       };
     int setPixel(LabelPicT& lpic, int x, int y, int val)
     {
@@ -215,10 +216,10 @@ class RegDescT
    std::string class_, file_, name_;    
    int llx_,lly_,urx_,ury_;
    int id_;
-
 protected:
     int size_, numValidValues_;
     double sum_;
+    
 
 };
 

@@ -315,28 +315,38 @@ int RegionSplitterT<RegDescT,RegionFinderClassT>::split()
 {
   // Regionen segmentieren
   int x, y, value;
+
+  // Why should those regions be included?
   if (regionList_.size()==0) {
-    region_=RegDescT();
-    region_.setId(0);
+      region_=RegDescT();
+      region_.setId(0);
     regionList_.push_back(region_);
   }
 #ifdef SMALL_REGIONS_TO_1
   if (regionList_.size()==1) {
-    region_=RegDescT();
-    region_.setId(1);
-    regionList_.push_back(region_);
+     region_=RegDescT();
+     region_.setId(1);
+     regionList_.push_back(region_);
   }
 #endif
+ 
   rl_ = 0;
-  if (int(regionList_.size())<startId_) {
-    int id=regionList_.size();
-    regionList_.reserve(startId_);
-    RegDescT reg;   
-    while (int(regionList_.size())!=startId_) {
-      reg.setId(id++);
-      regionList_.push_back(reg);
-    }
-  }
+
+     
+     {
+	int id=2;
+	if (int(regionList_.size())<startId_) {
+	   regionList_.reserve(startId_);
+	   RegDescT reg;   
+	   while (int(regionList_.size())!=startId_) {
+	      reg.setId(id++);
+	      regionList_.push_back(reg);
+	   }
+	}
+     }
+  
+ 
+   
   value=startId_-1;
   for (y = ury_; y <= lly_; y++) {
     //    printf("%05d %05d %05d\n",x,y,value);
@@ -344,7 +354,6 @@ int RegionSplitterT<RegDescT,RegionFinderClassT>::split()
       if (lpic_.getInt(x, y) == bgId_ && tclass_.valid(lpic_,x,y)) {
         value++;
         region_=RegDescT();
-                
         if (region_.class_==""){
             if (tclass_.getRegionClass(x, y) != "")
                 region_.class_ = tclass_.getRegionClass(x, y);
