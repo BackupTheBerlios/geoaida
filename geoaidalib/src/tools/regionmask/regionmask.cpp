@@ -127,6 +127,11 @@ LabelImage *readLabelFile(QString filename, GaMaskImage & mask, int &mask_x,
   return im;
 }
 
+
+/*
+ returns true if and only if region or part of the region was found in within the given mask
+ else: false
+ */
 bool processRegion(ArgDict & args, GaMaskImage & mask, int mask_x, int mask_y,
                    int mask_size_x, int mask_size_y)
 {
@@ -135,7 +140,7 @@ bool processRegion(ArgDict & args, GaMaskImage & mask, int mask_x, int mask_y,
   QString labelFileName;
   MLParser::setString(labelFileName, &args, "file");
   if (labelFileName.isEmpty())
-    return false;                // no label file given (had been true, becker)
+    return false;                // no label file given 
   LabelImage *labelImage =
     readLabelFile(labelFileName, mask, mask_x, mask_y, mask_size_x,
                   mask_size_y);
