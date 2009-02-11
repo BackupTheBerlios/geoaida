@@ -101,15 +101,15 @@ GeoImageList::read(MLParser & parser)
   const int TOK_GEOIMAGE_LIST = 2;
   int tag;
 #ifdef WIN32 
-  geoNorth_ = -1e38F;
-  geoSouth_ = 1e38F;
-  geoWest_  = 1e38F;
-  geoEast_  = -1e38F;
+  geoNorth_ = +1e38F;
+  geoSouth_ = -1e38F;
+  geoWest_  = -1e38F;
+  geoEast_  = +1e38F;
 #else
-  geoNorth_ = -1e36;
-  geoSouth_ = +1e36;
-  geoWest_ = +1e36;
-  geoEast_ = -1e36;
+  geoNorth_ = +1e36;
+  geoSouth_ = -1e36;
+  geoWest_ = -1e36;
+  geoEast_ = +1e36;
 #endif
   do {
     tag = parser.tag(nodeTagTable);
@@ -122,13 +122,13 @@ GeoImageList::read(MLParser & parser)
     exit(1);
   }
 #endif
-        if (gi->geoNorth() > geoNorth_)
+        if (gi->geoNorth() < geoNorth_)
           geoNorth_ = gi->geoNorth();
-        if (gi->geoSouth() < geoSouth_)
+        if (gi->geoSouth() > geoSouth_)
           geoSouth_ = gi->geoSouth();
-        if (gi->geoEast() > geoEast_)
+        if (gi->geoEast() < geoEast_)
           geoEast_ = gi->geoEast();
-        if (gi->geoWest() < geoWest_)
+        if (gi->geoWest() > geoWest_)
           geoWest_ = gi->geoWest();
         insert(*((*gi)["key"]), gi);    //insert read geoimage
         list_ += *((*gi)["key"]);       //fill additional list of image names

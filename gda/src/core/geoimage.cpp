@@ -433,8 +433,8 @@ QString
     return 0;
   int dx, dy, i, j, rx1, ry1, rx2, ry2;
   picBBox(west, north, east, south, rx1, ry2, rx2, ry1);
-  dx = rx2 - rx1 + 1;
-  dy = ry2 - ry1 + 1;
+  dx = rx2 - rx1 + 1; if (dx>cols_) dx=cols_;
+  dy = ry2 - ry1 + 1; if (dy>rows_) dy=rows_;
   if (dx <= 0 || dy <= 0) {
     qDebug("#  (ERROR) GeoImage::part: (dx=%d=%d-%d || dy=%d=%d-%d)", dx, rx2,
            rx1, dy, ry2, ry1);

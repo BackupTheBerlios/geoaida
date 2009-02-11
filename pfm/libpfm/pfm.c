@@ -1112,11 +1112,11 @@ int pfm_writepfm_region_type(FILE *fp, const void *data,
       minval=1/0.0; maxval=-1/0.0;
       y=y1; yi=y2;
       if(y1<0) y=0;
-      if(y2>rows)yi=rows;
+      if(y2>rows) yi=rows;
       for (; y<=yi; y++) {
         x=x1; xi=x2;
         if(x1<0) x=0;
-        if(x2>rows)xi=cols;  
+        if(x2>cols) xi=cols;  
         for (; x<=xi; x++)  {
           if (isnan(floatbuffer[y*cols+x])) continue;
           if (floatbuffer[y*cols+x]<minval) minval=floatbuffer[y*cols+x];
@@ -1168,11 +1168,11 @@ int pfm_writepfm_region_type(FILE *fp, const void *data,
       minval=1/0.0; maxval=-1/0.0;
       y=y1; yi=y2;
       if(y1<0) y=0;
-      if(y2>rows)yi=rows;
+      if(y2>rows) yi=rows;
       for (; y<=yi; y++) {
         x=x1; xi=x2;
         if(x1<0) x=0;
-        if(x2>rows)xi=cols;  
+        if(x2>cols) xi=cols;  
         for (; x<=xi; x++)  {
           if (isnan(doublebuffer[y*cols+x])) continue;
           if (doublebuffer[y*cols+x]<minval) minval=doublebuffer[y*cols+x];
@@ -1229,7 +1229,7 @@ int pfm_writepfm_region_type(FILE *fp, const void *data,
       for (; y < yi; y++) {
         x=x1; xi=x2;
         if(x1<0) x=0;
-        if(x2>rows)xi=cols;  
+        if(x2>cols) xi=cols;  
         for (; x < xi; x++)  {
           if (intbuffer[y*cols+x]<minval) minval=intbuffer[y*cols+x];
           if (intbuffer[y*cols+x]>maxval) maxval=intbuffer[y*cols+x];
@@ -1282,7 +1282,7 @@ int pfm_writepfm_region_type(FILE *fp, const void *data,
       for (; y<=yi; y++) {
         x=x1; xi=x2;
         if(x1<0) x=0;
-        if(x2>rows)xi=cols;  
+        if(x2>cols)xi=cols;  
         for (; x<=xi; x++)  {
           if (int16buffer[y*cols+x]<minval) minval=int16buffer[y*cols+x];
           if (int16buffer[y*cols+x]>maxval) maxval=int16buffer[y*cols+x];
@@ -1334,7 +1334,7 @@ int pfm_writepfm_region_type(FILE *fp, const void *data,
       for (; y<=yi; y++) {
         x=x1; xi=x2;
         if(x1<0) x=0;
-        if(x2>rows)xi=cols;  
+        if(x2>cols) xi=cols;  
         for (; x<=xi; x++)  {
           if (greybuffer[y*cols+x]<minval) minval=greybuffer[y*cols+x];
           if (greybuffer[y*cols+x]>maxval) maxval=greybuffer[y*cols+x];
