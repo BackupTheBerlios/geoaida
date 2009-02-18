@@ -49,8 +49,8 @@ public:
 	NodeList();
 
   /** Copy constructor */
-  NodeList(const NodeList& nl);
-  NodeList(const NodeList& nl, bool deep);
+	//  NodeList(const NodeList& nl);
+  NodeList(const NodeList& nl, bool deep=true);
   void copy(const NodeList& nl, bool deep);
   NodeList& operator=(const NodeList& nl);
 

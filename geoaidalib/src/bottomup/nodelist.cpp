@@ -32,20 +32,13 @@ QDict<Ga::Image> NodeList::imageDict_;
 /** default constructor */
 NodeList::NodeList()
 {
+  qDebug("### NodeList::NodeList()");
   setAutoDelete(FALSE);
 #if 0
   p_=0.0;
 #endif
   gW_=gN_=gE_=gS_=0.0;
 }
-
-/** Copy constructor */
-NodeList::NodeList(const NodeList& nl) : QDict<Node>(nl)
-{
-qDebug("### NodeList::NodeList(NodeList& nl)");
-  copy(nl,true);
-}
-
 
 /** Copy constructor */
 NodeList::NodeList(const NodeList& nl, bool deep) : QDict<Node>(nl)
@@ -56,6 +49,7 @@ NodeList::NodeList(const NodeList& nl, bool deep) : QDict<Node>(nl)
 
 NodeList& NodeList::operator=(const NodeList& nl)
 {
+  qDebug("### NodeList::operator=(NodeList& nl)");
   if (this!=&nl) copy(nl,true);
   return *this;
 }
@@ -68,11 +62,11 @@ qDebug("### NodeList::copy(NodeList& nl, deep=%d)",deep);
     list_=nl.list_;
     maxID_=nl.maxID_;
     stack_=nl.stack_;
-    attribList_=nl.attribList_;
   }
 #if 0
   p_=nl.judgement();
 #endif
+  attribList_=nl.attribList_;
   gW_=nl.gW_;
   gN_=nl.gN_;
   gE_=nl.gE_;
@@ -299,6 +293,7 @@ void NodeList::insert(QString key, Node* node){
 
 /** return a list of pointer to the objects of specified class type */
 NodeList* NodeList::selectClass (QString classname){
+  //xNodeList* nl = new NodeList(*this, false);
   NodeList* nl = new NodeList;
   Node* node;
   for ( QStringList::Iterator it = list_.begin(); it != list_.end(); ++it ) {
@@ -472,7 +467,7 @@ NodeList* NodeList::merge (bool newReg, QString outImgName) {
     QString name = node->name();
     float p =node->p();
     if (node->find( "p" )) p=((*node)["p"])->toFloat();
-    node->clear(); //daten loeschen
+    //node->clear(); //daten loeschen , !! Removed by Becker 2008-09-28
     node->classname(classname);//neue daten eintragen
     node->filename(outImgName);//node->setValue("file",outImgName);
     node->setValue("addr",addr);
