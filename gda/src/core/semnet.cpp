@@ -52,8 +52,11 @@ SemNet::~SemNet()
 /** Read a semantic net  */
 void SemNet::read(QIODevice & fp)
 {
-  if (rootNode_)
+  if (rootNode_) {
     delete rootNode_;
+    rootNode_=0;
+  }
+  
   MLParser parser(&fp);
   int tag;
   do {
