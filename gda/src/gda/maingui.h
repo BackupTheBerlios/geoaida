@@ -87,6 +87,8 @@ public slots:
   void test();
   /** Save the display map */
   void mapSave();
+  /** Error value */
+  int error();
 
 public:
   SemNet semNet;

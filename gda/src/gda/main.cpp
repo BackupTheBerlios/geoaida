@@ -19,7 +19,6 @@
 
 int main(int argc, char **argv)
 {
-	MainGui maingui(argc,argv);
-  return 0;
-
+  MainGui maingui(argc,argv);
+  return maingui.error();
 }

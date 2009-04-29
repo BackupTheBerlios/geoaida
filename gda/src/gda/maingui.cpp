@@ -61,7 +61,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
 {
     switch ( type ) {
     case QtDebugMsg:
-        fprintf( stderr, "Debug: %s\n", msg );
+      //        fprintf( stderr, "Debug: %s\n", msg );
         break;
     case QtWarningMsg:
         fprintf( stderr, "Warning: %s\n", msg );
@@ -184,6 +184,11 @@ MainGui::MainGui(int argc, char **argv)
 		QTimer::singleShot(3000, this, SLOT(analyze()));
   app.exec();
   //semNet.write("./output.net");
+}
+
+int MainGui::error() {
+  if (analysis_) return (analysis_->error() ? 1 : 0);
+  return 0;
 }
 
 void MainGui::fileLoad() {
@@ -648,6 +653,7 @@ void MainGui::slotAnalysisReady(INode* iNode, GeoImage* map) {
 	QTextStream str(&fp);
 	iNode_->write(str);
 	fp.close();
+	
 }
 
 /** slot become a signal if an INode in the instace net is change */
