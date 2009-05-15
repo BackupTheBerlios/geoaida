@@ -1353,15 +1353,17 @@ template <class PixTyp>
 inline void ImageT<PixTyp>::resize(int rx, int ry, int noChannels) {
   if( sizeY_ != ry || sizeX_ != rx || noChannels_ != noChannels ) {
     deinitialize();
+/*
     int sxold=sizeX_;
     int syold=sizeY_;
+*/
     alloc( rx, ry, noChannels );
-
+/*
     for (int x=sxold; x < rx; x++)
         for (int y=syold; y < ry; y++)
             for (int c=0; c < noChannels; c++)
                 setInt(x, y, 0, c);
-
+*/
   }
 }
 
