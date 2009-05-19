@@ -212,7 +212,7 @@ void NodeList::read(MLParser& parser) {
   calcNewGEOValues(gN_,gS_,gW_,gE_,sizeX_, sizeY_, xRes_,yRes_);
   qDebug("$$read gN_:%f gS_:%f gW_:%f gE_:%f sizeX_:%d sizeY_:%d xRes_:%f yRes_:%f ",gN_,gS_,gW_,gE_,sizeX_, sizeY_, xRes_,yRes_);
   
-  outImage_=Image(typeid(signed int),sizeX_,sizeY_,1);
+  outImage_=Image(typeid(int),sizeX_,sizeY_,1);
   outImage_.setGeoCoordinates(gW_, gN_, gE_, gS_);
 }
 
@@ -636,33 +636,41 @@ void NodeList::writeGroupImage(QString filename)
 void NodeList::genGroupImage()
 {
   if (!groupIdCounter_) {
-    groupImage_=Image(outImage_.typeId(),outImage_.sizeX(),outImage_.sizeY());
+      groupImage_=Image(typeid(int),outImage_.sizeX(),outImage_.sizeY());
   }
   groupId_=++groupIdCounter_;
   QDictIterator<Node> it( *this );
+
   for (;it.current();++it) {
     Node* node=it.current();
     int id=node->id();
     int llx=node->llx();
     int urx=node->urx();
-    if (urx>=outImage_.sizeX()) urx=outImage_.sizeX()-1;
+    if (urx >= outImage_.sizeX()) 
+	urx=outImage_.sizeX()-1;
     int lly=node->lly();
-    if (lly>=outImage_.sizeY()) lly=outImage_.sizeY()-1;
+    if (lly >= outImage_.sizeY()) 
+	lly=outImage_.sizeY()-1;
     int ury=node->ury();
+
     for (int y=ury; y<=lly; y++) {
-      void *ptr=outImage_.begin(y,0);
-      outImage_.nextCol(ptr,llx);
+      int *outImagePtr= (int *) outImage_.begin(y,0);
+      int *groupImagePtr= (int*) groupImage_.begin(y,0);
+      outImagePtr+=llx;
+      groupImagePtr+=llx;
       for (int x=llx; x<=urx; x++) {
-        int v=outImage_.getInt(ptr);
+	int v=*outImagePtr;
         if (v==id) {
-          groupImage_.set(x,y,groupIdCounter_);
+          *groupImagePtr = groupIdCounter_;
 	}
-	outImage_.nextCol(ptr);
-      }
+	outImagePtr++;
+	groupImagePtr++;
+      } 
     }
     
   }
 }
+
 
 /** return stack - for bottom-up */
 Stack& NodeList::stack(void){
