@@ -387,6 +387,10 @@ public:
   void merge(const Image& img, double img_label, double new_label);
   /** merge 'this' image with 'img'. The labels 'img_label' of 'img'
   	* are insert (overlayed) in 'this' with the value 'new_label' */
+  void merge(const Image& img, double img_label, double new_label,
+	     int llx, int lly, int urx, int ury);
+  /** merge 'this' image with 'img'. The labels 'img_label' of 'img'
+  	* are insert (overlayed) in 'this' with the value 'new_label' */
   void geoMerge(const Image& img, int img_label, int new_label,
        int llx=-1, int lly=-1, int urx=-1, int ury=-1,
        int* nllx=0, int* nlly=0, int* nurx=0, int* nury=0,

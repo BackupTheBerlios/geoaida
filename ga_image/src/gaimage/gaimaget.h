@@ -286,6 +286,8 @@ namespace Ga {
   /** Writes a ImageT in a formatted file (ASCII)
       usage: \code  A.Write( fp ); \endcode */
   virtual void debug(FILE *fp);                 // formatted
+  /** store the current minimum and maximum value of the matrix (useful for iterated access to this value) */
+  void storeMinMaxValue();
   /** store the current minimum value of the matrix (useful for iterated access to this value) */
   void storeMinValue();
   /** store the current minimum value of the matrix (useful for iterated access to this value) */
@@ -298,6 +300,8 @@ namespace Ga {
 
   double minValue() const;
   double maxValue() const;
+
+  void matrixMinMax(PixTyp& min, PixTyp& max, int channel=0);
 
   /** Maximum element value of a ImageT
       usage: \code  PixTyp xmax = A.Max( ); PixTyp xmax = A.Max( x, y ); \endcode */
@@ -384,6 +388,11 @@ namespace Ga {
   /** merge 'this' image with 'img'. The labels 'img_label' of 'img'
   	* are insert (overlayed) in 'this' with the value 'new_label' */
   void merge(ImageBase& image, double img_label, double new_label);
+
+  /** merge 'this' image with 'img'. The labels 'img_label' of 'img'
+  	* are insert (overlayed) in 'this' with the value 'new_label' */
+  void merge(ImageBase& image, double img_label, double new_label, 
+	     int llx, int lly, int urx, int ury);
 
  /** extracts one band from a rgb-color image to a new single-band image
       \param band 0=red 1=green 2=blue, enum type can be used (e.g. ImageT<GA_NOTYPE>::red) */

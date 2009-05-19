@@ -1042,6 +1042,12 @@ void ImageT<PixTyp>::copyInto(const ImageBase& im1, int offsetX, int offsetY)
 
 /** store the current minimum value of the matrix (useful for iterated access to this value) */
 template <class PixTyp>
+inline void ImageT<PixTyp>::storeMinMaxValue() {
+  matrixMinMax(minval_,maxval_);
+}
+
+/** store the current minimum value of the matrix (useful for iterated access to this value) */
+template <class PixTyp>
 inline void ImageT<PixTyp>::storeMinValue() {
   minval_ = (PixTyp)matrixMin();
 }
@@ -1177,17 +1183,37 @@ inline double ImageT<PixTyp>::matrixMin(int channel) {
 
   ConstIterator index = constBegin(0, channel);
   PixTyp min = *index;
-  unsigned int e = 0;
 
   for(unsigned int i = 1; i < nSize_; i++) {
     if (min > *index) {
       min = *index;
-      e = i;
     }
     ++ index;
   }
 
   return min;
+}
+
+template <class PixTyp>
+inline void ImageT<PixTyp>::matrixMinMax(PixTyp& min, PixTyp& max, 
+					 int channel) {
+  if(nSize_ <= 0)
+    return;
+
+  ConstIterator index = constBegin(0, channel);
+  min = *index;
+  max = *index;
+
+  for(unsigned int i = 1; i < nSize_; i++) {
+    if (min > *index) {
+      min = *index;
+    }
+    if (max < *index) {
+      max = *index;
+    }
+    ++ index;
+  }
+
 }
 
 
@@ -1557,6 +1583,30 @@ inline double ImageT<PixTyp>::geodist2pixel(double dist) {
 template <class PixTyp>
 inline double ImageT<PixTyp>::pixel2geodist(int pix) {
   return (pix * geoResolution_);
+}
+
+/** merge 'this' image with 'img'. The labels 'img_label' of 'img'
+  * are insert (overlayed) in 'this' with the value 'new_label' */
+template <class PixTyp>
+inline void ImageT<PixTyp>::merge(ImageBase& image, double img_label, double new_label, 
+				  int llx, int lly, int urx, int ury) {
+	ImageT<PixTyp>& img=(ImageT<PixTyp>&)image;
+	PixTyp label=(PixTyp)img_label;
+	PixTyp newLabel=(PixTyp)new_label;
+  int sizex=urx-llx+1;
+  assert(sizex>=0);
+  assert(ury<=lly);
+  if (sizeImage() == img.sizeImage())
+    for (int y=ury; y<=lly; y++) {
+      PixTyp *p_img = img.begin(y)+llx;
+      PixTyp *p_data = this->begin(y)+llx;
+      for (int x=sizex; x>0; x--) {
+	if (*p_img == label) 
+	  *p_data = newLabel;
+	p_img++;
+	p_data++;
+      }
+    }
 }
 
 /** merge 'this' image with 'img'. The labels 'img_label' of 'img'
@@ -2199,8 +2249,7 @@ inline bool ImageT<PixTyp>::write(FILE *fp, int channel, const char* comment) {
 	}
 	else fprintf(stderr,"Warning: Unsupport data type\n");
 	
-	storeMinValue();
-	storeMaxValue();
+	storeMinMaxValue();
 
 	switch (typeImage()) {
 		case _PPM: {

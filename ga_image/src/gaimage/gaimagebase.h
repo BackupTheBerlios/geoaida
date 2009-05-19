@@ -196,6 +196,7 @@ public:
   virtual void Save(char *filematrix)=0;                 // formatted
   */
 
+  virtual void storeMinMaxValue()=0;
   virtual void storeMinValue()=0;
   virtual void storeMaxValue()=0;
   virtual void setMinValue(double v)=0;
@@ -241,6 +242,8 @@ public:
   virtual int getGeoInt(double gx, double gy, int channel=0) {return 0;}
 
   virtual void merge(ImageBase& img, double img_label, double new_label) {}
+  virtual void merge(ImageBase& img, double img_label, double new_label,
+		     int llx, int lly, int urx, int ury) {}
   virtual void getChannel(ImageBase& pic, int channel=0)=0;
   virtual void convert2Luminance(ImageBase& pic) {}
    virtual ImageT<float> hsv()=0;

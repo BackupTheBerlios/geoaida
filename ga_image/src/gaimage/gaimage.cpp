@@ -1084,6 +1084,28 @@ void Image::merge(const Image& img, double img_label, double new_label) {
 
 }
 
+void Image::merge(const Image& img, double img_label, double new_label,
+		  int llx, int lly, int urx, int ury) 
+{
+  assert(pImage_!=0);
+  assert(img.pImage_!=0);
+  if (img.typeId()==typeId())
+    pImage()->merge(*(img.pImage_),img_label, new_label, 
+		    llx, lly, urx, ury);
+  else {
+    //!MP 2009-05-18: support for bounding box missing in this part
+    assert(img.sizeX()==sizeX());
+    assert(img.sizeY()==sizeY());
+    void *dest=begin();
+    const void *src=img.constBegin();
+    const void *dest_end=end();
+    for (;dest!=dest_end; nextCol(dest), img.nextCol(src)) {
+      set(dest,img.getFloat(src));
+    }
+  }
+
+}
+
 /** merge 'this' image with 'img'. The labels 'img_label' of 'img'
   	* are insert (overlayed) in 'this' with the value 'new_label' */
 void Image::geoMerge(const Image& img, int img_label, int new_label,
@@ -1101,24 +1123,11 @@ void Image::geoMerge(const Image& img, int img_label, int new_label,
     slly=img.sizeY()-1;
     sury=0;
   }
-  fprintf(stderr,"sllx... %4d %4d %4d %4d\n",sllx,slly,surx,sury);
-#if 0
-  llx=geo2ImageX(img.image2GeoX(sllx));
-  lly=geo2ImageY(img.image2GeoY(slly));
-  urx=geo2ImageX(img.image2GeoX(surx));
-  ury=geo2ImageY(img.image2GeoY(sury));
-  //folgende kann eigentlich weg - altes problem
-  if (llx<0) llx=0;
-  if (lly>sizeY()) lly=sizeY();
-  if (urx>sizeX()) urx=sizeX();
-  if (urx<0) urx=0;
-  if (ury<0) ury=0;
-  if (lly<0) lly=0;
-#endif
+  //  fprintf(stderr,"sllx... %4d %4d %4d %4d\n",sllx,slly,surx,sury);
 
   int dllx=sllx, dlly=slly, durx=surx, dury=sury;
   if ((img.sizeX()==sizeX()) && (img.sizeY()==sizeY()))
-    merge(img,img_label,new_label);
+    merge(img,img_label,new_label, sllx, slly,surx, sury);
   else {
 #if 0
     float dx = float(img.sizeX())/float(geo2ImageX(img.image2GeoX(img.sizeX()))-geo2ImageX(img.image2GeoX(0)));
@@ -1133,27 +1142,27 @@ void Image::geoMerge(const Image& img, int img_label, int new_label,
     if (dury<0) dury=0;
     float dx = float(surx-sllx+1)/float(durx-dllx+1);
     float dy = float(slly-sury+1)/float(dlly-dury+1);
-fprintf(stderr,"%f %f %f %f\n",gW,gN,gE,gS);
-fprintf(stderr,"dllx,...                    %4d %4d %4d %4d\n", dllx,dlly,durx,dury);
-fprintf(stderr,"img-size %d %d, urx %d, llx %d, lly %d, ury %d, dx %f, dy %f\n",img.sizeX(),img.sizeY(),durx,dllx,dlly,dury,dx,dy);
-//fprintf(stderr,"img-size %d %d, urx %d, llx %d, lly %d, ury %d, dx %f, dy %f\n",img.sizeX(),img.sizeY(),urx,llx,lly,ury,dx,dy);
-//fprintf(stderr,"img.image2GeoX(0)=%f; geo2ImageX=%d\n",img.image2GeoX(0),geo2ImageX(img.image2GeoY(0)));
-//fprintf(stderr,"img.image2GeoY(0)=%f; geo2ImageY=%d\n",img.image2GeoY(0),geo2ImageY(img.image2GeoY(0)));
+    fprintf(stderr,"%f %f %f %f\n",gW,gN,gE,gS);
+    fprintf(stderr,"dllx,...                    %4d %4d %4d %4d\n", dllx,dlly,durx,dury);
+    fprintf(stderr,"img-size %d %d, urx %d, llx %d, lly %d, ury %d, dx %f, dy %f\n",img.sizeX(),img.sizeY(),durx,dllx,dlly,dury,dx,dy);
+    //fprintf(stderr,"img-size %d %d, urx %d, llx %d, lly %d, ury %d, dx %f, dy %f\n",img.sizeX(),img.sizeY(),urx,llx,lly,ury,dx,dy);
+    //fprintf(stderr,"img.image2GeoX(0)=%f; geo2ImageX=%d\n",img.image2GeoX(0),geo2ImageX(img.image2GeoY(0)));
+    //fprintf(stderr,"img.image2GeoY(0)=%f; geo2ImageY=%d\n",img.image2GeoY(0),geo2ImageY(img.image2GeoY(0)));
     for (int y=dury; y<=dlly; y++) {
       int py = int((y-dury)*dy)+sury;
       for (int x=dllx; x<=durx; x++) {
         int px = int((x-dllx)*dx)+sllx;
-//        fprintf(stderr,"%3d %3d %3d %3d\n",x,y,px,py);
-          if (img.getInt(px,py) == img_label) {
-            if (changeVec) { //aenderungen protokollieren
-              if(getInt(x,y)) changeVec[getInt(x,y)]++; //
-            }
-            set(x,y,new_label);
-          }
+	//        fprintf(stderr,"%3d %3d %3d %3d\n",x,y,px,py);
+	if (img.getInt(px,py) == img_label) {
+	  if (changeVec) { //aenderungen protokollieren
+	    if(getInt(x,y)) changeVec[getInt(x,y)]++; //
+	  }
+	  set(x,y,new_label);
+	}
       }
     }
   }
-
+  
   if(nllx) *nllx=dllx;
   if(nlly) *nlly=dlly;
   if(nurx) *nurx=durx;
