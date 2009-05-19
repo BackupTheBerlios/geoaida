@@ -436,10 +436,11 @@ NodeList* NodeList::merge (bool newReg, QString outImgName) {
   int changeVec[sortlist.count()+maxID_]; //vektor, um IDs der veränderten regionen zu erfassen
   for (unsigned int j=0; j<sortlist.count()+maxID_; j++)changeVec[j]=0;//initialisierung
   qDebug("NodeList::merge: changeVec-size %d",  sortlist.count()+maxID_);
+
   for ( se=sortlist.first(); se != 0; se=sortlist.next() ) {
     Node *node=se->node();
     qDebug("### merge: p=%f, l_id=%d, n_id=%d, read:%s",se->p(), node->id(),maxID_, node->filename().latin1());
-    Image& img=readLabelFile(node->filename(),node->geoWest(), node->geoNorth(), node->geoEast(), node->geoSouth());
+    Image& img = readLabelFile(node->filename(),node->geoWest(), node->geoNorth(), node->geoEast(), node->geoSouth());
     if (img.isEmpty()) continue;
     qDebug("NodeList::merge: geoMerge: %4d %4d %4d %4d",
 	   node->llx(),node->lly(),node->urx(),node->ury());
@@ -448,13 +449,12 @@ NodeList* NodeList::merge (bool newReg, QString outImgName) {
                        node->llx(),node->lly(),node->urx(),node->ury(),
                        &nllx, &nlly, &nurx, &nury,
                        (int*)(&changeVec));//merge to out image
-    qDebug("Done                        %4d %4d %4d %4d",
+    qDebug("Done %4d %4d %4d %4d",
 	   nllx,nlly,nurx,nury);
     node->id(maxID_);
     se->setGeoPos(nllx, nlly, nurx, nury);
     maxID_++;
   } //variable maxID is used later ([2..maxID-1] = count_of_old_regions)
-  outImage_.write(outImgName);	//NEW
   
   //calculate new Node attibutes and look for divided regions
   NodeList* selected=new NodeList(*this, false);// new nodelist for result, no deep copy
@@ -531,38 +531,26 @@ NodeList* NodeList::merge (bool newReg, QString outImgName) {
   Image bb = calcBoundingBoxes(outImage_, maxID_);
   for ( se=sortlist.first(); se != 0; se=sortlist.next() ) {//set bounding box values
     Node *node=se->node();
-//    qDebug("id=%4d, bbox=%4d %4d %4d %4d",
-//    node->id(),
-//    bb.getInt(node->id(),0),
-//    bb.getInt(node->id(),1),
-//    bb.getInt(node->id(),2),
-//    bb.getInt(node->id(),3));
-#ifdef WIN32
-    qDebug("nodelist.cpp 459:llx, llyl urx, ury");
 
-//Was denn??
-  /** get a pixel */
-//  int getInt(int x, int y, int channel=0);
-  /** get a pixel */
-//  int getInt(const void *ptr);
-//Quelltyp konnte von keinem Konstruktor angenommen werden, oder die Ueberladungsaufloesung des Konstruktors ist mehrdeutig
-    node->replace("llx",&QString((float)(bb.getInt(node->id(),0))));
-    node->replace("lly",&QString((float)(bb.getInt(node->id(),1))));
-    node->replace("urx",&QString((float)(bb.getInt(node->id(),2))));
-    node->replace("ury",&QString((float)(bb.getInt(node->id(),3))));
-#else
     node->replace("llx",bb.getInt(node->id(),0));
     node->replace("lly",bb.getInt(node->id(),1));
     node->replace("urx",bb.getInt(node->id(),2));
     node->replace("ury",bb.getInt(node->id(),3));
-#endif
+
     // XXX Was ist mit voellig ueberdeckten regionen ??
     if( bb.getInt(node->id(),0)==0 && bb.getInt(node->id(),1)==0 &&
         bb.getInt(node->id(),2)==0 && bb.getInt(node->id(),3)==0 )
       selected->remove(node->key());
     node->update();
   }
-  //outImage_.write(outImgName);
+  
+  /*
+    Altered 2009-05-19.
+    It shouldn't be necessary to actually write the image
+    to hard disk.
+   */
+  //  outImage_.write(outImgName);
+  registerLabelFile(outImgName, outImage_);
   return selected;
 }
 
@@ -608,7 +596,7 @@ Image& NodeList::readLabelFile(QString filename, double gW, double gN, double gE
   if (im)
     return *im;                  // image found in dictionary
 
-  printf("###### read new\t%s\n",filename.latin1());
+  qDebug("###### read new\t%s\n",filename.latin1());
   im = new Image(typeid(int));
   im->read(filename.latin1()); //DAS GEHT HIER NICHT!!!!!!!!!!!!!!!!!!!!!!!!
   if (!im->isEmpty()) {//ODER DAS !!!!!!!!!!!!!!!!!!!!!!!!
@@ -617,6 +605,10 @@ Image& NodeList::readLabelFile(QString filename, double gW, double gN, double gE
   }
 
   return *im;
+}
+
+void NodeList::registerLabelFile(QString filename, const Image& labelimage){
+    imageDict_.replace(filename, &labelimage);
 }
 
 /** write the resulting label image */

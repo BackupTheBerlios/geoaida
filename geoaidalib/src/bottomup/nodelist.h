@@ -143,7 +143,11 @@ public:
   void writeGroupImage(QString filename);
   /** copy the nodes in this nodelist into the group image */
   void genGroupImage();
-  Ga::Image& readLabelFile(QString filename, double gW, double gN, double gE, double gS);
+
+  /** Loads images from hard disk. If file has been loaded before, it is not loaded twice. */
+  Ga::Image& readLabelFile(QString filename, double gW, double gN, double gE, double gS);  
+  /** Registers Image for later use by readLabelFile */
+  void registerLabelFile(QString filename, const Ga::Image& labelimage);
 
   /** return stack - for bottom-up */
   Stack& stack(void);
