@@ -410,6 +410,54 @@ NodeList* NodeList::merge (bool newReg, QString outImgName) {
   if (gN_==0.0 || gS_==0.0) calcNewGEOValues(gN_,gS_,gW_,gE_,sizeX_, sizeY_, xRes_,yRes_);
   qDebug("$#$merge gN_:%f gS_:%f gW_:%f gE_:%f sizeX_:%d sizeY_:%d xRes_:%f yRes_:%f ",gN_,gS_,gW_,gE_,sizeX_,sizeY_,xRes_,yRes_);
   
+
+  /*
+    Merging is only necessary, when there might be a confict between regions.
+    If all regions share the same label image this cannot be the case.
+    
+    Implemented 2009-05-19, Christian Becker
+   */
+
+  {
+    QDictIterator<Node> it(*this);
+    bool merging_necessary=false;
+    {
+      it.toFirst();
+      if (it.current()){      
+        QString oldFileName = it.current()->filename();
+      
+	while(it.current()) {
+	  Node *node=it.current();
+	  if (oldFileName != node->filename()){
+	    merging_necessary=true;
+	    break;
+	  }
+	  oldFileName=node->filename();            
+	  ++it;
+	}
+      }
+    }
+
+    if (!merging_necessary){
+
+      // There is nothing to merge    
+      
+      it.toFirst();
+      Node *node=it.current();      
+      if (it.current()){      
+	outImage_=readLabelFile(node->filename(),node->geoWest(), node->geoNorth(), node->geoEast(), node->geoSouth());      
+	NodeList* selected=new NodeList(*this, true);// copy node list
+	while(it.current()) {
+	  Node *node=it.current();      		  
+	  node->filename(outImgName);
+	  ++it;
+	}
+	registerLabelFile(outImgName, outImage_);
+	return selected;
+      }
+    }
+  }
+
   //generate a sorted list of nodes using 'p' the weighing
   SortPtrList sortlist;
   QDictIterator<Node> it( *this ); //iterator for nodelist
@@ -456,6 +504,17 @@ NodeList* NodeList::merge (bool newReg, QString outImgName) {
     maxID_++;
   } //variable maxID is used later ([2..maxID-1] = count_of_old_regions)
   
+
+  /*
+    Altered 2009-05-19 Christian Becker
+    It shouldn't be necessary to actually write the image
+    to hard disk.
+    Making it availabe at this point is necessary, though 
+    (ie. in node->load(..))    
+   */
+//  outImage_.write(outImgName);
+  registerLabelFile(outImgName, outImage_);
+
   //calculate new Node attibutes and look for divided regions
   NodeList* selected=new NodeList(*this, false);// new nodelist for result, no deep copy
   //  int *pic=(int*)outImage_.begin();
@@ -544,13 +603,7 @@ NodeList* NodeList::merge (bool newReg, QString outImgName) {
     node->update();
   }
   
-  /*
-    Altered 2009-05-19.
-    It shouldn't be necessary to actually write the image
-    to hard disk.
-   */
-  //  outImage_.write(outImgName);
-  registerLabelFile(outImgName, outImage_);
+
   return selected;
 }
 
