@@ -1,2 +1,3 @@
 add_subdirectory(regionmask)
 add_subdirectory(query_nodes)
+add_subdirectory(label2region_descr)
