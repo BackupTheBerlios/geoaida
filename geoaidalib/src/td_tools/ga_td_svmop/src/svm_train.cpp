@@ -51,9 +51,17 @@ void usage()
     METHOD_ENTRY("usage()");
     INFO(
 
-    std::cout << "Usage: svmop [PROJECT_DIRECTORY]" << std::endl;
-    std::cout << "Starts svm operation using given parameter string as working directory."
-                << std::endl;
+    std::cout << std::endl;
+    std::cout << "svm_train" << std::endl;
+    std::cout << "          number of input channels" << std::endl;
+    std::cout << "          input channel 1" << std::endl;
+    std::cout << "          ..." << std::endl;
+    std::cout << "          input channel n" << std::endl;
+    std::cout << "          label image" << std::endl;
+    std::cout << "          SVM model" << std::endl;
+    std::cout << "          SVM scaling" << std::endl;
+    std::cout << "          reclassification result" << std::endl;
+    std::cout << std::endl;
 
     );
     METHOD_EXIT("usage()");
