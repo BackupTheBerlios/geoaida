@@ -13,7 +13,7 @@
 /// \brief		Prototype of class "CLog"
 ///
 /// \date		2009-06-29
-/// \author		Torsten Büschenfeld (bfeld@tnt.uni-hannover.de)
+/// \author		Torsten Bueschenfeld (bfeld@tnt.uni-hannover.de)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 

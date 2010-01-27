@@ -1,11 +1,11 @@
 /***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -13,7 +13,7 @@
 /// \brief		Implementation of interface "SVMClassifier"
 ///
 /// \date		2009-07-29
-/// \author		Torsten Büschenfeld (bfeld@tnt.uni-hannover.de)
+/// \author		Torsten Bueschenfeld (bfeld@tnt.uni-hannover.de)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -22,7 +22,7 @@
 #include <fstream>
 
 DEBUG(
-	uint SVMClassifier::m_unNoFVFiles = 0;
+    uint SVMClassifier::m_unNoFVFiles = 0;
 );
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,19 +31,19 @@ DEBUG(
 ///
 ///////////////////////////////////////////////////////////////////////////////
 SVMClassifier::SVMClassifier() : 	m_unNumberOfClasses(SVM_CLASSIFIER_DEFAULT_NUMBER_OF_CLASSES),
-									m_fMin( 1e300),
-									m_fMax(-1e300),
-									m_bGotClassificationResult(false),
-									m_bGotFeatures(false),
-									m_bGotLabels(false),
-									m_bGotModel(false),
+                                    m_fMin( 1e300),
+                                    m_fMax(-1e300),
+                                    m_bGotClassificationResult(false),
+                                    m_bGotFeatures(false),
+                                    m_bGotLabels(false),
+                                    m_bGotModel(false),
                                     m_bGotScaling(false),
-									m_bGotSize(false)
+                                    m_bGotSize(false)
 {
-	METHOD_ENTRY("SVMClassifier::SVMClassifier()");
-	CTOR_CALL("SVMClassifier::SVMClassifier()");
+    METHOD_ENTRY("SVMClassifier::SVMClassifier()");
+    CTOR_CALL("SVMClassifier::SVMClassifier()");
 
-	METHOD_EXIT("SVMClassifier::SVMClassifier()");
+    METHOD_EXIT("SVMClassifier::SVMClassifier()");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -53,10 +53,10 @@ SVMClassifier::SVMClassifier() : 	m_unNumberOfClasses(SVM_CLASSIFIER_DEFAULT_NUM
 ///////////////////////////////////////////////////////////////////////////////
 SVMClassifier::~SVMClassifier()
 {
-	METHOD_ENTRY("SVMClassifier::~SVMClassifier()");
-	DTOR_CALL("SVMClassifier::~SVMClassifier()");
+    METHOD_ENTRY("SVMClassifier::~SVMClassifier()");
+    DTOR_CALL("SVMClassifier::~SVMClassifier()");
 
-	METHOD_EXIT("SVMClassifier::~SVMClassifier()");
+    METHOD_EXIT("SVMClassifier::~SVMClassifier()");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -70,23 +70,23 @@ SVMClassifier::~SVMClassifier()
 ///////////////////////////////////////////////////////////////////////////////
 bool SVMClassifier::saveClassificationResult(const std::string& _strFilename) const
 {
-	METHOD_ENTRY("SVMClassifier::saveClassificationResult(const std::string&)");
+    METHOD_ENTRY("SVMClassifier::saveClassificationResult(const std::string&)");
 
-	if (!m_bGotClassificationResult)
-	{
-		WARNING_MSG("SVM Classifier", "No classification done, cannot save result.", LOG_DOMAIN_NONE);
-		METHOD_EXIT("SVMClassifier::saveClassificationResult(const std::string&)");
-		return false;
-	}
+    if (!m_bGotClassificationResult)
+    {
+        WARNING_MSG("SVM Classifier", "No classification done, cannot save result.", LOG_DOMAIN_NONE);
+        METHOD_EXIT("SVMClassifier::saveClassificationResult(const std::string&)");
+        return false;
+    }
 
-	LabelWriterType::Pointer pWriter = LabelWriterType::New();
-	pWriter->SetFileName(_strFilename);
-	pWriter->SetInput(m_pLabelImage);
-	pWriter->Update();
-	INFO_MSG("SVM Classifier", "Classification result stored in " << _strFilename, LOG_DOMAIN_NONE);
+    LabelWriterType::Pointer pWriter = LabelWriterType::New();
+    pWriter->SetFileName(_strFilename);
+    pWriter->SetInput(m_pLabelImage);
+    pWriter->Update();
+    INFO_MSG("SVM Classifier", "Classification result stored in " << _strFilename, LOG_DOMAIN_NONE);
 
-	METHOD_EXIT("SVMClassifier::saveClassificationResult(const std::string&)");
-	return true;
+    METHOD_EXIT("SVMClassifier::saveClassificationResult(const std::string&)");
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -135,7 +135,7 @@ bool SVMClassifier::saveScaling(const std::string& _strFilename) const
 ///////////////////////////////////////////////////////////////////////////////
 bool SVMClassifier::saveData(const std::string& _strFilename) const
 {
-	METHOD_ENTRY("SVMClassifier::saveData(const std::string&)");
+    METHOD_ENTRY("SVMClassifier::saveData(const std::string&)");
 
 // 	std::ofstream of(_strFilename.c_str());
 // 
@@ -155,8 +155,8 @@ bool SVMClassifier::saveData(const std::string& _strFilename) const
 // 
 // 	INFO_MSG("SVM Classifier", "Data exported to " << _strFilename, LOG_DOMAIN_NONE);
 
-	METHOD_EXIT("SVMClassifier::saveData(const std::string&)");
-	return true;
+    METHOD_EXIT("SVMClassifier::saveData(const std::string&)");
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -170,23 +170,23 @@ bool SVMClassifier::saveData(const std::string& _strFilename) const
 ///////////////////////////////////////////////////////////////////////////////
 bool SVMClassifier::saveModel(const std::string& _strFilename) const
 {
-	METHOD_ENTRY("SVMClassifier::saveModel(const std::string&)");
+    METHOD_ENTRY("SVMClassifier::saveModel(const std::string&)");
 
-	if (!m_bGotModel)
-	{
-		WARNING_MSG("SVM Classifier", "No SVM model, nothing is saved. Train or import model first.", LOG_DOMAIN_NONE);
-		METHOD_EXIT("SVMClassifier::exportModel(const std::string&)");
-		return false;
-	}
-	else
-	{
-		INFO_MSG("SVM Classifier", "Saving SVM model to " << _strFilename << ".", LOG_DOMAIN_NONE);
-	}
+    if (!m_bGotModel)
+    {
+        WARNING_MSG("SVM Classifier", "No SVM model, nothing is saved. Train or import model first.", LOG_DOMAIN_NONE);
+        METHOD_EXIT("SVMClassifier::exportModel(const std::string&)");
+        return false;
+    }
+    else
+    {
+        INFO_MSG("SVM Classifier", "Saving SVM model to " << _strFilename << ".", LOG_DOMAIN_NONE);
+    }
 
-	m_pEstimator->SaveModel(_strFilename.c_str());
+    m_pEstimator->SaveModel(_strFilename.c_str());
 
-	METHOD_EXIT("SVMClassifier::saveModel(const std::string&)");
-	return true;
+    METHOD_EXIT("SVMClassifier::saveModel(const std::string&)");
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -200,21 +200,21 @@ bool SVMClassifier::saveModel(const std::string& _strFilename) const
 ///////////////////////////////////////////////////////////////////////////////
 bool SVMClassifier::loadModel(const std::string& _strFilename)
 {
-	METHOD_ENTRY("SVMClassifier::loadModel(const std::string&)");
+    METHOD_ENTRY("SVMClassifier::loadModel(const std::string&)");
 
-	INFO_MSG("SVM Classifier", "Loading SVM model " << _strFilename << ".", LOG_DOMAIN_NONE);
+    INFO_MSG("SVM Classifier", "Loading SVM model " << _strFilename << ".", LOG_DOMAIN_NONE);
 
-	if (m_bGotModel)
-	{
-		NOTICE_MSG("SVM Classifier", "SVM model already exists. Replacing.", LOG_DOMAIN_NONE);
-	}
-	m_pModel = ModelType::New();
+    if (m_bGotModel)
+    {
+        NOTICE_MSG("SVM Classifier", "SVM model already exists. Replacing.", LOG_DOMAIN_NONE);
+    }
+    m_pModel = ModelType::New();
 
-	m_pModel->LoadModel(_strFilename.c_str());
-	m_bGotModel = true;
+    m_pModel->LoadModel(_strFilename.c_str());
+    m_bGotModel = true;
 
-	METHOD_EXIT("SVMClassifier::loadModel(const std::string&)");
-	return true;
+    METHOD_EXIT("SVMClassifier::loadModel(const std::string&)");
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -266,84 +266,84 @@ bool SVMClassifier::loadScaling(const std::string& _strFilename)
 ///
 ///////////////////////////////////////////////////////////////////////////////
 bool SVMClassifier::scaleFeatures(const bool& _bCalc,
-								  const double& _fLower, const double& _fUpper)
+                                const double& _fLower, const double& _fUpper)
 {
-	METHOD_ENTRY("SVMClassifier::scaleFeatures(const double&, const double&)");
+    METHOD_ENTRY("SVMClassifier::scaleFeatures(const double&, const double&)");
 
-	//--------------------------------------------------------------------------
-	// Check if everthings setup correctly
-	//--------------------------------------------------------------------------
-	if (!m_bGotFeatures)
-	{
-		ERROR_MSG("SVM Classifier", "No features, can't scale. Get features from " <<
-					"Image Feature Extractor or load them. ", LOG_DOMAIN_NONE);
-		METHOD_EXIT("SVMClassifier::scaleFeatures(const double&, const double&)");
-		return false;
-	}
-	
-	if (_bCalc)
-	{
-		DEBUG_MSG("SVM Classifier", "Determining extrema in feature vector.", LOG_DOMAIN_NONE);
-		
-		m_fMin = 1e300;
-		m_fMax = -1e300;
-		
-		FeaturePointDataContainer::ConstIterator it = m_pFeatures->GetPointData()->Begin();
-		FeatureVectorType::const_iterator ci;
-		while (it != m_pFeatures->GetPointData()->End())
-		{
-			ci = (it.Value()).begin();
-			while (ci != (it.Value()).end())
-			{
-				if ((*ci) < m_fMin) m_fMin = (*ci);
-				if ((*ci) > m_fMax) m_fMax = (*ci);
-				
-				++ci;
-			}
-			++it;
-		}
+    //--------------------------------------------------------------------------
+    // Check if everthings setup correctly
+    //--------------------------------------------------------------------------
+    if (!m_bGotFeatures)
+    {
+        ERROR_MSG("SVM Classifier", "No features, can't scale. Get features from " <<
+                    "Image Feature Extractor or load them. ", LOG_DOMAIN_NONE);
+        METHOD_EXIT("SVMClassifier::scaleFeatures(const double&, const double&)");
+        return false;
+    }
+    
+    if (_bCalc)
+    {
+        DEBUG_MSG("SVM Classifier", "Determining extrema in feature vector.", LOG_DOMAIN_NONE);
+        
+        m_fMin = 1e300;
+        m_fMax = -1e300;
+        
+        FeaturePointDataContainer::ConstIterator it = m_pFeatures->GetPointData()->Begin();
+        FeatureVectorType::const_iterator ci;
+        while (it != m_pFeatures->GetPointData()->End())
+        {
+            ci = (it.Value()).begin();
+            while (ci != (it.Value()).end())
+            {
+                if ((*ci) < m_fMin) m_fMin = (*ci);
+                if ((*ci) > m_fMax) m_fMax = (*ci);
+                
+                ++ci;
+            }
+            ++it;
+        }
         m_bGotScaling = true;
-	}
+    }
     if (!m_bGotScaling)
     {
         WARNING_MSG("SVM Classifier", "Feature scale has not been loaded or calculated, "
                     "using default values. ", LOG_DOMAIN_NONE);
     }
     
-	DEBUG_MSG("SVM Classifier", "Min value: " << m_fMin, LOG_DOMAIN_VAR);
-	DEBUG_MSG("SVM Classifier", "Max value: " << m_fMax, LOG_DOMAIN_VAR);
-	
-	INFO_MSG("SVM Classifier", "Scaling features to interval [" << _fLower << "," << _fUpper << "]", LOG_DOMAIN_NONE);
-	
-	DEBUG(
-		#include <fstream>
-		#include <sstream>
-		std::ostringstream oss("");
-		oss << "DEBUG_feature_vectors_" << m_unNoFVFiles << ".txt";
-		std::ofstream of(oss.str().c_str());
-		++m_unNoFVFiles;
-	);
-	FeatureVectorType::iterator jt;
-	FeaturePointDataContainer::Iterator it = m_pFeatures->GetPointData()->Begin();
-	while (it != m_pFeatures->GetPointData()->End())
-	{
- 		jt = (it.Value()).begin();
-		while (jt != (it.Value()).end())
-		{
-			(*jt) = _fLower + ((*jt) - m_fMin) * (_fUpper - _fLower)/(m_fMax-m_fMin);
-			
-			DEBUG(of << (*jt) << " ";);
-			
-			++jt;
-		}
-		DEBUG(of << std::endl;);
-		++it;
-	}
-	DEBUG(of.close(););
-	DEBUG_MSG("SVM Classifier", "Feature vectors written to: " << oss.str(), LOG_DOMAIN_NONE);
+    DEBUG_MSG("SVM Classifier", "Min value: " << m_fMin, LOG_DOMAIN_VAR);
+    DEBUG_MSG("SVM Classifier", "Max value: " << m_fMax, LOG_DOMAIN_VAR);
+    
+    INFO_MSG("SVM Classifier", "Scaling features to interval [" << _fLower << "," << _fUpper << "]", LOG_DOMAIN_NONE);
+    
+    DEBUG(
+        #include <fstream>
+        #include <sstream>
+        std::ostringstream oss("");
+        oss << "DEBUG_feature_vectors_" << m_unNoFVFiles << ".txt";
+        std::ofstream of(oss.str().c_str());
+        ++m_unNoFVFiles;
+    );
+    FeatureVectorType::iterator jt;
+    FeaturePointDataContainer::Iterator it = m_pFeatures->GetPointData()->Begin();
+    while (it != m_pFeatures->GetPointData()->End())
+    {
+        jt = (it.Value()).begin();
+        while (jt != (it.Value()).end())
+        {
+            (*jt) = _fLower + ((*jt) - m_fMin) * (_fUpper - _fLower)/(m_fMax-m_fMin);
+            
+            DEBUG(of << (*jt) << " ";);
+            
+            ++jt;
+        }
+        DEBUG(of << std::endl;);
+        ++it;
+    }
+    DEBUG(of.close(););
+    DEBUG_MSG("SVM Classifier", "Feature vectors written to: " << oss.str(), LOG_DOMAIN_NONE);
 
-	METHOD_EXIT("SVMClassifier::scaleFeatures(const double&, const double&)");
-	return true;
+    METHOD_EXIT("SVMClassifier::scaleFeatures(const double&, const double&)");
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -355,97 +355,126 @@ bool SVMClassifier::scaleFeatures(const bool& _bCalc,
 ///////////////////////////////////////////////////////////////////////////////
 bool SVMClassifier::classify()
 {
-	METHOD_ENTRY("SVMClassifier::classify()");
+    METHOD_ENTRY("SVMClassifier::classify()");
 
-	//--------------------------------------------------------------------------
-	// Check if everthings setup correctly
-	//--------------------------------------------------------------------------
-	if (!m_bGotFeatures)
-	{
-		ERROR_MSG("SVM Classifier", "No features. Get features from " <<
-					"Image Feature Extractor or load them. ", LOG_DOMAIN_NONE);
-		METHOD_EXIT("SVMClassifier::classify()");
-		return false;
-	}
-	if (m_pFeatures->GetNumberOfPoints() == 0)
-	{
-		ERROR_MSG("SVM Classifier", "Not enough feature points (0).", LOG_DOMAIN_NONE);
-		METHOD_EXIT("SVMClassifier::classify()");
-		return false;
-	}
-	if (m_pModel->GetNumberOfSupportVectors() == 0)
-	{
-		ERROR_MSG("SVM Classifier", "Not enough support vectors (0).", LOG_DOMAIN_NONE);
-		METHOD_EXIT("SVMClassifier::classify()");
-		return false;
-	}
-	if (!m_bGotSize)
-	{
-		WARNING_MSG("SVM Classifier", "No label image size specified. Resulting label image will be empty.", LOG_DOMAIN_NONE);
-		METHOD_EXIT("SVMClassifier::train()");
-		return false;
-	}
-	if (m_bGotClassificationResult)
-	{
-		NOTICE_MSG("SVM Classifier", "Already got classification result, overwriting.", LOG_DOMAIN_NONE);
-	}
+    //--------------------------------------------------------------------------
+    // Check if everthings setup correctly
+    //--------------------------------------------------------------------------
+    if (!m_bGotFeatures)
+    {
+        ERROR_MSG("SVM Classifier", "No features. Get features from " <<
+                    "Image Feature Extractor or load them. ", LOG_DOMAIN_NONE);
+        METHOD_EXIT("SVMClassifier::classify()");
+        return false;
+    }
+    if (m_pFeatures->GetNumberOfPoints() == 0)
+    {
+        ERROR_MSG("SVM Classifier", "Not enough feature points (0).", LOG_DOMAIN_NONE);
+        METHOD_EXIT("SVMClassifier::classify()");
+        return false;
+    }
+    if (m_pModel->GetNumberOfSupportVectors() == 0)
+    {
+        ERROR_MSG("SVM Classifier", "Not enough support vectors (0).", LOG_DOMAIN_NONE);
+        METHOD_EXIT("SVMClassifier::classify()");
+        return false;
+    }
+    if (!m_bGotSize)
+    {
+        WARNING_MSG("SVM Classifier", "No label image size specified. Resulting label image will be empty.", LOG_DOMAIN_NONE);
+        METHOD_EXIT("SVMClassifier::train()");
+        return false;
+    }
+    if (m_bGotClassificationResult)
+    {
+        NOTICE_MSG("SVM Classifier", "Already got classification result, overwriting.", LOG_DOMAIN_NONE);
+    }
 
-	INFO_MSG("SVM Classifier", "Starting classification.", LOG_DOMAIN_NONE);
+    INFO_MSG("SVM Classifier", "Starting classification.", LOG_DOMAIN_NONE);
 
-	//--------------------------------------------------------------------------
-	// Start the classification
-	//--------------------------------------------------------------------------
-	SampleType::Pointer pSample = SampleType::New();
-	pSample->SetPointSet(convertPointSet(m_pFeatures));
-	
-	int nNumberOfClasses = m_pModel->GetNumberOfClasses();
-	
-	DEBUG_MSG("SVM Classifier", "Number of features to be classified: " << pSample->Size(), LOG_DOMAIN_VAR);
-	DEBUG_MSG("SVM Classifier", "Number of classes: " << nNumberOfClasses, LOG_DOMAIN_VAR);
+    //--------------------------------------------------------------------------
+    // Start the classification
+    //--------------------------------------------------------------------------
+    SampleType::Pointer pSample = SampleType::New();
+    pSample->SetPointSet(convertPointSet(m_pFeatures));
+    
+    int nNumberOfClasses = m_pModel->GetNumberOfClasses();
+    
+    DEBUG_MSG("SVM Classifier", "Number of features to be classified: " << pSample->Size(), LOG_DOMAIN_VAR);
+    DEBUG_MSG("SVM Classifier", "Number of classes: " << nNumberOfClasses, LOG_DOMAIN_VAR);
 
-	m_pClassifier = ClassifierType::New();
-	m_pClassifier->SetNumberOfClasses(nNumberOfClasses);
-	m_pClassifier->SetModel(m_pModel);
-	m_pClassifier->SetSample(pSample.GetPointer());
+    m_pClassifier = ClassifierType::New();
+    m_pClassifier->SetNumberOfClasses(nNumberOfClasses);
+    m_pClassifier->SetModel(m_pModel);
+    m_pClassifier->SetSample(pSample.GetPointer());
 
-	Log.logSeparator();
-	m_pClassifier->Update();
-	Log.logSeparator();
-	
-	ClassifierType::OutputType::Pointer pClassificationResult =	m_pClassifier->GetOutput();
-	
-	//--------------------------------------------------------------------------
-	// Create a new image for the resulting labels
-	//--------------------------------------------------------------------------
-	m_pLabelImage = LabelImageType::New();
-	LabelImageType::IndexType StartIndex;
-	LabelImageType::SizeType Size;
-	LabelImageType::RegionType Region;
-	
-	StartIndex[0]=0;
-	StartIndex[1]=0;
-	Region.SetIndex(StartIndex);
-	Region.SetSize(m_LabelImageSize);
-	m_pLabelImage->SetRegions(Region);
-	m_pLabelImage->Allocate();
-	
-	ClassifierType::OutputType::ConstIterator ciIter = pClassificationResult->Begin();
-	ClassifierType::OutputType::ConstIterator ciLast = pClassificationResult->End();
-	typedef itk::ImageRegionIterator<LabelImageType> OutputIteratorType;
-	OutputIteratorType itOut(m_pLabelImage, m_pLabelImage->GetLargestPossibleRegion());
-	itOut.GoToBegin();
-	while ((ciIter != ciLast) && (!itOut.IsAtEnd()))
-	{
-		itOut.Set(ciIter.GetClassLabel());
-		++ciIter;
-		++itOut;
-	}
-	
-	INFO_MSG("SVM Classifier", "Classification done.", LOG_DOMAIN_NONE);
+    Log.logSeparator();
+    m_pClassifier->Update();
+    Log.logSeparator();
+    
+    ClassifierType::OutputType::Pointer pClassificationResult =	m_pClassifier->GetOutput();
+    
+    //--------------------------------------------------------------------------
+    // Create a new image for the resulting labels
+    //--------------------------------------------------------------------------
+    m_pLabelImage = LabelImageType::New();
+    LabelImageType::IndexType StartIndex;
+    LabelImageType::SizeType Size;
+    LabelImageType::RegionType Region;
+    
+    StartIndex[0]=0;
+    StartIndex[1]=0;
+    Region.SetIndex(StartIndex);
+    Region.SetSize(m_LabelImageSize);
+    m_pLabelImage->SetRegions(Region);
+    m_pLabelImage->Allocate();
+    
+    ClassifierType::OutputType::ConstIterator ciIter = pClassificationResult->Begin();
+    ClassifierType::OutputType::ConstIterator ciLast = pClassificationResult->End();
+    typedef itk::ImageRegionIterator<LabelImageType> OutputIteratorType;
+    OutputIteratorType itOut(m_pLabelImage, m_pLabelImage->GetLargestPossibleRegion());
+    itOut.GoToBegin();
+    while ((ciIter != ciLast) && (!itOut.IsAtEnd()))
+    {
+        itOut.Set(ciIter.GetClassLabel());
+        ++ciIter;
+        ++itOut;
+    }
+    
+//     {
+//     std::vector < std::vector < double > > m_Probabilities;
+//     m_Probabilities = m_pClassifier->GetProbabilityEstimates();
+//     
+//     ImageFloatType::Pointer pLabelImage2 = ImageFloatType::New();
+//     ImageFloatType::IndexType StartIndex;
+//     ImageFloatType::SizeType Size;
+//     ImageFloatType::RegionType Region;
+//     
+//     StartIndex[0]=0;
+//     StartIndex[1]=0;
+//     Region.SetIndex(StartIndex);
+//     Region.SetSize(m_LabelImageSize);
+//     pLabelImage2->SetRegions(Region);
+//     pLabelImage2->Allocate();
+//     itk::ImageRegionIterator<ImageFloatType> itOut2(pLabelImage2, pLabelImage2->GetLargestPossibleRegion());
+//     itOut2.GoToBegin();
+//     
+//     std::vector < std::vector < double > >::const_iterator ciIn = Probabilities.begin();
+//     while (ciIn != Probabilities.end())
+//     {
+//         itOut2.Set((*ciIn)[2]);
+//         ++ciIn;
+//         ++itOut2;
+//     }
+//     std::string strFilename = "probabilities_c3.tif";
+//     saveImage(pLabelImage2, strFilename);
+//     }
 
-	m_bGotClassificationResult = true;
-	METHOD_EXIT("SVMClassifier::classify()");
-	return true;
+    INFO_MSG("SVM Classifier", "Classification done.", LOG_DOMAIN_NONE);
+
+    m_bGotClassificationResult = true;
+    METHOD_EXIT("SVMClassifier::classify()");
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -457,74 +486,74 @@ bool SVMClassifier::classify()
 ///////////////////////////////////////////////////////////////////////////////
 bool SVMClassifier::train()
 {
-	METHOD_ENTRY("SVMClassifier::train()");
+    METHOD_ENTRY("SVMClassifier::train()");
 
-	//--------------------------------------------------------------------------
-	// Check if everthings setup correctly
-	//--------------------------------------------------------------------------
-	if (!m_bGotFeatures)
-	{
-		ERROR_MSG("SVM Classifier", "No features. Get features from " <<
-					"Image Feature Extractor or load them. ", LOG_DOMAIN_NONE);
-		METHOD_EXIT("SVMClassifier::train()");
-		return false;
-	}
-	if (!m_bGotLabels)
-	{
-		ERROR_MSG("SVM Classifier", "No labels. Get labels from " <<
-					"Image Feature Extractor or load them. ", LOG_DOMAIN_NONE);
-		METHOD_EXIT("SVMClassifier::train()");
-		return false;
-	}
-	if (m_pFeatures->GetNumberOfPoints() == 0)
-	{
-		ERROR_MSG("SVM Classifier", "Not enough feature points (0).", LOG_DOMAIN_NONE);
-		METHOD_EXIT("SVMClassifier::train()");
-		return false;
-	}
-	// Zero label points will also be catched with the following condition
-	if (m_pFeatures->GetNumberOfPoints() != m_pLabels->GetNumberOfPoints())
-	{
-		ERROR_MSG("SVM Classifier", "Number of labels and feature points differ.", LOG_DOMAIN_NONE);
-		METHOD_EXIT("SVMClassifier::train()");
-		return false;
-	}
-	
-	//--------------------------------------------------------------------------
-	// Start training process
-	//--------------------------------------------------------------------------
-	m_pEstimator = EstimatorType::New();
+    //--------------------------------------------------------------------------
+    // Check if everthings setup correctly
+    //--------------------------------------------------------------------------
+    if (!m_bGotFeatures)
+    {
+        ERROR_MSG("SVM Classifier", "No features. Get features from " <<
+                    "Image Feature Extractor or load them. ", LOG_DOMAIN_NONE);
+        METHOD_EXIT("SVMClassifier::train()");
+        return false;
+    }
+    if (!m_bGotLabels)
+    {
+        ERROR_MSG("SVM Classifier", "No labels. Get labels from " <<
+                    "Image Feature Extractor or load them. ", LOG_DOMAIN_NONE);
+        METHOD_EXIT("SVMClassifier::train()");
+        return false;
+    }
+    if (m_pFeatures->GetNumberOfPoints() == 0)
+    {
+        ERROR_MSG("SVM Classifier", "Not enough feature points (0).", LOG_DOMAIN_NONE);
+        METHOD_EXIT("SVMClassifier::train()");
+        return false;
+    }
+    // Zero label points will also be catched with the following condition
+    if (m_pFeatures->GetNumberOfPoints() != m_pLabels->GetNumberOfPoints())
+    {
+        ERROR_MSG("SVM Classifier", "Number of labels and feature points differ.", LOG_DOMAIN_NONE);
+        METHOD_EXIT("SVMClassifier::train()");
+        return false;
+    }
+    
+    //--------------------------------------------------------------------------
+    // Start training process
+    //--------------------------------------------------------------------------
+    m_pEstimator = EstimatorType::New();
 
-	m_pEstimator->SetInputPointSet(m_pFeatures);
-	m_pEstimator->SetTrainingPointSet(m_pLabels);
-	m_pEstimator->SetNumberOfClasses(m_unNumberOfClasses);
-	m_pEstimator->SetSVMType(C_SVC);
-	m_pEstimator->SetKernelType(RBF);
-	m_pEstimator->SetKernelGamma(0.0);
-	m_pEstimator->SetKernelCoef0(0.0);
-	m_pEstimator->SetPolynomialKernelDegree(3);
-	m_pEstimator->SetNu(0.5);
-	m_pEstimator->SetCacheSize(100);
-	m_pEstimator->SetEpsilon(1.0e-3);
-	m_pEstimator->SetC(1.0e3);
-	m_pEstimator->SetP(0.1);
-	m_pEstimator->DoShrinking(true);
-	m_pEstimator->DoProbabilityEstimates(true);
+    m_pEstimator->SetInputPointSet(m_pFeatures);
+    m_pEstimator->SetTrainingPointSet(m_pLabels);
+    m_pEstimator->SetNumberOfClasses(m_unNumberOfClasses);
+    m_pEstimator->SetSVMType(C_SVC);
+    m_pEstimator->SetKernelType(RBF);
+    m_pEstimator->SetKernelGamma(0.0);
+    m_pEstimator->SetKernelCoef0(0.0);
+    m_pEstimator->SetPolynomialKernelDegree(3);
+    m_pEstimator->SetNu(0.5);
+    m_pEstimator->SetCacheSize(100);
+    m_pEstimator->SetEpsilon(1.0e-3);
+    m_pEstimator->SetC(1.0e3);
+    m_pEstimator->SetP(0.1);
+    m_pEstimator->DoShrinking(true);
+    m_pEstimator->DoProbabilityEstimates(true);
 
-	Log.logSeparator();
-	m_pEstimator->Update();
-	Log.logSeparator();
+    Log.logSeparator();
+    m_pEstimator->Update();
+    Log.logSeparator();
 
-	if (m_bGotModel)
-	{
-		NOTICE_MSG("SVM Classifier", "SVM model already exists. Replacing.", LOG_DOMAIN_NONE);
-	}
+    if (m_bGotModel)
+    {
+        NOTICE_MSG("SVM Classifier", "SVM model already exists. Replacing.", LOG_DOMAIN_NONE);
+    }
 
-	m_pModel = m_pEstimator->GetModel();
-	m_bGotModel = true;
+    m_pModel = m_pEstimator->GetModel();
+    m_bGotModel = true;
 
-	METHOD_EXIT("SVMClassifier::train()");
-	return true;
+    METHOD_EXIT("SVMClassifier::train()");
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -537,35 +566,35 @@ bool SVMClassifier::train()
 ///
 ///////////////////////////////////////////////////////////////////////////////
 TestFeaturePointSetType::Pointer SVMClassifier::convertPointSet(
-											const FeaturePointSetType::Pointer _pPS)
+                                            const FeaturePointSetType::Pointer _pPS)
 {
-	METHOD_ENTRY("SVMClassifier::convertPointSet(const FeaturePointSetType::Pointer)");
-	
-	TestFeaturePointSetType::Pointer	pPS = TestFeaturePointSetType::New();
-	TestFeaturePointContainer::Pointer	pFC = TestFeaturePointContainer::New();
-	
-	TestFeaturePointType FP;
-	
-	FeaturePointDataContainer::Iterator it = _pPS->GetPointData()->Begin();
-	FeatureVectorType::const_iterator ci;
-	int i=0;
-	while (it != _pPS->GetPointData()->End())
-	{
-		int j=0;
- 		ci = (it.Value()).begin();
-		while (ci != (it.Value()).end())
-		{
-			FP[j] = (*ci);
-			
-			++j;
-			++ci;
-		}
-		pFC->InsertElement(i, FP);
-		pPS->SetPointData(i,(it.Value()));
-		++i;
-		++it;
-	}
-	DEBUG_MSG("SVM Classifier", "Point set converted to compatible format for classification.", LOG_DOMAIN_NONE);
+    METHOD_ENTRY("SVMClassifier::convertPointSet(const FeaturePointSetType::Pointer)");
+    
+    TestFeaturePointSetType::Pointer	pPS = TestFeaturePointSetType::New();
+    TestFeaturePointContainer::Pointer	pFC = TestFeaturePointContainer::New();
+    
+    TestFeaturePointType FP;
+    
+    FeaturePointDataContainer::Iterator it = _pPS->GetPointData()->Begin();
+    FeatureVectorType::const_iterator ci;
+    int i=0;
+    while (it != _pPS->GetPointData()->End())
+    {
+        int j=0;
+        ci = (it.Value()).begin();
+        while (ci != (it.Value()).end())
+        {
+            FP[j] = (*ci);
+            
+            ++j;
+            ++ci;
+        }
+        pFC->InsertElement(i, FP);
+        pPS->SetPointData(i,(it.Value()));
+        ++i;
+        ++it;
+    }
+    DEBUG_MSG("SVM Classifier", "Point set converted to compatible format for classification.", LOG_DOMAIN_NONE);
 // 	std::vector<FeatureVectorType>::iterator jt;
 // 	int i=0;
 // 	for (ci = FeaturePoints.begin(); ci != FeaturePoints.end(); ++ci)
@@ -581,8 +610,8 @@ TestFeaturePointSetType::Pointer SVMClassifier::convertPointSet(
 // 		++i;
 // 	}
 
-	pPS->SetPoints(pFC);
-	
-	METHOD_EXIT("SVMClassifier::convertPointSet(const FeaturePointSetType::Pointer)");
-	return pPS;
+    pPS->SetPoints(pFC);
+    
+    METHOD_EXIT("SVMClassifier::convertPointSet(const FeaturePointSetType::Pointer)");
+    return pPS;
 }

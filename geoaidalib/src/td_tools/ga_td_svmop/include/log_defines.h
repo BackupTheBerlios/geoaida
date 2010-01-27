@@ -13,7 +13,7 @@
 /// \brief		Manages some macros for logging class "CLog"
 ///
 /// \date		2009-06-29
-/// \author		Torsten Büschenfeld (bfeld@tnt.uni-hannover.de)
+/// \author		Torsten Bueschenfeld (bfeld@tnt.uni-hannover.de)
 ///
 /// \todo All macros wrapping logSeperator need LogSeverity-parameter
 ///

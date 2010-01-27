@@ -13,7 +13,7 @@
 /// \brief		Prototype of class "SVMClassifier"
 ///
 /// \date		2009-07-29
-/// \author		Torsten Büschenfeld (bfeld@tnt.uni-hannover.de)
+/// \author		Torsten Bueschenfeld (bfeld@tnt.uni-hannover.de)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -21,6 +21,7 @@
 #define SVM_CLASSIFIER_H
 
 //--- Program header ---------------------------------------------------------//
+#include "feature_extractor.h"
 #include "log.h"
 #include "otb_svmop_common.h"
 

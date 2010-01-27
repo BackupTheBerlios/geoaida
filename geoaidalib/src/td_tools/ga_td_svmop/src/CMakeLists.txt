@@ -19,6 +19,7 @@ endif(OTB_FOUND)
 set(sources
     feature_extractor.cpp
     log.cpp
+    otb_svmop_common.cpp
     svm_classifier.cpp
     timer.cpp
 )

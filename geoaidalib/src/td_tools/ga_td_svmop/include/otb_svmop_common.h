@@ -20,6 +20,8 @@
 #ifndef OTB_SVMOP_COMMON_H
 #define OTB_SVMOP_COMMON_H
 
+#include "log.h"
+
 #include "itkBinaryBallStructuringElement.h"
 #include "itkGradientMagnitudeImageFilter.h"
 #include "itkListSample.h"
@@ -100,5 +102,10 @@ typedef otb::SVMModel<SampleType::MeasurementVectorType::ValueType,LabelPixelTyp
 typedef otb::SVMPointSetModelEstimator<FeaturePointSetType,LabelPointSetType>		EstimatorType;
 typedef otb::SVMClassifier<SampleType,LabelPixelType>								ClassifierType;
 
+//--- Functions --------------------------------------------------------------//
+
+void saveImage(const Image8BitType::Pointer, const std::string&);
+void saveImage(const Image16BitType::Pointer, const std::string&);
+void saveImage(const ImageFloatType::Pointer, const std::string&);
 
 #endif

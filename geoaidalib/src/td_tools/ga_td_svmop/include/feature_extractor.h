@@ -104,12 +104,12 @@ class FeatureExtractor
 		);
 		
 		//--- Constant methods [private] -------------------------------------//
-		void	saveImage(const Image8BitType::Pointer,
-						  const std::string&) const;
-		void	saveImage(const Image16BitType::Pointer,
-						  const std::string&) const;
-		void	saveImage(const ImageFloatType::Pointer,
-						  const std::string&) const;
+// 		void	saveImage(const Image8BitType::Pointer,
+// 						  const std::string&) const;
+// 		void	saveImage(const Image16BitType::Pointer,
+// 						  const std::string&) const;
+//     public:	void	saveImage(const ImageFloatType::Pointer,
+// 						  const std::string&) const;
 
 };
 

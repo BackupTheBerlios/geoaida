@@ -57,6 +57,7 @@ void usage()
     std::cout << "          input channel 1" << std::endl;
     std::cout << "          ..." << std::endl;
     std::cout << "          input channel n" << std::endl;
+    std::cout << "          number of classes" << std::endl;
     std::cout << "          label image" << std::endl;
     std::cout << "          SVM model" << std::endl;
     std::cout << "          SVM scaling" << std::endl;
@@ -96,7 +97,7 @@ int main(int argc, char *argv[])
     if (ArgvList.size() > 0)
     {
         nNumberOfChannels = atoi(ArgvList[0].c_str());
-        if (ArgvList.size() == nNumberOfChannels+5)
+        if (ArgvList.size() == nNumberOfChannels+6)
         {
             //--- Load training images and label image ---------------------------//
             for (int i=1; i<nNumberOfChannels+1; ++i)
@@ -115,20 +116,20 @@ int main(int argc, char *argv[])
             Classifier.setFeatures(Extractor.getFeatures());
             Classifier.setLabels(Extractor.getLabels());
             Classifier.scaleFeatures(SVM_CLASSIFIER_CALCULATE_EXTREMA);
-            Classifier.setNumberOfClasses(4);
+            Classifier.setNumberOfClasses(atoi(ArgvList[nNumberOfChannels+2].c_str()));
             Classifier.train();
-            Classifier.saveModel(ArgvList[nNumberOfChannels+2]);
-            Classifier.saveScaling(ArgvList[nNumberOfChannels+3]);
+            Classifier.saveModel(ArgvList[nNumberOfChannels+3]);
+            Classifier.saveScaling(ArgvList[nNumberOfChannels+4]);
 
             //--- Reclassification -----------------------------------------------//
             Extractor.extract();
             Extractor.clearChannels(); // Free some memory!
-            Classifier.loadModel(ArgvList[nNumberOfChannels+2]);
-            Classifier.loadScaling(ArgvList[nNumberOfChannels+3]);
+            Classifier.loadModel(ArgvList[nNumberOfChannels+3]);
+            Classifier.loadScaling(ArgvList[nNumberOfChannels+4]);
             Classifier.setFeatures(Extractor.getFeatures());
             Classifier.scaleFeatures();
             Classifier.classify();
-            Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+4]);
+            Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+5]);
         }
         else
         {
