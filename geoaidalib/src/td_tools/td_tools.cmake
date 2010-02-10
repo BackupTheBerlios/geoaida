@@ -16,12 +16,12 @@ macro(td_tool name extra_sources)
 
   set(data ${name}.op)
 
-  add_executable(${name} ${sources} ${mocsrc})
+  add_executable(${name}_tool OUTPUT_NAME ${name} ${sources} ${mocsrc})
 
 
-  target_link_libraries(${name} gaimage pfm pnm ${QT_LIBRARIES})
+  target_link_libraries(${name}_tool gaimage pfm pnm ${QT_LIBRARIES})
 
-  install(TARGETS ${name} DESTINATION bin)
+  install(TARGETS ${name}_tool DESTINATION bin)
   install(FILES ${data} DESTINATION share/data/operators)
 endmacro(td_tool)
 
@@ -30,12 +30,12 @@ macro(mod_tool name extra_sources)
 
   set(data ${name}.mod)
 
-  add_executable(${name} ${sources} ${mocsrc})
+  add_executable(${name}_mod OUTPUT_NAME ${name} ${sources} ${mocsrc})
 
 
-  target_link_libraries(${name} gaimage pfm pnm ${QT_LIBRARIES})
+  target_link_libraries(${name}_mod gaimage pfm pnm ${QT_LIBRARIES})
 
-  install(TARGETS ${name} DESTINATION bin)
+  install(TARGETS ${name}_mod DESTINATION bin)
   install(FILES ${data} DESTINATION share/data/modules)
 endmacro(mod_tool)
 
