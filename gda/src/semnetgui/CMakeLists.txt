@@ -1,7 +1,7 @@
 find_package(Qt3 REQUIRED)
 
 add_definitions(${QT_DEFINITIONS})
-add_definitions(-DTMPDIR=\\\"${CMAKE_INSTALL_PREFIX}/tmp\\\")
+add_definitions(-DTMPDIR="${CMAKE_INSTALL_PREFIX}/tmp")
 add_definitions(-DWITH_GUI_SUPPORT)
 include_directories(.
         ${PROJECT_SOURCE_DIR}/src/core

@@ -2,8 +2,8 @@ find_package(Qt3 REQUIRED)
 
 add_definitions(${QT_DEFINITIONS})
 
-add_definitions(-DTMPDIR=\\\"${CMAKE_INSTALL_PREFIX}/tmp\\\")
-add_definitions(-DPRGDIR=\\\"${CMAKE_INSTALL_PREFIX}\\\")
+add_definitions(-DTMPDIR="${CMAKE_INSTALL_PREFIX}/tmp")
+add_definitions(-DPRGDIR="${CMAKE_INSTALL_PREFIX}")
 include_directories(.
 	${CMAKE_SOURCE_DIR}/qtguiapplication/src/qtparser
 	${CMAKE_SOURCE_DIR}/qtguiapplication/src/qtgui
