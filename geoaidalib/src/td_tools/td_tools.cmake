@@ -16,8 +16,9 @@ macro(td_tool name extra_sources)
 
   set(data ${name}.op)
 
-  add_executable(${name}_tool OUTPUT_NAME ${name} ${sources} ${mocsrc})
+  add_executable(${name}_tool ${sources} ${mocsrc})
 
+  set_target_properties(${name}_tool PROPERTIES OUTPUT_NAME ${name} )
 
   target_link_libraries(${name}_tool gaimage pfm pnm ${QT_LIBRARIES})
 
@@ -30,8 +31,8 @@ macro(mod_tool name extra_sources)
 
   set(data ${name}.mod)
 
-  add_executable(${name}_mod OUTPUT_NAME ${name} ${sources} ${mocsrc})
-
+  add_executable(${name}_mod ${sources} ${mocsrc})
+  set_target_properties(${name}_mod PROPERTIES OUTPUT_NAME ${name} )
 
   target_link_libraries(${name}_mod gaimage pfm pnm ${QT_LIBRARIES})
 
