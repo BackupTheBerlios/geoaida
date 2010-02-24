@@ -58,7 +58,7 @@ void usage()
     std::cout << "          Path to SVM configuration" << std::endl;
     std::cout << "          SVM model" << std::endl;
     std::cout << "          SVM scaling" << std::endl;
-    std::cout << "          output file name" << std::endl;
+    std::cout << "          prefix classification result filenames" << std::endl;
 
     );
     METHOD_EXIT("usage()");

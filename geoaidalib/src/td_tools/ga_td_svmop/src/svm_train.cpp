@@ -61,7 +61,7 @@ void usage()
     std::cout << "          label image" << std::endl;
     std::cout << "          SVM model" << std::endl;
     std::cout << "          SVM scaling" << std::endl;
-    std::cout << "          reclassification result" << std::endl;
+    std::cout << "          prefix for reclassification result filenames" << std::endl;
     std::cout << std::endl;
 
     );

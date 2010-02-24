@@ -63,12 +63,12 @@ SVMClassifier::~SVMClassifier()
 ///
 /// \brief Saves the label image that resulted from classification
 ///
-/// \param _strFilename Filename
+/// \param _strPrefix Prefix for filename
 ///
-/// \return Returns if saving was succesful
+/// \return Returns if saving was succesfull
 ///
 ///////////////////////////////////////////////////////////////////////////////
-bool SVMClassifier::saveClassificationResult(const std::string& _strFilename) const
+bool SVMClassifier::saveClassificationResult(const std::string& _strPrefix) const
 {
     METHOD_ENTRY("SVMClassifier::saveClassificationResult(const std::string&)");
 
@@ -79,11 +79,18 @@ bool SVMClassifier::saveClassificationResult(const std::string& _strFilename) co
         return false;
     }
 
-    LabelWriterType::Pointer pWriter = LabelWriterType::New();
-    pWriter->SetFileName(_strFilename);
-    pWriter->SetInput(m_pLabelImage);
-    pWriter->Update();
-    INFO_MSG("SVM Classifier", "Classification result stored in " << _strFilename, LOG_DOMAIN_NONE);
+    INFO_MSG("SVM Classifier", "Saving classification results.", LOG_DOMAIN_NONE);
+    
+    std::ostringstream oss("");
+    oss << _strPrefix << "_labels.tif";
+    saveImage(m_pLabelImage, oss.str());
+       
+    for (int i=0; i<m_unNumberOfClasses; ++i)
+    {
+        std::ostringstream oss("");
+        oss << _strPrefix << "_probability_c" << i+1 << ".tif";
+        saveImage(m_Probabilities[i], oss.str());
+    }
 
     METHOD_EXIT("SVMClassifier::saveClassificationResult(const std::string&)");
     return true;
@@ -212,6 +219,8 @@ bool SVMClassifier::loadModel(const std::string& _strFilename)
 
     m_pModel->LoadModel(_strFilename.c_str());
     m_bGotModel = true;
+    
+    m_unNumberOfClasses = m_pModel->GetNumberOfClasses();
 
     METHOD_EXIT("SVMClassifier::loadModel(const std::string&)");
     return true;
@@ -398,13 +407,11 @@ bool SVMClassifier::classify()
     SampleType::Pointer pSample = SampleType::New();
     pSample->SetPointSet(convertPointSet(m_pFeatures));
     
-    int nNumberOfClasses = m_pModel->GetNumberOfClasses();
-    
     DEBUG_MSG("SVM Classifier", "Number of features to be classified: " << pSample->Size(), LOG_DOMAIN_VAR);
-    DEBUG_MSG("SVM Classifier", "Number of classes: " << nNumberOfClasses, LOG_DOMAIN_VAR);
+    DEBUG_MSG("SVM Classifier", "Number of classes: " << m_unNumberOfClasses, LOG_DOMAIN_VAR);
 
     m_pClassifier = ClassifierType::New();
-    m_pClassifier->SetNumberOfClasses(nNumberOfClasses);
+    m_pClassifier->SetNumberOfClasses(m_unNumberOfClasses);
     m_pClassifier->SetModel(m_pModel);
     m_pClassifier->SetSample(pSample.GetPointer());
 
@@ -441,34 +448,38 @@ bool SVMClassifier::classify()
         ++itOut;
     }
     
-//     {
-//     std::vector < std::vector < double > > m_Probabilities;
-//     m_Probabilities = m_pClassifier->GetProbabilityEstimates();
-//     
-//     ImageFloatType::Pointer pLabelImage2 = ImageFloatType::New();
-//     ImageFloatType::IndexType StartIndex;
-//     ImageFloatType::SizeType Size;
-//     ImageFloatType::RegionType Region;
-//     
-//     StartIndex[0]=0;
-//     StartIndex[1]=0;
-//     Region.SetIndex(StartIndex);
-//     Region.SetSize(m_LabelImageSize);
-//     pLabelImage2->SetRegions(Region);
-//     pLabelImage2->Allocate();
-//     itk::ImageRegionIterator<ImageFloatType> itOut2(pLabelImage2, pLabelImage2->GetLargestPossibleRegion());
-//     itOut2.GoToBegin();
-//     
-//     std::vector < std::vector < double > >::const_iterator ciIn = Probabilities.begin();
-//     while (ciIn != Probabilities.end())
-//     {
-//         itOut2.Set((*ciIn)[2]);
-//         ++ciIn;
-//         ++itOut2;
-//     }
-//     std::string strFilename = "probabilities_c3.tif";
-//     saveImage(pLabelImage2, strFilename);
-//     }
+    std::vector<std::vector<double> > Probabilities;
+    Probabilities = m_pClassifier->GetProbabilityEstimates();
+    
+    m_Probabilities.clear();
+    
+    for (int i=0; i<m_unNumberOfClasses; ++i)
+    {
+        ImageFloatType::Pointer pProbabilityImage = ImageFloatType::New();
+        ImageFloatType::IndexType StartIndex;
+        ImageFloatType::SizeType Size;
+        ImageFloatType::RegionType Region;
+    
+        StartIndex[0]=0;
+        StartIndex[1]=0;
+        Region.SetIndex(StartIndex);
+        Region.SetSize(m_LabelImageSize);
+        
+        pProbabilityImage->SetRegions(Region);
+        pProbabilityImage->Allocate();
+        itk::ImageRegionIterator<ImageFloatType> itOut(pProbabilityImage, pProbabilityImage->GetLargestPossibleRegion());
+        itOut.GoToBegin();
+    
+        std::vector<std::vector<double> >::const_iterator ciIn = Probabilities.begin();
+        while (ciIn != Probabilities.end())
+        {
+            itOut.Set((*ciIn)[i]);
+            ++ciIn;
+            ++itOut;
+        }
+        
+        m_Probabilities.push_back(pProbabilityImage);
+    }
 
     INFO_MSG("SVM Classifier", "Classification done.", LOG_DOMAIN_NONE);
 

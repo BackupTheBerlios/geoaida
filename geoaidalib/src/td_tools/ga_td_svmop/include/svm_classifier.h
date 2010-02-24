@@ -85,8 +85,9 @@ class SVMClassifier
 		LabelPointSetType::Pointer		m_pLabels;		///< Contains the labels
 		ModelType::Pointer				m_pModel;		///< SVM model
 		
-		LabelImageType::Pointer		m_pLabelImage;		///< Label image resulting from classification
-		LabelImageType::SizeType	m_LabelImageSize;	///< Contains size of label image
+		LabelImageType::Pointer		    m_pLabelImage;	        ///< Label image resulting from classification
+		LabelImageType::SizeType	    m_LabelImageSize;       ///< Contains size of label image
+		std::vector<ImageFloatType::Pointer> m_Probabilities;   ///< Class probabilities for each pixel
 
 		uint			m_unNumberOfClasses;			///< Number of classes
 		
