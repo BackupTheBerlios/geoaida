@@ -57,8 +57,8 @@ void usage()
     std::cout << "          [filename] input channel 1" << std::endl;
     std::cout << "          ..." << std::endl;
     std::cout << "          [filename] input channel n" << std::endl;
-    std::cout << "          [int     ] number of classes" << std::endl;
     std::cout << "          [filename] label image" << std::endl;
+    std::cout << "          [int     ] number of classes" << std::endl;
     std::cout << "          [filename] feature extraction parameters" << std::endl;
     std::cout << "          [filename] SVM model" << std::endl;
     std::cout << "          [filename] SVM scaling" << std::endl;
