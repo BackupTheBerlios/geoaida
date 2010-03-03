@@ -1,4 +1,4 @@
-NumberOfPyramidLevels: 2 
+NumberOfPyramidLevels: 4
 PyramidDecimationRate: 1.75
 FilterRadius:          5
 LabelSpacingX:         5
