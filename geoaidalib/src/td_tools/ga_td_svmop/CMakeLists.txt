@@ -5,3 +5,6 @@ include_directories(
 )
 
 add_subdirectory(src)
+
+install(FILES svmop_feature_parameter.sample DESTINATION share/samples)
+
