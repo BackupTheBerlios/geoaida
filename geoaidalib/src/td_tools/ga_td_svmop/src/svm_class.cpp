@@ -55,8 +55,8 @@ void usage()
     std::cout << "          [filename] input channel 1" << std::endl;
     std::cout << "          ..." << std::endl;
     std::cout << "          [filename] input channel n" << std::endl;
-    std::cout << "          [filename] feature extraction parameters" << std::endl;
     std::cout << "          [string  ] path to SVM configuration" << std::endl;
+    std::cout << "          [filename] feature extraction parameters" << std::endl;
     std::cout << "          [filename] SVM model" << std::endl;
     std::cout << "          [filename] SVM scaling" << std::endl;
     std::cout << "          [string  ] prefix classification result filenames" << std::endl;
@@ -101,11 +101,12 @@ int main(int argc, char *argv[])
             {
                 Extractor.addInputChannel(ArgvList[i]);
             }
-            if (!Extractor.loadParam(ArgvList[nNumberOfChannels+1])) return EXIT_FAILURE;
+            if (!Extractor.loadParam(ArgvList[nNumberOfChannels+1]+ "/" +
+                                      ArgvList[nNumberOfChannels+2])) return EXIT_FAILURE;
             if (!Extractor.extract()) return EXIT_FAILURE;
-            if (!Classifier.loadModel(ArgvList[nNumberOfChannels+2]+ "/" +
+            if (!Classifier.loadModel(ArgvList[nNumberOfChannels+1]+ "/" +
                                       ArgvList[nNumberOfChannels+3])) return EXIT_FAILURE;
-            if (!Classifier.loadScaling(ArgvList[nNumberOfChannels+2]+ "/" +
+            if (!Classifier.loadScaling(ArgvList[nNumberOfChannels+1]+ "/" +
                                         ArgvList[nNumberOfChannels+4])) return EXIT_FAILURE;
             Classifier.setLabelImageSize(Extractor.getImageSize());
             Extractor.clearChannels(); // Free some memory!
