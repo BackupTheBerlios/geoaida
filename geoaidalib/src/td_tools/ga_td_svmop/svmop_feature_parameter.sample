@@ -1,0 +1,5 @@
+NumberOfPyramidLevels: 2 
+PyramidDecimationRate: 1.75
+FilterRadius:          5
+LabelSpacingX:         5
+LabelSpacingY:         5

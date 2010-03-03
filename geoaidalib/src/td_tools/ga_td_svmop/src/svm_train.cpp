@@ -53,15 +53,16 @@ void usage()
 
     std::cout << std::endl;
     std::cout << "svm_train" << std::endl;
-    std::cout << "          number of input channels" << std::endl;
-    std::cout << "          input channel 1" << std::endl;
+    std::cout << "          [int     ] number of input channels" << std::endl;
+    std::cout << "          [filename] input channel 1" << std::endl;
     std::cout << "          ..." << std::endl;
-    std::cout << "          input channel n" << std::endl;
-    std::cout << "          number of classes" << std::endl;
-    std::cout << "          label image" << std::endl;
-    std::cout << "          SVM model" << std::endl;
-    std::cout << "          SVM scaling" << std::endl;
-    std::cout << "          prefix for reclassification result filenames" << std::endl;
+    std::cout << "          [filename] input channel n" << std::endl;
+    std::cout << "          [int     ] number of classes" << std::endl;
+    std::cout << "          [filename] label image" << std::endl;
+    std::cout << "          [filename] feature extraction parameters" << std::endl;
+    std::cout << "          [filename] SVM model" << std::endl;
+    std::cout << "          [filename] SVM scaling" << std::endl;
+    std::cout << "          [string  ] prefix for reclassification result filenames" << std::endl;
     std::cout << std::endl;
 
     );
@@ -97,7 +98,7 @@ int main(int argc, char *argv[])
     if (ArgvList.size() > 0)
     {
         nNumberOfChannels = atoi(ArgvList[0].c_str());
-        if (ArgvList.size() == nNumberOfChannels+6)
+        if (ArgvList.size() == nNumberOfChannels+7)
         {
             //--- Load training images and label image ---------------------------//
             for (int i=1; i<nNumberOfChannels+1; ++i)
@@ -107,29 +108,30 @@ int main(int argc, char *argv[])
 
             //--- Start the training process -------------------------------------//
             Extractor.loadLabelImage(ArgvList[nNumberOfChannels+1]);
-            Extractor.setFilterRadius(5);
-            Extractor.setLabelSpacing(5,5);
-            Extractor.setNumberOfPyramidLevels(4);
-            Extractor.setPyramidDecimationRate(1.75);
-            Extractor.extract(FEATURE_EXTRACTOR_USE_LABELS);
+            if (!Extractor.loadParam(ArgvList[nNumberOfChannels+3].c_str()))
+                return EXIT_FAILURE;
+            if (!Extractor.extract(FEATURE_EXTRACTOR_USE_LABELS))
+                return EXIT_FAILURE;
             Classifier.setLabelImageSize(Extractor.getImageSize());
             Classifier.setFeatures(Extractor.getFeatures());
             Classifier.setLabels(Extractor.getLabels());
             Classifier.scaleFeatures(SVM_CLASSIFIER_CALCULATE_EXTREMA);
             Classifier.setNumberOfClasses(atoi(ArgvList[nNumberOfChannels+2].c_str()));
             Classifier.train();
-            Classifier.saveModel(ArgvList[nNumberOfChannels+3]);
-            Classifier.saveScaling(ArgvList[nNumberOfChannels+4]);
+            Classifier.saveModel(ArgvList[nNumberOfChannels+4]);
+            Classifier.saveScaling(ArgvList[nNumberOfChannels+5]);
 
             //--- Reclassification -----------------------------------------------//
-            Extractor.extract();
+            if (!Extractor.extract())
+                return EXIT_FAILURE;
             Extractor.clearChannels(); // Free some memory!
-            Classifier.loadModel(ArgvList[nNumberOfChannels+3]);
-            Classifier.loadScaling(ArgvList[nNumberOfChannels+4]);
+            Classifier.loadModel(ArgvList[nNumberOfChannels+4]);
+            if (!Classifier.loadScaling(ArgvList[nNumberOfChannels+5]))
+                return EXIT_FAILURE;
             Classifier.setFeatures(Extractor.getFeatures());
             Classifier.scaleFeatures();
             Classifier.classify();
-            Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+5]);
+            Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+6]);
         }
         else
         {

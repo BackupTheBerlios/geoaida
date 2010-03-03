@@ -76,7 +76,7 @@ class SVMClassifier
 	
 		//--- Methods --------------------------------------------------------//
 		TestFeaturePointSetType::Pointer convertPointSet(
-										const FeaturePointSetType::Pointer);
+										 FeaturePointSetType::Pointer);
 		
 		//--- Variables ------------------------------------------------------//
 		ClassifierType::Pointer			m_pClassifier;	///< Instance of LibSVM wrapper class (classification)

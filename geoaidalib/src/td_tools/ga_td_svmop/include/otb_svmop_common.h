@@ -45,6 +45,7 @@
 
 //--- Define input and output images ---//
 const unsigned int Dimension = 2;
+const unsigned int FEATURE_VEC_SIZE_MAX = 64;
 typedef unsigned char	Pixel8BitType;
 typedef unsigned short	Pixel16BitType;
 typedef float			PixelFloatType;
@@ -91,7 +92,7 @@ typedef FeaturePointSetType::PointType							FeaturePointType;
 typedef FeaturePointSetType::PointsContainer					FeaturePointContainer;
 typedef FeaturePointSetType::PointDataContainer					FeaturePointDataContainer;
 
-typedef itk::PointSet<FeatureVectorType,32>						TestFeaturePointSetType;
+typedef itk::PointSet<FeatureVectorType,FEATURE_VEC_SIZE_MAX>	TestFeaturePointSetType;
 typedef TestFeaturePointSetType::PointType						TestFeaturePointType;
 typedef TestFeaturePointSetType::PointsContainer				TestFeaturePointContainer;
 // typedef FeaturePointSetType::PointDataContainer					TestFeaturePointDataContainer;

@@ -123,7 +123,8 @@ bool SVMClassifier::saveScaling(const std::string& _strFilename) const
         METHOD_EXIT("SVMClassifier::saveScaling(const std::string&)");
         return false;
     }
-    outfile << m_fMin << "\n" << m_fMax << "\n";
+    outfile << "ValueMin: " << m_fMin << "\n";
+    outfile << "ValueMax: " << m_fMax << "\n";
     outfile.close();
     INFO_MSG("SVM Classifier", "SVM scaling stored in " << _strFilename, LOG_DOMAIN_NONE);
 
@@ -253,9 +254,20 @@ bool SVMClassifier::loadScaling(const std::string& _strFilename)
         METHOD_EXIT("SVMClassifier::loadScaling(const std::string&)");
         return false;
     }
-    infile >> m_fMin;
-    infile >> m_fMax;
-    infile.close();    
+    bool bParamFailed = false;
+    string strDecription;
+    infile >> strDecription; if (infile.fail()) bParamFailed = true; 
+    infile >> m_fMin;        if (infile.fail()) bParamFailed = true; 
+    infile >> strDecription; if (infile.fail()) bParamFailed = true; 
+    infile >> m_fMax;        if (infile.fail()) bParamFailed = true;
+    infile.close();
+    
+    if (infile.fail())
+    {
+        ERROR_MSG("SVM Classifier", "Wrong parameter file", LOG_DOMAIN_NONE);
+        METHOD_EXIT("SVMClassifier::loadScaling(const std::string&)");
+        return false;
+    }
     
     m_bGotScaling = true;
 
@@ -593,15 +605,21 @@ TestFeaturePointSetType::Pointer SVMClassifier::convertPointSet(
     {
         int j=0;
         ci = (it.Value()).begin();
-        while (ci != (it.Value()).end())
+        while (j<FEATURE_VEC_SIZE_MAX)
         {
-            FP[j] = (*ci);
-            
+            if (ci != (it.Value()).end())
+            {
+                FP[j] = (*ci);
+                ++ci;
+            }
+            else
+            {
+                FP[j] = 0;
+            }
             ++j;
-            ++ci;
         }
         pFC->InsertElement(i, FP);
-        pPS->SetPointData(i,(it.Value()));
+//         pPS->SetPointData(i,(it.Value()));
         ++i;
         ++it;
     }

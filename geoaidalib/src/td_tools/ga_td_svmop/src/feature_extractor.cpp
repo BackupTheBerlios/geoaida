@@ -181,6 +181,17 @@ void FeatureExtractor::clearChannels()
 bool FeatureExtractor::extract(const unsigned char& _nMode)
 {
     METHOD_ENTRY("FeatureExtractor::extract()");
+
+    if (m_pInputChannelList->Size() * 2 * (m_nNumberOfPyramidLevels+1) > FEATURE_VEC_SIZE_MAX)
+    {
+        INFO_MSG ("Image Feature Extractor", "Maximum feature vector size: " <<
+                   FEATURE_VEC_SIZE_MAX, LOG_DOMAIN_VAR);
+        ERROR_MSG("Image Feature Extractor", "Maximum feature vector size exceeded. "
+                  "Reduce pyramid level, number of input channels or number of "
+                  "features.", LOG_DOMAIN_VAR);
+        METHOD_EXIT("FeatureExtractor::extract()");
+        return false;
+    }
     
     m_nLabelBorderX = static_cast<int>(
                         static_cast<double>(m_nFilterRadius) * 
@@ -256,6 +267,66 @@ void FeatureExtractor::loadLabelImage(const std::string& _ImageName)
     m_bLabelImageLoaded = true;
     
     METHOD_EXIT("FeatureExtractor::loadLabelImage(const std::string&)");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///
+/// \brief Loads parameters for feature extraction
+///
+/// \param _strFilename Filename of parameters to be loaded
+///
+/// \return Returns if loading was succesfull
+///
+///////////////////////////////////////////////////////////////////////////////
+bool FeatureExtractor::loadParam(const std::string& _strFilename)
+{
+    METHOD_ENTRY("FeatureExtractor::loadParam(const std::string&)");
+
+    INFO_MSG("Image Feature Extractor", "Loading parameters " << _strFilename << ".", LOG_DOMAIN_NONE);
+
+    ifstream infile;
+    infile.open(_strFilename.c_str());
+    if (infile.fail())
+    {
+        ERROR_MSG("Image Feature Extractor", "Can't open " << _strFilename, LOG_DOMAIN_FILEIO);
+        METHOD_EXIT("FeatureExtractor::loadParam(const std::string&)");
+        return false;
+    }
+    bool bParamFailed = false;
+    string strDecription;
+    infile >> strDecription;            if (infile.fail()) bParamFailed = true;
+    infile >> m_nNumberOfPyramidLevels; if (infile.fail()) bParamFailed = true;
+    infile >> strDecription;            if (infile.fail()) bParamFailed = true;
+    infile >> m_fPyramidDecimationRate; if (infile.fail()) bParamFailed = true;
+    infile >> strDecription;            if (infile.fail()) bParamFailed = true;
+    infile >> m_nFilterRadius;          if (infile.fail()) bParamFailed = true;
+    infile >> strDecription;            if (infile.fail()) bParamFailed = true;
+    infile >> m_nLabelSpacingX;         if (infile.fail()) bParamFailed = true;
+    infile >> strDecription;            if (infile.fail()) bParamFailed = true;
+    infile >> m_nLabelSpacingY;         if (infile.fail()) bParamFailed = true;
+    
+    if (bParamFailed)
+    {
+        WARNING_MSG("Image Feature Extractor", "Wrong parameter file, using defaults", LOG_DOMAIN_NONE);
+    }
+    
+    infile.close();
+    
+    Log.logSeparator(LOG_LEVEL_INFO);
+    INFO(
+        std::cout << "Parameters: " << std::endl;
+        std::cout << "  Number of pyramid levels: " << m_nNumberOfPyramidLevels << std::endl;
+        std::cout << "  Pyramid decimation rate:  " << m_fPyramidDecimationRate << std::endl;
+        std::cout << "  Filter radius:            " << m_nFilterRadius << std::endl;
+        std::cout << "  Label Spacing:            " << m_nLabelSpacingX << "," << m_nLabelSpacingY << std::endl;
+    )
+    Log.logSeparator(LOG_LEVEL_INFO);
+    
+    --m_nNumberOfPyramidLevels; // = Given number - Original level = Additional levels
+    m_bLabelSpacingSet = true;
+    
+    METHOD_EXIT("FeatureExtractor::loadParam(const std::string&)");
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -634,8 +705,8 @@ bool FeatureExtractor::extractWithLabels()
         FeaturePointType FP;
         LabelPointType LP;
 
-        FP[0] = -i;
-        LP[0] = -i;
+        FP[0] = i;
+        LP[0] = i;
 
         pFeatCont->InsertElement(i, FP);
         m_pFeatures->SetPointData(i, (*ci));
@@ -894,7 +965,7 @@ bool FeatureExtractor::extractWithoutLabels()
         
         FeaturePointType FP;
 
-        FP[0] = -i;
+        FP[0] = i;
 
         pFeatCont->InsertElement(i, FP);
         m_pFeatures->SetPointData(i, (*ci));

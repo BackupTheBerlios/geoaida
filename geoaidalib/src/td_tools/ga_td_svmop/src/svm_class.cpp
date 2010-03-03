@@ -51,14 +51,15 @@ void usage()
     INFO(
 
     std::cout << "svm_class" << std::endl;
-    std::cout << "          number of input channels" << std::endl;
-    std::cout << "          input channel 1" << std::endl;
+    std::cout << "          [int     ] number of input channels" << std::endl;
+    std::cout << "          [filename] input channel 1" << std::endl;
     std::cout << "          ..." << std::endl;
-    std::cout << "          input channel n" << std::endl;
-    std::cout << "          Path to SVM configuration" << std::endl;
-    std::cout << "          SVM model" << std::endl;
-    std::cout << "          SVM scaling" << std::endl;
-    std::cout << "          prefix classification result filenames" << std::endl;
+    std::cout << "          [filename] input channel n" << std::endl;
+    std::cout << "          [filename] feature extraction parameters" << std::endl;
+    std::cout << "          [string  ] path to SVM configuration" << std::endl;
+    std::cout << "          [filename] SVM model" << std::endl;
+    std::cout << "          [filename] SVM scaling" << std::endl;
+    std::cout << "          [string  ] prefix classification result filenames" << std::endl;
 
     );
     METHOD_EXIT("usage()");
@@ -93,26 +94,25 @@ int main(int argc, char *argv[])
     if (ArgvList.size() > 0)
     {
         nNumberOfChannels = atoi(ArgvList[0].c_str());
-        if (ArgvList.size() == nNumberOfChannels+5)
+        if (ArgvList.size() == nNumberOfChannels+6)
         {
             //--- Start the classification process -------------------------------//
             for (int i=1; i<nNumberOfChannels+1; ++i)
             {
                 Extractor.addInputChannel(ArgvList[i]);
             }
-            Extractor.setNumberOfPyramidLevels(4);
-            Extractor.setPyramidDecimationRate(1.75);
+            if (!Extractor.loadParam(ArgvList[nNumberOfChannels+1])) return EXIT_FAILURE;
             if (!Extractor.extract()) return EXIT_FAILURE;
-            if (!Classifier.loadModel(ArgvList[nNumberOfChannels+1]+ "/" +
-                                      ArgvList[nNumberOfChannels+2])) return EXIT_FAILURE;
-            if (!Classifier.loadScaling(ArgvList[nNumberOfChannels+1]+ "/" +
-                                        ArgvList[nNumberOfChannels+3])) return EXIT_FAILURE;
+            if (!Classifier.loadModel(ArgvList[nNumberOfChannels+2]+ "/" +
+                                      ArgvList[nNumberOfChannels+3])) return EXIT_FAILURE;
+            if (!Classifier.loadScaling(ArgvList[nNumberOfChannels+2]+ "/" +
+                                        ArgvList[nNumberOfChannels+4])) return EXIT_FAILURE;
             Classifier.setLabelImageSize(Extractor.getImageSize());
             Extractor.clearChannels(); // Free some memory!
             Classifier.setFeatures(Extractor.getFeatures());
             Classifier.scaleFeatures();
             Classifier.classify();
-            Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+4]);
+            Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+5]);
         }
         else
         {

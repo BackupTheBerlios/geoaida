@@ -67,7 +67,10 @@ class FeatureExtractor
 		void addInputChannel(const std::string&);
 		void clearChannels();
 		bool extract(const unsigned char& = FEATURE_EXTRACTOR_DEFAULT);
+        
 		void loadLabelImage(const std::string&);
+        bool loadParam(const std::string&);
+        
 		void setFilterRadius(const int&);
 		void setLabelSpacing(const int&, const int&);
 		void setNumberOfPyramidLevels(const int&);
