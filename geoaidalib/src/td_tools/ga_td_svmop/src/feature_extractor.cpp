@@ -331,6 +331,61 @@ bool FeatureExtractor::loadParam(const std::string& _strFilename)
 
 ///////////////////////////////////////////////////////////////////////////////
 ///
+/// \brief Creates a new refined label image for training
+///
+/// This method compares the original label image to the given one. Labels are
+/// kept if equal, otherwise they are dropped (0). This is for refinement of
+/// the label image by using the reclassification result. Only correctly
+/// reclassified pixels will be used for the new label image.
+///
+/// \param _pNewLabels Label image for refinement
+///
+///////////////////////////////////////////////////////////////////////////////
+void FeatureExtractor::refineLabels(const LabelImageType::Pointer _pNewLabels)
+{
+    METHOD_ENTRY("FeatureExtractor::refineLabels(const LabelImageType::Pointer)");
+    
+    typedef itk::ImageRegionConstIterator<LabelImageType> ConstLabelImageIteratorType;
+    typedef itk::ImageRegionIterator<LabelImageType>      LabelImageIteratorType;
+    
+    // Define whole image as region, it's the same for both images
+    LabelImageType::RegionType Region;
+    Region = m_pLabelImage->GetLargestPossibleRegion(); 
+    
+    ConstLabelImageIteratorType ci(_pNewLabels, Region);
+    LabelImageIteratorType      it(m_pLabelImage, Region);
+    
+    INFO_MSG("Image Feature Extractor", "Refining labels", LOG_DOMAIN_NONE);
+    
+    while (!ci.IsAtEnd())
+    {
+        if (ci.Value() != it.Value())
+        {
+            it.Value() = 0;
+        }
+                
+        ++ci;
+        ++it;
+    }
+    
+    DEBUG(
+    {
+        std::ostringstream oss("");
+        oss << "DEBUG_label_" << m_unNoImageFiles << ".tif";
+        saveImage(m_pLabelImage, oss.str());
+        ++m_unNoImageFiles;
+    }
+    );
+    
+    m_bLabelImageLoaded = true;
+    m_bLabelsExtracted = false; // Labels need to be extracted from new label image
+    m_bFeaturesExtracted = false; // New labels, thus, new features have to be extracted
+    
+    METHOD_EXIT("FeatureExtractor::refineLabels(const LabelImageType::Pointer)");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///
 /// \brief Configures the size of filters
 ///
 /// \param _nR Size of filters (radius)

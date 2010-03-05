@@ -61,6 +61,27 @@ SVMClassifier::~SVMClassifier()
 
 ///////////////////////////////////////////////////////////////////////////////
 ///
+/// \brief Returns the label image
+///
+/// \return Pointer to label image
+///
+///////////////////////////////////////////////////////////////////////////////
+LabelImageType::Pointer SVMClassifier::getClassificationResult() const
+{
+    METHOD_ENTRY("SVMClassifier::getClassificationResult()");
+    
+    if (!m_bGotClassificationResult)
+    {
+        WARNING_MSG("SVM Classifier", "No classification done, image empty.", LOG_DOMAIN_NONE);
+    }
+    
+    METHOD_EXIT("SVMClassifier::getClassificationResult()");
+    return m_pLabelImage;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+///
 /// \brief Saves the label image that resulted from classification
 ///
 /// \param _strPrefix Prefix for filename
@@ -528,6 +549,10 @@ bool SVMClassifier::train()
         METHOD_EXIT("SVMClassifier::train()");
         return false;
     }
+    
+    DEBUG_MSG("SVM Classifier", "Labels  : " << m_pLabels->GetNumberOfPoints(), LOG_DOMAIN_VAR);
+    DEBUG_MSG("SVM Classifier", "Features: " << m_pFeatures->GetNumberOfPoints(), LOG_DOMAIN_VAR);
+    
     if (m_pFeatures->GetNumberOfPoints() == 0)
     {
         ERROR_MSG("SVM Classifier", "Not enough feature points (0).", LOG_DOMAIN_NONE);

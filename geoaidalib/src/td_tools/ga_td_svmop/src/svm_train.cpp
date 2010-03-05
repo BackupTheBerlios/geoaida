@@ -100,28 +100,29 @@ int main(int argc, char *argv[])
         nNumberOfChannels = atoi(ArgvList[0].c_str());
         if (ArgvList.size() == nNumberOfChannels+7)
         {
-            //--- Load training images and label image ---------------------------//
+            //--- Load training images and label image -----------------------//
             for (int i=1; i<nNumberOfChannels+1; ++i)
             {
                 Extractor.addInputChannel(ArgvList[i]);
             }
 
-            //--- Start the training process -------------------------------------//
+            //--- Start the training process ---------------------------------//
             Extractor.loadLabelImage(ArgvList[nNumberOfChannels+1]);
             if (!Extractor.loadParam(ArgvList[nNumberOfChannels+3].c_str()))
                 return EXIT_FAILURE;
+//             Extractor.setNumberOfPyramidLevels(2);
             if (!Extractor.extract(FEATURE_EXTRACTOR_USE_LABELS))
                 return EXIT_FAILURE;
             Classifier.setLabelImageSize(Extractor.getImageSize());
-            Classifier.setFeatures(Extractor.getFeatures());
             Classifier.setLabels(Extractor.getLabels());
+            Classifier.setFeatures(Extractor.getFeatures());
             Classifier.scaleFeatures(SVM_CLASSIFIER_CALCULATE_EXTREMA);
             Classifier.setNumberOfClasses(atoi(ArgvList[nNumberOfChannels+2].c_str()));
             Classifier.train();
             Classifier.saveModel(ArgvList[nNumberOfChannels+4]);
             Classifier.saveScaling(ArgvList[nNumberOfChannels+5]);
 
-            //--- Reclassification -----------------------------------------------//
+            //--- Reclassification -------------------------------------------//
             if (!Extractor.extract())
                 return EXIT_FAILURE;
             Extractor.clearChannels(); // Free some memory!
@@ -132,6 +133,18 @@ int main(int argc, char *argv[])
             Classifier.scaleFeatures();
             Classifier.classify();
             Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+6]);
+            
+//             //--- Refine Classification --------------------------------------//
+//             Extractor.refineLabels(Classifier.getClassificationResult());
+//             if (!Extractor.loadParam(ArgvList[nNumberOfChannels+3].c_str()))
+//                 return EXIT_FAILURE;
+//             Extractor.extract(FEATURE_EXTRACTOR_USE_LABELS);
+//             Classifier.setLabels(Extractor.getLabels());
+//             Classifier.setFeatures(Extractor.getFeatures());
+//             Classifier.scaleFeatures(SVM_CLASSIFIER_CALCULATE_EXTREMA);
+//             Classifier.train();
+//             Classifier.saveModel(ArgvList[nNumberOfChannels+4]);
+//             Classifier.saveScaling(ArgvList[nNumberOfChannels+5]);
         }
         else
         {

@@ -130,7 +130,7 @@ void CLog::log(	const std::string& _strSrc, const std::string& _strMessage,
 				std::string strMessage = _strMessage;
 				std::string strTmp = _strMessage;
 				unsigned short unLengthMax = m_unColsMax;
-				unsigned short unIndent = _strSrc.size() + 12;
+				unsigned short unIndent = _strSrc.size() + 13;
 				std::string strIndent(unIndent, ' ');
 	
 				if ((unLengthMax - unIndent) < 1) unLengthMax=unIndent+1;

@@ -1,14 +1,15 @@
 #!/bin/sh
 # calls program svm_class and masks regions
 # call cmd="ga_td_svmop_multi @channel_r_file@ @channel_g_file@ @channel_b_file@
-#                             @channel_ir_file@ @conf_path@ @conf@ @scaling_conf@
+#                             @channel_ir_file@
+#                             @conf_path@ @feat_conf@ @conf@ @scaling_conf@
 #                             @label_mode@ @tmpdir@ @output@ @mask_file@ @mask_x@
 #                             @mask_y@ @mask_size_x@ @mask_size_y@"
 
 SUCCESS=0
 FAILURE=1
 
-if [ $# -eq 15 ]; then
+if [ $# -eq 16 ]; then
 
     # Do something for readability :-)
     CHANNEL_R=$1
@@ -16,20 +17,21 @@ if [ $# -eq 15 ]; then
     CHANNEL_B=$3
     CHANNEL_IR=$4
     CONF_PATH=$5
-    CONF=$6
-    CONF_SCALING=$7
-    LABEL_MODE=$8
-    TMPDIR=$9
-    OUTPUT=${10}
-    MASK=${11}
-    MASK_X=${12}
-    MASK_Y=${13}
-    MASK_SIZE_X=${14}
-    MASK_SIZE_Y=${15}
+    CONF_FEAT=$6
+    CONF=$7
+    CONF_SCALING=$8
+    LABEL_MODE=$9
+    TMPDIR=${10}
+    OUTPUT=${11}
+    MASK=${12}
+    MASK_X=${13}
+    MASK_Y=${14}
+    MASK_SIZE_X=${15}
+    MASK_SIZE_Y=${16}
 
 
     # Create unique filename
-    FILENAME=$TMPDIR/svm_class_` echo "$CONF_PATH $CONF $CONF_SCALING $CHANNEL_R $CHANNEL_G $CHANNEL_B $CHANNEL_IR" | md5sum | awk '{print $1}'`
+    FILENAME=$TMPDIR/svm_class_` echo "$CONF_PATH $CONF_FEAT $CONF $CONF_SCALING $CHANNEL_R $CHANNEL_G $CHANNEL_B $CHANNEL_IR" | md5sum | awk '{print $1}'`
     echo "ga_td_svmop_multi: Unique Filename=$FILENAME"
 
     # Lock file to prevent starting two instances of svm_class
@@ -46,9 +48,9 @@ if [ $# -eq 15 ]; then
         # svm uses Orfeo which needs an extension to images. Therefore, the
         # resulting label image is extended by ".tif"
         # After classification, the image is converted 
-        echo "ga_td_svmop_multi: svm_class 4 $CHANNEL_R $CHANNEL_G $CHANNEL_B $CHANNEL_IR $CONF_PATH $CONF $CONF_SCALING $OUTPUT.tif"
+        echo "ga_td_svmop_multi: svm_class 4 $CHANNEL_R $CHANNEL_G $CHANNEL_B $CHANNEL_IR $CONF_PATH $CONF_FEAT $CONF $CONF_SCALING $OUTPUT.tif"
 
-        svm_class 4 $CHANNEL_R $CHANNEL_G $CHANNEL_B $CHANNEL_IR $CONF_PATH $CONF $CONF_SCALING $OUTPUT".tif" || exit $?
+        svm_class 4 $CHANNEL_R $CHANNEL_G $CHANNEL_B $CHANNEL_IR $CONF_PATH $CONF_FEAT $CONF $CONF_SCALING $OUTPUT".tif" || exit $?
         vips im_tiff2vips $OUTPUT".tif" $OUTPUT".v" || exit $?
 		vips im_vips2ppm $OUTPUT".v" $OUTPUT".pgm" || exit $?
 
@@ -85,6 +87,7 @@ else
     echo "                  Channel B"
     echo "                  Channel IR"
     echo "                  Path to SVM configuration files"
+    echo "                  Feature parameter configuration"
     echo "                  SVM model"
     echo "                  SVM scaling"
     echo "                  output file name"

@@ -58,13 +58,6 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-//--- Allow global DEBUG definition typically passed by compiler ---//
-//==================================================================//
-
-// #ifdef DEBUG
-// 	#define LOGLEVEL_DEBUG
-// #else
-
 //--- Allow locking, e.g. when using progress bars ---//
 //====================================================//
 #define LOG_LOCKING_ON
@@ -93,6 +86,18 @@
 // #define DOMAIN_MEMORY_FREED
 #define DOMAIN_VAR
 // #define DOMAIN_FILEIO
+
+//--- Allow global DEBUG definition typically passed by compiler ---//
+//==================================================================//
+
+#ifdef DEBUG
+ #define LOGLEVEL_DEBUG
+ #undef LOGLEVEL_INFO
+ #undef LOGLEVEL_NOTICE
+ #undef LOGLEVEL_WARNING
+ #undef LOGLEVEL_ERROR
+ #undef LOGLEVEL_NONE
+#endif
 
 //--- End of configuration ---------------------------------------------------//
 

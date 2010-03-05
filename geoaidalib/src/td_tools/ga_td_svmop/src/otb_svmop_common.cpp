@@ -32,7 +32,7 @@ void saveImage(const Image8BitType::Pointer _pImg,
 {
     METHOD_ENTRY("FeatureExtractor::saveImage(const Image8BitType::Pointer, const std::string&)");
     
-    INFO_MSG("Image Feature Extractor", "Writing image " << _Filename, LOG_DOMAIN_NONE);
+    INFO_MSG("Image Feature Extractor", "Writing 8-bit image " << _Filename, LOG_DOMAIN_NONE);
     Writer8BitType::Pointer pWriter = Writer8BitType::New();
     pWriter->SetFileName(_Filename);
     pWriter->SetInput(_pImg);
@@ -54,7 +54,7 @@ void saveImage(const Image16BitType::Pointer _pImg,
 {
     METHOD_ENTRY("FeatureExtractor::saveImage(const Image16BitType::Pointer, const std::string&)");
     
-    INFO_MSG("Image Feature Extractor", "Writing image " << _Filename, LOG_DOMAIN_NONE);
+    INFO_MSG("Image Feature Extractor", "Writing 16-bit image " << _Filename, LOG_DOMAIN_NONE);
     Writer16BitType::Pointer pWriter = Writer16BitType::New();
     pWriter->SetFileName(_Filename);
     pWriter->SetInput(_pImg);
@@ -82,8 +82,7 @@ void saveImage(const ImageFloatType::Pointer _pImg,
     pFilter->SetOutputMinimum(0);
     pFilter->SetOutputMaximum(255);
     pFilter->SetInput(_pImg);
-    DEBUG_MSG("Image Feature Extractor", "Rescaling image " << _Filename, LOG_DOMAIN_NONE);
-    INFO_MSG("Image Feature Extractor", "Writing image " << _Filename, LOG_DOMAIN_NONE);
+    INFO_MSG("Image Feature Extractor", "Writing 8-bit image " << _Filename, LOG_DOMAIN_NONE);
     Writer8BitType::Pointer pWriter = Writer8BitType::New();
     pWriter->SetFileName(_Filename);
     pWriter->SetInput(pFilter->GetOutput());

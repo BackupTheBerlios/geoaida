@@ -36,6 +36,7 @@
 
 const unsigned char FEATURE_EXTRACTOR_DEFAULT = 0;
 const unsigned char FEATURE_EXTRACTOR_USE_LABELS = 10;
+const unsigned char FEATURE_EXTRACTOR_REFINE = 20;
 
 const int		FEATURE_EXTRACTOR_DEFAULT_FILTER_RADIUS = 5;		///< Default value for filters
 // The default number of pyramid levels should stay 0, because
@@ -70,6 +71,8 @@ class FeatureExtractor
         
 		void loadLabelImage(const std::string&);
         bool loadParam(const std::string&);
+        
+        void refineLabels(const LabelImageType::Pointer);
         
 		void setFilterRadius(const int&);
 		void setLabelSpacing(const int&, const int&);

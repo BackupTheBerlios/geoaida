@@ -48,8 +48,9 @@ class SVMClassifier
 		~SVMClassifier();
 
 		//--- Const Methods --------------------------------------------------//
-		double getFeatureMin() const;
-		double getFeatureMax() const;
+        LabelImageType::Pointer getClassificationResult() const;
+// 		double getFeatureMin() const;
+// 		double getFeatureMax() const;
 		bool saveClassificationResult(const std::string&) const;
 		bool saveData(const std::string&) const;
         bool saveScaling(const std::string&) const;
