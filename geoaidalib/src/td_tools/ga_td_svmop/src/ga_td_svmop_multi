@@ -50,8 +50,8 @@ if [ $# -eq 16 ]; then
         # After classification, the image is converted 
         echo "ga_td_svmop_multi: svm_class 4 $CHANNEL_R $CHANNEL_G $CHANNEL_B $CHANNEL_IR $CONF_PATH $CONF_FEAT $CONF $CONF_SCALING $OUTPUT.tif"
 
-        svm_class 4 $CHANNEL_R $CHANNEL_G $CHANNEL_B $CHANNEL_IR $CONF_PATH $CONF_FEAT $CONF $CONF_SCALING $OUTPUT".tif" || exit $?
-        vips im_tiff2vips $OUTPUT".tif" $OUTPUT".v" || exit $?
+        svm_class 4 $CHANNEL_R $CHANNEL_G $CHANNEL_B $CHANNEL_IR $CONF_PATH $CONF_FEAT $CONF $CONF_SCALING $OUTPUT || exit $?
+        vips im_tiff2vips $OUTPUT"_labels.tif" $OUTPUT".v" || exit $?
 		vips im_vips2ppm $OUTPUT".v" $OUTPUT".pgm" || exit $?
 
         mv $OUTPUT".pgm" $OUTPUT".tmp" || exit $?
