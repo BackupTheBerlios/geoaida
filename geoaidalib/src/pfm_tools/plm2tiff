@@ -1,0 +1,50 @@
+#!/bin/bash
+Usage()
+{
+  cat <<EOF
+Usage:
+  plm2tiff [-d 16|32] <infile> <outfile>
+
+Description:
+  Convert labelimage to tiff
+  -d [32|16]: depth of tiff image [default 32]
+EOF
+  exit 1
+}
+
+depth=32 
+
+if [ $1 = '-d' ]
+then
+    depth=$2
+    shift 2
+fi
+
+src=$1
+dest=$2
+tmpdest=$(dirname $dest)/tmp-$$.tif
+
+plmdump -d $depth $1 - | convert $(plmdump -i -d $depth $1 ) gray:- $tmpdest 
+if [ $? -ne 0 ]
+then
+    rm $tmpdest
+    exit 1
+fi
+
+pfmheader -t $1 >/tmp/tiff-$$.tfw 
+if [ $? -eq 0 ]
+then
+    geotifcp -e /tmp/tiff-$$.tfw $tmpdest $dest
+    rm $tmpdest
+else
+    mv $tmpdest $dest
+fi
+rm /tmp/tiff-$$.tfw
+
+
+
+
+
+
+
+	  
