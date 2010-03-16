@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 	depth=PFM_UINT16;
 	break;
       case 32:
-	depth=PFM_UINT16;
+	depth=PFM_UINT;
 	break;
       default:
 	Usage();
