@@ -38,7 +38,7 @@ int main(int argc, char **argv)
   float minval,maxval;
   int *pic;
   int opt;
-  int depth=PFM_SINT;
+  int depth=PFM_UINT;
   char infomode=0;
   int type;
   while ((opt=getopt(argc,argv,"id:")) != -1) {
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
   if (infomode) {
     pfm_readpfm_header(infile,&cols,&rows,&minval,&maxval,&type);
     printf("-size %dx%d -depth %d",
-	   cols,rows,(depth==PFM_SINT ? 32 : 16));
+	   cols,rows,(depth==PFM_UINT ? 32 : 16));
     fclose(infile);
     return 0;
   }
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
     fprintf(info,"Size (%dx%d) values: %f - %f (read)\n",cols,rows,minval,maxval);
     fclose(infile);
     fprintf(info,"minval=%f, maxval=%f\n",minval,maxval);
-    fwrite(pic,(depth==PFM_SINT ? 4 : 2),cols*rows,outfile);
+    fwrite(pic,(depth==PFM_UINT ? 4 : 2),cols*rows,outfile);
     fclose(outfile);
     return 0;
   }
