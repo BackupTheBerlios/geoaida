@@ -1,0 +1,100 @@
+#!/bin/sh
+# calls program svm_class and masks regions
+# call cmd="ga_td_svmop_multi @channel_r_file@ @channel_g_file@ @channel_b_file@
+#                             @channel_ir_file@ @channel_re_file@
+#                             @conf_path@ @feat_conf@ @conf@ @scaling_conf@
+#                             @label_mode@ @tmpdir@ @output@ @mask_file@ @mask_x@
+#                             @mask_y@ @mask_size_x@ @mask_size_y@"
+
+SUCCESS=0
+FAILURE=1
+
+if [ $# -eq 17 ]; then
+
+    # Do something for readability :-)
+    CHANNEL_R=$1
+    CHANNEL_G=$2
+    CHANNEL_B=$3
+    CHANNEL_IR=$4
+    CHANNEL_RE=$5
+    CONF_PATH=$6
+    CONF_FEAT=$7
+    CONF=$8
+    CONF_SCALING=$9
+    LABEL_MODE=${10}
+    TMPDIR=${11}
+    OUTPUT=${12}
+    MASK=${13}
+    MASK_X=${14}
+    MASK_Y=${15}
+    MASK_SIZE_X=${16}
+    MASK_SIZE_Y=${17}
+
+
+    # Create unique filename
+    FILENAME=$TMPDIR/svm_class_` echo "$CONF_PATH $CONF_FEAT $CONF $CONF_SCALING $CHANNEL_R $CHANNEL_G $CHANNEL_B $CHANNEL_IR $CHANNEL_RE" | md5sum | awk '{print $1}'`
+    echo "ga_td_svmop_multi_5ch: Unique Filename=$FILENAME"
+
+    # Lock file to prevent starting two instances of svm_class
+    # Starting two instances is principally allowed, but since
+    # it is a multi class operator and we want to reuse the
+    # There is no need to calculate the scene twice.
+    lockfile $FILENAME.lock
+
+    # Test for region file. If it already exists, reuse the results,
+    # otherwise start classification
+    if [ ! -f $FILENAME.regs ]; then
+        echo "ga_td_svmop_multi_5ch: First run, starting classification."
+
+        # svm uses Orfeo which needs an extension to images. Therefore, the
+        # resulting label image is extended by ".tif"
+        # After classification, the image is converted 
+        echo "ga_td_svmop_multi_5ch: svm_class 5 $CHANNEL_R $CHANNEL_G $CHANNEL_B $CHANNEL_IR $CHANNEL_RE $CONF_PATH $CONF_FEAT $CONF $CONF_SCALING $OUTPUT.tif"
+
+        svm_class 5 $CHANNEL_R $CHANNEL_G $CHANNEL_B $CHANNEL_IR $CHANNEL_RE $CONF_PATH $CONF_FEAT $CONF $CONF_SCALING $OUTPUT || exit $?
+        vips im_tiff2vips $OUTPUT"_labels.tif" $OUTPUT".v" || exit $?
+		vips im_vips2ppm $OUTPUT".v" $OUTPUT".pgm" || exit $?
+
+        mv $OUTPUT".pgm" $OUTPUT".tmp" || exit $?
+
+        # Create region description
+        label2regiondescr $OUTPUT".tmp" $OUTPUT".pgm" $CONF_PATH/class_mapping $FILENAME.regs $LABEL_MODE || exit $?
+        rm $OUTPUT".tmp"
+    else
+        echo "ga_td_svmop_multi_5ch: svm_class ran before, reusing results."
+    fi
+
+    if [ -z $MASK ]; then
+        cp $FILENAME.regs $OUTPUT
+    else
+        regionmask -o $OUTPUT $FILENAME.regs $MASK $MASK_X $MASK_Y $MASK_SIZE_X $MASK_SIZE_Y
+    fi
+
+    # Remove lockfile
+    rm -f $FILENAME.lock
+
+    # Subsitute shell variables
+    mv $OUTPUT /tmp/$$.output
+    cat /tmp/$$.output >> $OUTPUT
+    rm /tmp/$$.output
+
+    exit $SUCCESS
+else
+    # print usage information
+    echo " "
+    echo "ga_td_svmop_multi_5ch"
+    echo "                  Channel R"
+    echo "                  Channel G"
+    echo "                  Channel B"
+    echo "                  Channel IR"
+    echo "                  Channel RE"
+    echo "                  Path to SVM configuration files"
+    echo "                  Feature parameter configuration"
+    echo "                  SVM model"
+    echo "                  SVM scaling"
+    echo "                  output file name"
+    echo "                  mask file name"
+    echo " "
+
+    exit $FAILURE
+fi
