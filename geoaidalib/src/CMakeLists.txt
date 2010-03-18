@@ -1,5 +1,6 @@
 add_subdirectory(bottomup)
 add_subdirectory(bu_tools)
+add_subdirectory(libotbgeo)
 add_subdirectory(tools)
 add_subdirectory(td_tools)
 add_subdirectory(plm_view)
