@@ -17,6 +17,7 @@ endif(OTB_FOUND)
 # include_directories(${OPENCV_INCLUDE_DIRS})
 
 set(sources
+    configurator.cpp
     feature_extractor.cpp
     log.cpp
     otb_svmop_common.cpp
@@ -47,6 +48,8 @@ target_link_libraries(svm_train
 
 install(TARGETS svm_class svm_train RUNTIME DESTINATION bin)
 install(PROGRAMS ga_td_svmop_multi DESTINATION bin)
+install(PROGRAMS ga_td_svmop_multi_5ch DESTINATION bin)
 install(FILES ga_svmop_multi.op DESTINATION share/data/operators)
+install(FILES ga_svmop_multi_5ch.op DESTINATION share/data/operators)
 
 
