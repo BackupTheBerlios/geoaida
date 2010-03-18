@@ -17,7 +17,7 @@ endif(OTB_FOUND)
 # include_directories(${OPENCV_INCLUDE_DIRS})
 
 set(sources
-    configurator.cpp
+#     configurator.cpp
     feature_extractor.cpp
     log.cpp
     otb_svmop_common.cpp
