@@ -1,0 +1,19 @@
+<operator
+  type=topdown
+  class=segment
+  name="SVMOpMulti5Ch"
+  cmd="ga_td_svmop_multi_5ch @channel_r_file@ @channel_g_file@ @channel_b_file@ @channel_ir_file@ @channel_re_file@ @conf_path@ @feat_conf@ @conf@ @scaling_conf@ @label_mode@ @tmpdir@ @output@ @mask_file@ @mask_x@ @mask_y@ @mask_size_x@ @mask_size_y@"
+  tip="Texture classification by using a support vector machine"
+  runglobal=true>
+
+  <attribute label="Channel Red" name=channel_r type=image tip="Image channel representing red spectrum" >
+  <attribute label="Channel Green" name=channel_g type=image tip="Image channel representing green spectrum" >
+  <attribute label="Channel Blue" name=channel_b type=image tip="Image channel representing blue spectrum" >
+  <attribute label="Channel Red Edge" name=channel_re type=image tip="Image channel representing red edge spectrum" >
+  <attribute label="Channel Infrared" name=channel_ir type=image tip="Image channel representing infrared spectrum" >
+  <attribute label="SVM configuration path" name=conf_path type=string tip="Path to SVM configuration files">
+  <attribute label="Feature parameter file" name=feat_conf type=string tip="Configuration file for feature extraction" value="feat_param">
+  <attribute label="SVM model file" name=conf type=string tip="Configuration file for svm, defining the model that was trained" value="svm_model">
+  <attribute label="SVM scaling file" name=scaling_conf type=string tip="Configuration file for svm scaling, including min and max value for feature vectors" value="svm_scaling">
+  <attribute label="SVM region creation" name=label_mode type=enum tip="Label creation mode. 0 = context region labels, 1 = class labels" options="0,1" value="0">
+</operator>
