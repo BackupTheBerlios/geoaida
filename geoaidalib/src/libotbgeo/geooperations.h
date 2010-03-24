@@ -25,9 +25,9 @@ namespace otbgeo {
    * @param image Image to read geo-coordinates from
    * @return GeoRegion containing geo-coordinates from image
    */
-  template <class TLabel>  GeoRegion createGeoRegion(const typename otb::Image<TLabel, 2>::Pointer image){
+  template <class TImageType>  GeoRegion createGeoRegion(const typename TImageType::Pointer image){
 
-    typedef otb::Image<TLabel> ImageType;
+    typedef TImageType ImageType;
     const typename ImageType::PointType origin = image->GetOrigin();
     const typename ImageType::SizeType size = image->GetLargestPossibleRegion().GetSize();
     const typename ImageType::SpacingType spacing = image->GetSpacing();
@@ -67,8 +67,8 @@ namespace otbgeo {
    * @param image Image
    * @return Image Region that lies within geoRegion.
    */
-  template <class TLabel> typename otb::Image<TLabel, 2>::RegionType geocutImage(const GeoRegion& geoRegion, const typename otb::Image<TLabel, 2>::Pointer image) {
-    typedef otb::Image<TLabel> ImageType;
+  template <class TImageType> typename TImageType::RegionType geocutImage(const GeoRegion& geoRegion, const typename TImageType::Pointer image) {
+    typedef TImageType ImageType;
     
     GeoRegion::PointType geoOrigin = geoRegion.GetOrigin();
     typename ImageType::PointType imageOrigin = image->GetOrigin();
@@ -142,8 +142,8 @@ namespace otbgeo {
    * @param images List of images to use.
    * @return GeoRegion that is common for all images in images.
    */
-  template <class TLabel> GeoRegion findCommonRegion(typename otb::ImageList< otb::Image< TLabel, 2 > >::Pointer images){
-      typedef otb::Image<TLabel> ImageType;
+  template <class TImageType> GeoRegion findCommonRegion(typename otb::ImageList<TImageType>::Pointer images){
+      typedef TImageType ImageType;
       typedef otb::ImageList<ImageType> ImageList;
 #ifdef DEBUG
       {
@@ -154,11 +154,11 @@ namespace otbgeo {
       int i=0;      
       typename ImageList::ConstIterator iter = images->Begin();
       typename ImageType::Pointer image = iter.Get();
-      GeoRegion region = createGeoRegion<TLabel>(image);
+      GeoRegion region = createGeoRegion<TImageType>(image);
       GeoRegion::IndexType index = region.GetOrigin();
       for (++iter; iter != images->End();++iter){    
 	typename ImageType::Pointer image = iter.Get();
-	GeoRegion currentRegion = createGeoRegion<TLabel>(image);
+	GeoRegion currentRegion = createGeoRegion<TImageType>(image);
 	
 #ifdef DEBUG
 	{      
