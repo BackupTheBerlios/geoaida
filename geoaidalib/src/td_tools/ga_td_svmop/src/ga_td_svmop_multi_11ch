@@ -1,0 +1,114 @@
+#!/bin/sh
+# calls program svm_class and masks regions
+# call cmd="ga_td_svmop_multi_11ch
+#           @channel_re_b_file@
+#           @channel_re_g_file@
+#           @channel_re_r_file@
+#           @channel_re_re_file@
+#           @channel_re_ir_file@
+#           @channel_dmc1_ir_file@
+#           @channel_dmc1_r_file@
+#           @channel_dmc1_g_file@
+#           @channel_dmc2_ir_file@
+#           @channel_dmc2_r_file@
+#           @channel_dmc2_g_file@
+#           @conf_path@ @feat_conf@ @conf@ @scaling_conf@
+#           @label_mode@ @tmpdir@ @output@
+#           @mask_file@ @mask_x@ @mask_y@ @mask_size_x@ @mask_size_y@"
+
+SUCCESS=0
+FAILURE=1
+
+if [ $# -eq 23 ]; then
+
+    # Do something for readability :-)
+    CHANNEL_RE_B=$1
+    CHANNEL_RE_G=$2
+    CHANNEL_RE_R=$3
+    CHANNEL_RE_RE=$4
+    CHANNEL_RE_IR=$5
+    CHANNEL_DMC1_IR=$6
+    CHANNEL_DMC1_R=$7
+    CHANNEL_DMC1_G=$8
+    CHANNEL_DMC2_IR=$9
+    CHANNEL_DMC2_R=${10}
+    CHANNEL_DMC2_G=${11}
+    CONF_PATH=${12}
+    CONF_FEAT=${13}
+    CONF=${14}
+    CONF_SCALING=${15}
+    LABEL_MODE=${16}
+    TMPDIR=${17}
+    OUTPUT=${18}
+    MASK=${19}
+    MASK_X=${20}
+    MASK_Y=${21}
+    MASK_SIZE_X=${22}
+    MASK_SIZE_Y=${23}
+
+
+    # Create unique filename
+    FILENAME=$TMPDIR/svm_class_` echo "$CONF_PATH $CONF_FEAT $CONF $CONF_SCALING $CHANNEL_RE_B $CHANNEL_RE_G $CHANNEL_RE_R $CHANNEL_RE_RE $CHANNEL_RE_IR $CHANNEL_DMC1_IR $CHANNEL_DMC1_R $CHANNEL_DMC1_G $CHANNEL_DMC2_IR $CHANNEL_DMC2_R $CHANNEL_DMC2_G" | md5sum | awk '{print $1}'`
+    echo "ga_td_svmop_multi_5ch: Unique Filename=$FILENAME"
+
+    # Lock file to prevent starting two instances of svm_class
+    # Starting two instances is principally allowed, but since
+    # it is a multi class operator and we want to reuse the
+    # There is no need to calculate the scene twice.
+    lockfile $FILENAME.lock
+
+    # Test for region file. If it already exists, reuse the results,
+    # otherwise start classification
+    if [ ! -f $FILENAME.regs ]; then
+        echo "ga_td_svmop_multi_11ch: First run, starting classification."
+
+        # svm uses Orfeo which needs an extension to images. Therefore, the
+        # resulting label image is extended by ".tif"
+        # After classification, the image is converted 
+        echo "ga_td_svmop_multi_11ch: svm_class 11 $CHANNEL_RE_B $CHANNEL_RE_G $CHANNEL_RE_R $CHANNEL_RE_RE $CHANNEL_RE_IR $CHANNEL_DMC1_IR $CHANNEL_DMC1_R $CHANNEL_DMC1_G $CHANNEL_DMC2_IR $CHANNEL_DMC2_R $CHANNEL_DMC2_G $CONF_PATH $CONF_FEAT $CONF $CONF_SCALING $OUTPUT.tif"
+
+        svm_class 11 $CHANNEL_RE_B $CHANNEL_RE_G $CHANNEL_RE_R $CHANNEL_RE_RE $CHANNEL_RE_IR $CHANNEL_DMC1_IR $CHANNEL_DMC1_R $CHANNEL_DMC1_G $CHANNEL_DMC2_IR $CHANNEL_DMC2_R $CHANNEL_DMC2_G $CONF_PATH $CONF_FEAT $CONF $CONF_SCALING $OUTPUT || exit $?
+        vips im_tiff2vips $OUTPUT"_labels.tif" $OUTPUT".v" || exit $?
+		vips im_vips2ppm $OUTPUT".v" $OUTPUT".pgm" || exit $?
+
+        mv $OUTPUT".pgm" $OUTPUT".tmp" || exit $?
+
+        # Create region description
+        label2regiondescr $OUTPUT".tmp" $OUTPUT".pgm" $CONF_PATH/class_mapping $FILENAME.regs $LABEL_MODE || exit $?
+        rm $OUTPUT".tmp"
+    else
+        echo "ga_td_svmop_multi_5ch: svm_class ran before, reusing results."
+    fi
+
+    if [ -z $MASK ]; then
+        cp $FILENAME.regs $OUTPUT
+    else
+        regionmask -o $OUTPUT $FILENAME.regs $MASK $MASK_X $MASK_Y $MASK_SIZE_X $MASK_SIZE_Y
+    fi
+
+    # Remove lockfile
+    rm -f $FILENAME.lock
+
+    # Subsitute shell variables
+    mv $OUTPUT /tmp/$$.output
+    cat /tmp/$$.output >> $OUTPUT
+    rm /tmp/$$.output
+
+    exit $SUCCESS
+else
+    # print usage information
+    echo " "
+    echo "ga_td_svmop_multi_11ch"
+    echo "                  Channel 1"
+    echo "                  ..."
+    echo "                  Channel 11"
+    echo "                  Path to SVM configuration files"
+    echo "                  Feature parameter configuration"
+    echo "                  SVM model"
+    echo "                  SVM scaling"
+    echo "                  output file name"
+    echo "                  mask file name"
+    echo " "
+
+    exit $FAILURE
+fi

@@ -1,0 +1,25 @@
+<operator
+  type=topdown
+  class=segment
+  name="SVMOpMulti11Ch"
+  cmd="ga_td_svmop_multi_11ch @channel_re_b_file@ @channel_re_g_file@ @channel_re_r_file@ @channel_re_re_file@ @channel_re_ir_file@ @channel_dmc1_ir_file@ @channel_dmc1_r_file@ @channel_dmc1_g_file@ @channel_dmc2_ir_file@ @channel_dmc2_r_file@ @channel_dmc2_g_file@ @conf_path@ @feat_conf@ @conf@ @scaling_conf@ @label_mode@ @tmpdir@ @output@ @mask_file@ @mask_x@ @mask_y@ @mask_size_x@ @mask_size_y@"
+  tip="Texture classification by using a support vector machine"
+  runglobal=true>
+
+  <attribute label="RE-b" name=channel_re_b type=image>
+  <attribute label="RE-g" name=channel_re_g type=image>
+  <attribute label="RE-r" name=channel_re_r type=image>
+  <attribute label="RE-re" name=channel_re_re type=image>
+  <attribute label="RE-ir" name=channel_re_ir type=image>
+  <attribute label="DMC_1_ir" name=channel_dmc1_ir type=image>
+  <attribute label="DMC_1_r" name=channel_dmc1_r type=image>
+  <attribute label="DMC_1_g" name=channel_dmc1_g type=image>
+  <attribute label="DMC_2_ir" name=channel_dmc2_ir type=image>
+  <attribute label="DMC_2_r" name=channel_dmc2_r type=image>
+  <attribute label="DMC_2_g" name=channel_dmc2_g type=image>
+  <attribute label="SVM configuration path" name=conf_path type=string tip="Path to SVM configuration files">
+  <attribute label="Feature parameter file" name=feat_conf type=string tip="Configuration file for feature extraction" value="feat_param">
+  <attribute label="SVM model file" name=conf type=string tip="Configuration file for svm, defining the model that was trained" value="svm_model">
+  <attribute label="SVM scaling file" name=scaling_conf type=string tip="Configuration file for svm scaling, including min and max value for feature vectors" value="svm_scaling">
+  <attribute label="SVM region creation" name=label_mode type=enum tip="Label creation mode. 0 = context region labels, 1 = class labels" options="0,1" value="0">
+</operator>
