@@ -49,7 +49,9 @@ target_link_libraries(svm_train
 install(TARGETS svm_class svm_train RUNTIME DESTINATION bin)
 install(PROGRAMS ga_td_svmop_multi DESTINATION bin)
 install(PROGRAMS ga_td_svmop_multi_5ch DESTINATION bin)
+install(PROGRAMS ga_td_svmop_multi_11ch DESTINATION bin)
 install(FILES ga_svmop_multi.op DESTINATION share/data/operators)
 install(FILES ga_svmop_multi_5ch.op DESTINATION share/data/operators)
+install(FILES ga_svmop_multi_11ch.op DESTINATION share/data/operators)
 
 
