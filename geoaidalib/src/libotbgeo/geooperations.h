@@ -19,6 +19,11 @@ namespace otbgeo {
    */
   GeoRegion cropGeoRegion(const GeoRegion& region1, const GeoRegion&  region2);
 
+  /** 
+   * Determine enclosing GeoRegion
+   */
+  GeoRegion joinGeoRegion(const GeoRegion& region1, const GeoRegion&  region2);
+
   /**
    *  Reads geo-coordinates from image
    *
@@ -200,6 +205,70 @@ namespace otbgeo {
       return region;
   };
     
+  /**
+   * Determines minimum GeoRegion that contains all given images.
+   * @param images List of images to use.
+   * @return Output region
+   */
+  template <class TImageType> GeoRegion findEnclosingRegion(typename otb::ImageList<TImageType>::Pointer images){
+      typedef TImageType ImageType;
+      typedef otb::ImageList<ImageType> ImageList;
+#ifdef DEBUG
+      {
+	std::clog << "####################" << std::endl;
+	std::clog << "findEnclosingRegion" << std::endl;
+      }
+#endif
+      int i=0;     
+      typename ImageList::ConstIterator iter = images->Begin();
+      typename ImageType::Pointer image = iter.Get();
+      GeoRegion region = createGeoRegion<TImageType>(image);
+      GeoRegion::IndexType index = region.GetOrigin();
+      for (++iter; iter != images->End();++iter){    
+	typename ImageType::Pointer image = iter.Get();
+	GeoRegion currentRegion = createGeoRegion<TImageType>(image);
+	
+#ifdef DEBUG
+	{      
+	  GeoRegion::IndexType index = region.GetOrigin();
+	  GeoRegion::SizeType size = region.GetSize();
+	  GeoRegion::IndexType currentIndex = currentRegion.GetOrigin();
+	  GeoRegion::SizeType currentSize = currentRegion.GetSize();
+	  
+	  std::clog << "Region Check:" << std::endl;
+	  std::clog << "Region Index Until Now: " << index[0] << ", " << index[1] << std::endl;
+	  std::clog << "Region Size Until Now: " << size[0] << ", " << size[1] << std::endl;
+	  std::clog << "Region Index To Check: " << currentIndex[0] << ", " << currentIndex[1] << std::endl;
+	  std::clog << "Region Size To Check: " << currentSize[0] << ", " << currentSize[1] << std::endl;
+	  
+	  std::clog << "--" << std::endl;
+	}
+#endif
+	/*
+	  if (!region.Crop(currentRegion)){
+	  std::cerr << "Error: Images do not overlap." << std::endl;
+	  exit(1);
+	  };
+	*/
+	region = joinGeoRegion(region, currentRegion);
+	
+#ifdef DEBUG
+	{
+	  GeoRegion::IndexType index = region.GetOrigin();
+	  GeoRegion::SizeType size = region.GetSize();
+	  std::clog << "After Join:" << std::endl;    
+	  std::clog << "Common Region Origin:" << index[0] << ", " << index[1] << std::endl;    
+	  std::clog << "Common Region Size:" << size[0] << ", " << size[1] << std::endl;    
+	  std::clog << "####################" << std::endl;
+	}
+#endif
+	
+      }
+      
+      return region;
+  };
+
+ 
 }
 
 
