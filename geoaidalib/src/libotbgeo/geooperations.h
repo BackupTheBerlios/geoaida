@@ -32,7 +32,7 @@ namespace otbgeo {
    * @param image Image to read geo-coordinates from
    * @return GeoRegion containing geo-coordinates from image
    */
-  GeoRegion createGeoRegion(const ImageBase2DType::Pointer image);
+  GeoRegion createGeoRegion(const ImageBase2DType* const image);
   
   /**
    * Determines Image Region that lies within the given geoRegion.  

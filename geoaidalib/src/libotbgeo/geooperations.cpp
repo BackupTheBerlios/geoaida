@@ -48,12 +48,12 @@ namespace otbgeo {
     return region;
   };
 
-  GeoRegion createGeoRegion(const ImageBase2DType::Pointer image){
+  GeoRegion createGeoRegion(const ImageBase2DType * const image){
 
     typedef ImageBase2DType ImageType;
-    const  ImageType::PointType origin = image->GetOrigin();
-    const  ImageType::SizeType size = image->GetLargestPossibleRegion().GetSize();
-    const  ImageType::SpacingType spacing = image->GetSpacing();
+    const  ImageType::PointType& origin = image->GetOrigin();
+    const  ImageType::SizeType& size = image->GetLargestPossibleRegion().GetSize();
+    const  ImageType::SpacingType& spacing = image->GetSpacing();
     
     
     GeoRegion region;
