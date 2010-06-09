@@ -1,5 +1,43 @@
-NumberOfPyramidLevels: 4
-PyramidDecimationRate: 1.75
-FilterRadius:          5
-LabelSpacingX:         5
-LabelSpacingY:         5
+# This is a comment, introduced by a hash mark.
+
+# Syntax explanation: White spaces are allowed, order
+# of parameters is arbitrary. Parameters consist of a
+# key (without whitespaces) and a value, seperated by
+# whitespace.
+# Note: The colons used in this configuration file are
+#       part of the key, since only white spaces
+#       seperate the keys from the values.
+
+# Program parameters:
+
+# ColourScheme can be:
+# "mono_on_black"
+# "mono_on_white"
+# "on_black"
+# "on_white"
+
+LogColourScheme                     on_black
+CalculateDistanceMaps               false
+CalculateUncertainty                false
+    DoRefinementTraining            false
+        DoRefinementClassification  false
+        DoProbabilityJoining        false
+TrainingDoReclassification          true
+
+# Feature parameters:
+
+NumberOfPyramidLevels  4
+PyramidDecimationRate  1.75
+FilterRadius           5
+LabelSpacingX          5
+LabelSpacingY          5
+
+# Distance Map:
+
+DistanceMapImpact         0.02
+DistanceMapThreshold      0.95
+DistanceMapErosionRadius  10
+
+# Refinement:
+
+UncertaintyThreshold       0.5

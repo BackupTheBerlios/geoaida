@@ -9,11 +9,11 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-/// \file		timer.cpp
-/// \brief		Implementation of class "CTimer"
+/// \file       timer.cpp
+/// \brief      Implementation of class "CTimer"
 ///
-/// \date		2009-06-29
-/// \author		bfeld
+/// \date       2009-06-29
+/// \author     bfeld
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -27,12 +27,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 CTimer::CTimer():m_bFirstCall(true)
 {
-// 	METHOD_ENTRY(m_Log, "CTimer::CTimer()");
-// 	CTOR_CALL(m_Log, "CTimer::CTimer()");
+//  METHOD_ENTRY(m_Log, "CTimer::CTimer()");
+//  CTOR_CALL(m_Log, "CTimer::CTimer()");
 
-	gettimeofday(&m_Start, &m_TimeZone);
+    gettimeofday(&m_Start, &m_TimeZone);
 
-// 	METHOD_EXIT(m_Log, "CTimer::CTimer()");
+//  METHOD_EXIT(m_Log, "CTimer::CTimer()");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -42,12 +42,12 @@ CTimer::CTimer():m_bFirstCall(true)
 ///////////////////////////////////////////////////////////////////////////////
 void CTimer::start()
 {
-// 	METHOD_ENTRY(m_Log, "CTimer::start()");
+//  METHOD_ENTRY(m_Log, "CTimer::start()");
 
-	m_bFirstCall = false;
-	gettimeofday(&m_Start, &m_TimeZone);
+    m_bFirstCall = false;
+    gettimeofday(&m_Start, &m_TimeZone);
 
-// 	METHOD_EXIT(m_Log, "CTimer::start()");
+//  METHOD_EXIT(m_Log, "CTimer::start()");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -57,15 +57,15 @@ void CTimer::start()
 ///////////////////////////////////////////////////////////////////////////////
 void CTimer::stop()
 {
-// 	METHOD_ENTRY(m_Log, "CTimer::stop()");
+//  METHOD_ENTRY(m_Log, "CTimer::stop()");
 
-	gettimeofday(&m_Stop, &m_TimeZone);
-	if (!m_bFirstCall)
-		m_fDiffTime = (m_Stop.tv_sec - m_Start.tv_sec)+double(m_Stop.tv_usec - m_Start.tv_usec)*TIMER_OUTPUT_SEC_FACTOR;
-	else
-		m_fDiffTime = 0.0;
+    gettimeofday(&m_Stop, &m_TimeZone);
+    if (!m_bFirstCall)
+        m_fDiffTime = (m_Stop.tv_sec - m_Start.tv_sec)+double(m_Stop.tv_usec - m_Start.tv_usec)*TIMER_OUTPUT_SEC_FACTOR;
+    else
+        m_fDiffTime = 0.0;
 
-// 	METHOD_EXIT(m_Log, "CTimer::stop()");
+//  METHOD_EXIT(m_Log, "CTimer::stop()");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -77,15 +77,15 @@ void CTimer::stop()
 ///////////////////////////////////////////////////////////////////////////////
 double CTimer::getSplitTime()
 {
-// 	METHOD_ENTRY(m_Log, "CTimer::getSplitTime()");
-	struct timeval tmpStop;
+//  METHOD_ENTRY(m_Log, "CTimer::getSplitTime()");
+    struct timeval tmpStop;
 
-	gettimeofday(&tmpStop, &m_TimeZone);
-	if (!m_bFirstCall)
-		return ((tmpStop.tv_sec - m_Start.tv_sec) +
-				double(tmpStop.tv_usec - m_Start.tv_usec)*TIMER_OUTPUT_SEC_FACTOR);
-	else
-		return 0.0;
+    gettimeofday(&tmpStop, &m_TimeZone);
+    if (!m_bFirstCall)
+        return ((tmpStop.tv_sec - m_Start.tv_sec) +
+                double(tmpStop.tv_usec - m_Start.tv_usec)*TIMER_OUTPUT_SEC_FACTOR);
+    else
+        return 0.0;
 
-// 	METHOD_EXIT(m_Log, "CTimer::getSplitTime()");
+//  METHOD_EXIT(m_Log, "CTimer::getSplitTime()");
 }

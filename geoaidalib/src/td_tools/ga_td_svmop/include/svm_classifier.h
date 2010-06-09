@@ -1,19 +1,19 @@
 /***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-/// \file		svm_classifier.h
-/// \brief		Prototype of class "SVMClassifier"
+/// \file       svm_classifier.h
+/// \brief      Prototype of class "SVMClassifier"
 ///
-/// \date		2009-07-29
-/// \author		Torsten Bueschenfeld (bfeld@tnt.uni-hannover.de)
+/// \date       2009-07-29
+/// \author     Torsten Bueschenfeld (bfeld@tnt.uni-hannover.de)
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -40,74 +40,103 @@ const bool SVM_CLASSIFIER_CALCULATE_EXTREMA = true;
 ////////////////////////////////////////////////////////////////////////////////
 class SVMClassifier
 {
-	
-	public:
+    
+    public:
 
-		//--- Constructor/Destructor -----------------------------------------//
-		SVMClassifier();
-		~SVMClassifier();
+        //--- Constructor/Destructor -----------------------------------------//
+        SVMClassifier(FeaturesType&);
+        ~SVMClassifier();
 
-		//--- Const Methods --------------------------------------------------//
-        LabelImageType::Pointer getClassificationResult() const;
-// 		double getFeatureMin() const;
-// 		double getFeatureMax() const;
-		bool saveClassificationResult(const std::string&) const;
-		bool saveData(const std::string&) const;
+        //--- Const Methods --------------------------------------------------//
+        LabelImageType::Pointer getLabelImage() const;
+        bool saveClassificationResult(const std::string&) const;
+        bool saveData(const std::string&) const;
         bool saveScaling(const std::string&) const;
-		bool saveModel(const std::string&) const;
+        bool saveModel(const std::string&) const;
 
-		//--- Methods --------------------------------------------------------//
-		bool loadModel(const std::string&);
+        //--- Methods --------------------------------------------------------//
+        bool loadModel(const std::string&);
         bool loadScaling(const std::string&);
 
-		bool scaleFeatures(const bool& = false,
-						   const double& = -1.0, const double& = 1.0);
-		
-		void setFeatures(const FeaturePointSetType::Pointer);
-		void setLabels(const LabelPointSetType::Pointer);
-		void setLabelImageSize(const LabelImageType::SizeType&);
-		void setNumberOfClasses(const uint&);
+        bool scaleFeatures(const bool& = false,
+                        const double& = -1.0, const double& = 1.0);
 
-		bool classify();
-		bool train();
+        void addLabels(const LabelsType&);
+        void addFeatures(const FeaturesType&);
+                        
+        void setConfigurator(Configurator* const);
+        void setFeatures(const FeaturesType&);
+        void setLabels(const LabelsType&);
+        void setLabelImageSize(const LabelImageType::SizeType&);
+        void setNumberOfClasses(const uint&);
 
-		bool loadConfig(){return true;}
-		
-	private:
-	
-		//--- Methods --------------------------------------------------------//
-		TestFeaturePointSetType::Pointer convertPointSet(
-										 FeaturePointSetType::Pointer);
-		
-		//--- Variables ------------------------------------------------------//
-		ClassifierType::Pointer			m_pClassifier;	///< Instance of LibSVM wrapper class (classification)
-		EstimatorType::Pointer			m_pEstimator;	///< Instance of LibSVM wrapper class (training)
-		FeaturePointSetType::Pointer	m_pFeatures;	///< Contains the extracted features
-		LabelPointSetType::Pointer		m_pLabels;		///< Contains the labels
-		ModelType::Pointer				m_pModel;		///< SVM model
-		
-		LabelImageType::Pointer		    m_pLabelImage;	        ///< Label image resulting from classification
-		LabelImageType::SizeType	    m_LabelImageSize;       ///< Contains size of label image
-		std::vector<ImageFloatType::Pointer> m_Probabilities;   ///< Class probabilities for each pixel
+        bool applyUncertaintyOnLabelImage();
+        bool calculateDistanceMaps();
+        bool calculateUncertainty();
+        bool joinProbabilities(const std::string&, const std::string&,
+                               const std::string&, const std::string&);
+        bool classify();
+        bool train();
+        
+        void createLabelImageFromProbabilities();
 
-		uint			m_unNumberOfClasses;			///< Number of classes
-		
-		double			m_fMin;							///< Minimum feature value
-		double			m_fMax;							///< Maximum feature value
+    private:
+    
+        //--- Methods --------------------------------------------------------//
+        SVMClassifier();
+                                        
+        //--- Variables ------------------------------------------------------//
+        FeaturesType&                   m_Features;         ///< Contains the extracted features
+        LabelsType                      m_Labels;           ///< Contains the labels
+        ModelType::Pointer              m_pModel;           ///< SVM model
+        
+        LabelImageType::Pointer         m_pLabelImage;      ///< Label image resulting from classification
+        LabelImageType::SizeType        m_LabelImageSize;   ///< Contains size of label image
+        std::vector<ImageFloatType::Pointer>
+                                        m_Probabilities;    ///< Class probabilities for each pixel
+        std::vector<DistanceMapImageType::Pointer>
+                                        m_DistanceMaps;     ///< Distances to reliable regions for each pixel
+        ImageFloatType::Pointer         m_pUncertainty;     ///< Uncertainty of classification result
+        
+        std::vector< int >              m_LabelMap;         ///< Values for labels
+        
+        uint                    m_unNumberOfClasses;        ///< Number of classes
+        
+        std::vector<float>      m_Min;                      ///< Minimum feature value
+        std::vector<float>      m_Max;                      ///< Maximum feature value
 
-		bool			m_bGotClassificationResult;		///< Flags if classification was done
-		bool			m_bGotFeatures;					///< Flags if features were passed
-		bool			m_bGotLabels;					///< Flags if labels were passed
-		bool			m_bGotModel;					///< Flags if a model exists
+        bool            m_bGotClassificationResult;     ///< Flags if classification was done
+        bool            m_bGotDistanceMaps;             ///< Flags if distance maps were calculated
+        bool            m_bGotFeatures;                 ///< Flags if features were passed
+        bool            m_bGotLabels;                   ///< Flags if labels were passed
+        bool            m_bGotModel;                    ///< Flags if a model exists
         bool            m_bGotScaling;                  ///< Flags if features are already scaled
-		bool			m_bGotSize;						///< Flags if size of label image is known
-		
-		DEBUG(
-			static uint m_unNoFVFiles;					///< Indicates the number of written feature vector files
-		);
+        bool            m_bGotSize;                     ///< Flags if size of label image is known
+        
+        Configurator*   m_pConfiguration;               ///< Configuration of parameters
+        
+        DEBUG(
+            static uint m_unNoFVFiles;                  ///< Indicates the number of written feature vector files
+        );
 };
 
 //--- Implementation is done here for inlining -------------------------------//
+
+///////////////////////////////////////////////////////////////////////////////
+///
+/// \brief Get the parameter configuration
+///
+/// \param _pFeatures PointSet of features
+///
+///////////////////////////////////////////////////////////////////////////////
+inline void SVMClassifier::setConfigurator(Configurator* const _pConfigurator)
+{
+    METHOD_ENTRY("SVMClassifier::setConfigurator");
+
+    m_pConfiguration = _pConfigurator;
+
+    METHOD_EXIT("SVMClassifier::setConfigurator");
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 ///
@@ -116,14 +145,14 @@ class SVMClassifier
 /// \param _pFeatures PointSet of features
 ///
 ///////////////////////////////////////////////////////////////////////////////
-inline void SVMClassifier::setFeatures(const FeaturePointSetType::Pointer _pFeatures)
+inline void SVMClassifier::setFeatures(const FeaturesType& _Features)
 {
-	METHOD_ENTRY("SVMClassifier::setFeatures(const FeaturePointSetType::Pointer)");
+    METHOD_ENTRY("SVMClassifier::setFeatures");
 
-	m_pFeatures = _pFeatures;
-	m_bGotFeatures = true;
+    m_Features = _Features;
+    m_bGotFeatures = true;
 
-	METHOD_EXIT("SVMClassifier::setFeatures(const FeaturePointSetType::Pointer)");
+    METHOD_EXIT("SVMClassifier::setFeatures");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -133,14 +162,14 @@ inline void SVMClassifier::setFeatures(const FeaturePointSetType::Pointer _pFeat
 /// \param _pLabels PointSet of labels
 ///
 ///////////////////////////////////////////////////////////////////////////////
-inline void SVMClassifier::setLabels(const LabelPointSetType::Pointer _pLabels)
+inline void SVMClassifier::setLabels(const LabelsType& _Labels)
 {
-	METHOD_ENTRY("SVMClassifier::setFeatures(const LabelPointSetType::Pointer)");
+    METHOD_ENTRY("SVMClassifier::setLabels");
 
-	m_pLabels = _pLabels;
-	m_bGotLabels = true;
+    m_Labels = _Labels;
+    m_bGotLabels = true;
 
-	METHOD_EXIT("SVMClassifier::setFeatures(const LabelPointSetType::Pointer)");
+    METHOD_EXIT("SVMClassifier::setLabels");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -152,12 +181,12 @@ inline void SVMClassifier::setLabels(const LabelPointSetType::Pointer _pLabels)
 ///////////////////////////////////////////////////////////////////////////////
 inline void SVMClassifier::setLabelImageSize(const LabelImageType::SizeType& _Size)
 {
-	METHOD_ENTRY("SVMClassifier::setLabelImageSize(const LabelImageType::SizeType)");
+    METHOD_ENTRY("SVMClassifier::setLabelImageSize");
 
-	m_LabelImageSize = _Size;
-	m_bGotSize = true;
+    m_LabelImageSize = _Size;
+    m_bGotSize = true;
 
-	METHOD_EXIT("SVMClassifier::setLabelImageSize(const LabelImageType::SizeType)");
+    METHOD_EXIT("SVMClassifier::setLabelImageSize");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -169,11 +198,11 @@ inline void SVMClassifier::setLabelImageSize(const LabelImageType::SizeType& _Si
 ///////////////////////////////////////////////////////////////////////////////
 inline void SVMClassifier::setNumberOfClasses(const uint& _unNOC)
 {
-	METHOD_ENTRY("SVMClassifier::setNumberOfClasses(const uint&)");
+    METHOD_ENTRY("SVMClassifier::setNumberOfClasses");
 
-	m_unNumberOfClasses = _unNOC;
+    m_unNumberOfClasses = _unNOC;
 
-	METHOD_EXIT("SVMClassifier::setNumberOfClasses(const uint&)");
+    METHOD_EXIT("SVMClassifier::setNumberOfClasses");
 }
 
 #endif

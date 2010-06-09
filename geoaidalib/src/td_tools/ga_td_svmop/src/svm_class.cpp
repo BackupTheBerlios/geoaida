@@ -29,6 +29,7 @@
 #include <string>
 
 //--- Program header ---------------------------------------------------------//
+#include "configurator.h"
 #include "feature_extractor.h"
 #include "log.h"
 #include "otb_svmop_common.h"
@@ -47,7 +48,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 void usage()
 {
-    METHOD_ENTRY("usage()");
+    METHOD_ENTRY("usage");
     INFO(
 
     std::cout << "svm_class" << std::endl;
@@ -62,7 +63,7 @@ void usage()
     std::cout << "          [string  ] prefix classification result filenames" << std::endl;
 
     );
-    METHOD_EXIT("usage()");
+    METHOD_EXIT("usage");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,12 +79,13 @@ void usage()
 ////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char *argv[])
 {
-    METHOD_ENTRY("main");
+    METHOD_ENTRY("main")
 
     Log.setBreak(120u);
 
+    Configurator        Config;
     FeatureExtractor    Extractor;
-    SVMClassifier       Classifier;
+    SVMClassifier       Classifier(Extractor.getFeatures());
     int                 nNumberOfChannels;
     std::vector<std::string> ArgvList;
 
@@ -96,41 +98,94 @@ int main(int argc, char *argv[])
         nNumberOfChannels = atoi(ArgvList[0].c_str());
         if (ArgvList.size() == nNumberOfChannels+6)
         {
+            if (!Config.loadConfig(ArgvList[nNumberOfChannels+1]+ "/" +
+                                   ArgvList[nNumberOfChannels+2])) return EXIT_FAILURE;
+            Log.setColourScheme(Log.stringToColourScheme(Config.getStr("LogColourScheme")));
+            
             //--- Start the classification process -------------------------------//
             for (int i=1; i<nNumberOfChannels+1; ++i)
             {
                 Extractor.addInputChannel(ArgvList[i]);
             }
-            if (!Extractor.loadParam(ArgvList[nNumberOfChannels+1]+ "/" +
-                                      ArgvList[nNumberOfChannels+2])) return EXIT_FAILURE;
+            
+            Extractor.setConfigurator(&Config);
+            Classifier.setConfigurator(&Config);
             if (!Extractor.extract()) return EXIT_FAILURE;
             if (!Classifier.loadModel(ArgvList[nNumberOfChannels+1]+ "/" +
                                       ArgvList[nNumberOfChannels+3])) return EXIT_FAILURE;
             if (!Classifier.loadScaling(ArgvList[nNumberOfChannels+1]+ "/" +
                                         ArgvList[nNumberOfChannels+4])) return EXIT_FAILURE;
             Classifier.setLabelImageSize(Extractor.getImageSize());
-            Extractor.clearChannels(); // Free some memory!
-            Classifier.setFeatures(Extractor.getFeatures());
+            if (Config.getStr("DoRefinementTraining") != "true")
+            {
+                Extractor.clearChannels(); // Free some memory!
+            }
+//             Classifier.setFeatures(Extractor.getFeatures());
             Classifier.scaleFeatures();
             Classifier.classify();
+            if (Config.getStr("CalculateDistanceMaps") == "true") Classifier.calculateDistanceMaps();
+            if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
+//             Classifier.createLabelImageFromProbabilities();
             Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+5]);
+//             Classifier.applyUncertaintyOnLabelImage();
+
+//             if (Config.getStr("DoRefinementTraining") == "true")
+//             {
+//                 //--- Start the training process -----------------------------//
+//                 Extractor.setLabelImage(Classifier.getLabelImage());
+//                 if (!Extractor.extract(FEATURE_EXTRACTOR_USE_LABELS))
+//                     return EXIT_FAILURE;
+//                 Classifier.setLabelImageSize(Extractor.getImageSize());
+//                 Classifier.setLabels(Extractor.getLabels());
+//                 Classifier.setFeatures(Extractor.getFeatures());
+//                 Classifier.scaleFeatures(SVM_CLASSIFIER_CALCULATE_EXTREMA);
+//                 Classifier.train();
+//                 Classifier.saveModel(ArgvList[nNumberOfChannels+1]+ "/" +
+//                                      ArgvList[nNumberOfChannels+3]+ "_rt");
+//                 Classifier.saveScaling(ArgvList[nNumberOfChannels+1]+ "/" +
+//                                      ArgvList[nNumberOfChannels+4]+ "_rt");
+//             }
+//             if (Config.getStr("DoRefinementClassification") == "true")
+//             {
+//                 //--- Start the refinement process ---------------------------//
+//                 if (!Extractor.extract()) return EXIT_FAILURE;
+//                 Extractor.clearChannels(); // Free some memory!
+//                 Classifier.setFeatures(Extractor.getFeatures());
+//                 Classifier.scaleFeatures();
+//                 Classifier.classify();
+//                 if (Config.getStr("CalculateDistanceMaps") == "true") Classifier.calculateDistanceMaps();
+//                 if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
+//                 Classifier.createLabelImageFromProbabilities();
+//                 Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+5]+"_rt");
+//             }
+//             if (Config.getStr("DoProbabilityJoining") == "true")
+//             {
+//                 Classifier.joinProbabilities(ArgvList[nNumberOfChannels+5],
+//                                              ArgvList[nNumberOfChannels+1]+ "/" +
+//                                              ArgvList[nNumberOfChannels+3],
+//                                              ArgvList[nNumberOfChannels+5]+ "_rt",
+//                                              ArgvList[nNumberOfChannels+1]+ "/" +
+//                                              ArgvList[nNumberOfChannels+3]+ "_rt");
+//                 if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
+//                 Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+5]+"_jnt");
+//             }
         }
         else
         {
-            ERROR_MSG("Main", "Wrong number of parameters.", LOG_DOMAIN_NONE);
+            ERROR_MSG("Main", "Wrong number of parameters.")
             usage();
-            METHOD_EXIT("Main");
+            METHOD_EXIT("main")
             return EXIT_FAILURE;
         }
     }
     else
     {
-        ERROR_MSG("Main", "Wrong number of parameters.", LOG_DOMAIN_NONE);
+        ERROR_MSG("Main", "Wrong number of parameters.")
         usage();
-        METHOD_EXIT("Main");
+        METHOD_EXIT("main")
         return EXIT_FAILURE;
     }
 
-    METHOD_EXIT("main");
+    METHOD_EXIT("main")
     return EXIT_SUCCESS;
 }
