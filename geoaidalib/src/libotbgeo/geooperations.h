@@ -6,6 +6,14 @@
 #include <otbImageList.h>
 #include <otbRemoteSensingRegion.h>
 
+#include <otbImage.h>
+#include <otbVectorImage.h>
+
+#include <otbStreamingResampleImageFilter.h>
+#include <otbPerBandVectorImageFilter.h>
+#include <itkTranslationTransform.h>
+#include <otbBSplineInterpolateImageFunction.h>
+
 namespace otbgeo {
       
 
@@ -57,7 +65,139 @@ namespace otbgeo {
    */
   GeoRegion findEnclosingRegion(ImageBaseListType::Pointer images);
 
- 
+   /**
+   * Extract image data that lies within the given geoRegion using resampling.
+   *
+   * @param geoRegion GeoRegion
+   * @param image Image
+   * @param spacing Spacing of the output image
+   * @return Image that contains the image data.
+   */
+  template <class TLabel> typename otb::Image<TLabel, 2>::Pointer resampleImage(const GeoRegion& geoRegion, const typename otb::Image<TLabel, 2>::Pointer image, double spacing) {
+    typedef otb::Image<TLabel> ImageType;
+    
+    // Calculate output spacing and origin and update the georegion
+    typename ImageType::SpacingType outputImageSpacing;
+    outputImageSpacing[0] = spacing;
+    outputImageSpacing[1] = spacing;
+
+    typename ImageType::SizeType outputImageSize;
+    outputImageSize[0] = static_cast<long>(geoRegion.GetSize()[0] / spacing);
+    outputImageSize[1] = static_cast<long>(geoRegion.GetSize()[1] / spacing);
+    
+    typename ImageType::PointType outputImageOrigin;
+    outputImageOrigin[0] = geoRegion.GetOrigin()[0];
+    outputImageOrigin[1] = geoRegion.GetOrigin()[1];
+    
+    if (image->GetSpacing()[0] < 0)
+    {
+      outputImageOrigin[0] += outputImageSpacing[0] * outputImageSize[0];
+      outputImageSpacing[0] = -outputImageSpacing[0];
+    }
+
+    if (image->GetSpacing()[1] < 0)
+    {
+      outputImageOrigin[1] += outputImageSpacing[1] * outputImageSize[1];
+      outputImageSpacing[1] = -outputImageSpacing[1];
+    }
+
+    // Create and execute resample filter
+    typedef otb::StreamingResampleImageFilter<ImageType, ImageType> ResamplerType;
+    typedef itk::TranslationTransform<double, 2> TransformType;
+    typedef otb::BSplineInterpolateImageFunction<ImageType> InterpolatorType;
+    
+    typename TransformType::OutputVectorType offset;
+    offset[0] = (std::abs(image->GetSpacing()[0]) - spacing) * (image->GetSpacing()[0] < 0 ? 0.5 : -0.5);
+    offset[1] = (std::abs(image->GetSpacing()[1]) - spacing) * (image->GetSpacing()[1] < 0 ? 0.5 : -0.5);
+    
+    typename TransformType::Pointer transform = TransformType::New();
+    transform->SetOffset(offset);
+    
+    typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
+    interpolator->SetSplineOrder(3);
+
+    typename ResamplerType::Pointer resampler = ResamplerType::New();
+    resampler->SetInput(image);
+    resampler->SetOutputOrigin(outputImageOrigin);
+    resampler->SetOutputSpacing(outputImageSpacing);
+    resampler->SetSize(outputImageSize);
+    resampler->SetTransform(transform);
+    resampler->SetInterpolator(interpolator);
+    resampler->Update();
+
+    return resampler->GetOutput();
+  }
+
+   /**
+   * Extract image data that lies within the given geoRegion using resampling.
+   *
+   * @param geoRegion GeoRegion
+   * @param image VectorImage
+   * @param spacing Spacing of the output image
+   * @return Image that contains the image data.
+   */
+  template <class TLabel> typename otb::VectorImage<TLabel, 2>::Pointer resampleImage(const GeoRegion& geoRegion, const typename otb::VectorImage<TLabel, 2>::Pointer image, double spacing) {
+    typedef otb::Image<TLabel> BandType;
+    typedef otb::VectorImage<TLabel> ImageType;
+    
+    // Calculate output spacing and origin
+    typename ImageType::SpacingType outputImageSpacing;
+    outputImageSpacing[0] = spacing;
+    outputImageSpacing[1] = spacing;
+
+    typename ImageType::SizeType outputImageSize;
+    outputImageSize[0] = static_cast<long>(geoRegion.GetSize()[0] / spacing);
+    outputImageSize[1] = static_cast<long>(geoRegion.GetSize()[1] / spacing);
+    
+    typename ImageType::PointType outputImageOrigin;
+    outputImageOrigin[0] = geoRegion.GetOrigin()[0];
+    outputImageOrigin[1] = geoRegion.GetOrigin()[1];
+    
+    if (image->GetSpacing()[0] < 0)
+    {
+      outputImageOrigin[0] += geoRegion.GetSize()[0];
+      outputImageSpacing[0] = -outputImageSpacing[0];
+    }
+
+    if (image->GetSpacing()[1] < 0)
+    {
+      outputImageOrigin[1] += geoRegion.GetSize()[1];
+      outputImageSpacing[1] = -outputImageSpacing[1];
+    }
+
+    // Create resample filter
+    typedef otb::StreamingResampleImageFilter<BandType, BandType> ResamplerType;
+    typedef itk::TranslationTransform<double, 2> TransformType;
+    typedef otb::BSplineInterpolateImageFunction<BandType> InterpolatorType;
+    
+    typename TransformType::OutputVectorType offset;
+    offset[0] = (std::abs(image->GetSpacing()[0]) - spacing) * (image->GetSpacing()[0] < 0 ? 0.5 : -0.5);
+    offset[1] = (std::abs(image->GetSpacing()[1]) - spacing) * (image->GetSpacing()[1] < 0 ? 0.5 : -0.5);
+    
+    typename TransformType::Pointer transform = TransformType::New();
+    transform->SetOffset(offset);
+    
+    typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
+    interpolator->SetSplineOrder(3);
+
+    typename ResamplerType::Pointer resampler = ResamplerType::New();
+    resampler->SetOutputOrigin(outputImageOrigin);
+    resampler->SetOutputSpacing(outputImageSpacing);
+    resampler->SetSize(outputImageSize);
+    resampler->SetTransform(transform);
+    resampler->SetInterpolator(interpolator);
+
+    // Create per-band image filter
+    typedef otb::PerBandVectorImageFilter<ImageType, ImageType, ResamplerType> PerBandResamplerType;
+    
+    typename PerBandResamplerType::Pointer perbandresampler = PerBandResamplerType::New();
+    perbandresampler->SetFilter(resampler);
+    perbandresampler->SetInput(image);
+    perbandresampler->Update();
+    
+    return perbandresampler->GetOutput();
+  }
+
 }
 
 
