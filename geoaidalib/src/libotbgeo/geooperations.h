@@ -12,6 +12,8 @@
 #include <otbStreamingResampleImageFilter.h>
 #include <otbPerBandVectorImageFilter.h>
 #include <itkTranslationTransform.h>
+#include <itkNearestNeighborInterpolateImageFunction.h>
+#include <itkWindowedSincInterpolateImageFunction.h>
 #include <otbBSplineInterpolateImageFunction.h>
 
 namespace otbgeo {
@@ -73,7 +75,7 @@ namespace otbgeo {
    * @param spacing Spacing of the output image
    * @return Image that contains the image data.
    */
-  template <class TLabel> typename otb::Image<TLabel, 2>::Pointer resampleImage(const GeoRegion& geoRegion, const typename otb::Image<TLabel, 2>::Pointer image, double spacing) {
+  template <class TLabel> typename otb::Image<TLabel, 2>::Pointer resampleImage(const GeoRegion& geoRegion, const typename otb::Image<TLabel, 2>::Pointer image, double spacing, bool smooth=false) {
     typedef otb::Image<TLabel> ImageType;
     
     // Calculate output spacing and origin and update the georegion
@@ -104,7 +106,9 @@ namespace otbgeo {
     // Create and execute resample filter
     typedef otb::StreamingResampleImageFilter<ImageType, ImageType> ResamplerType;
     typedef itk::TranslationTransform<double, 2> TransformType;
-    typedef otb::BSplineInterpolateImageFunction<ImageType> InterpolatorType;
+    typedef itk::NearestNeighborInterpolateImageFunction<ImageType> NearestNeighbourInterpolatorType;
+    typedef itk::WindowedSincInterpolateImageFunction<ImageType, 3> LanczosInterpolatorType;
+    typedef otb::BSplineInterpolateImageFunction<ImageType> BSplineInterpolatorType;
     
     typename TransformType::OutputVectorType offset;
     offset[0] = (std::abs(image->GetSpacing()[0]) - spacing) * (image->GetSpacing()[0] < 0 ? 0.5 : -0.5);
@@ -113,8 +117,10 @@ namespace otbgeo {
     typename TransformType::Pointer transform = TransformType::New();
     transform->SetOffset(offset);
     
-    typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
-    interpolator->SetSplineOrder(3);
+    typename NearestNeighbourInterpolatorType::Pointer nn_interpolator = NearestNeighbourInterpolatorType::New();    
+    typename LanczosInterpolatorType::Pointer l_interpolator = LanczosInterpolatorType::New();
+    typename BSplineInterpolatorType::Pointer bs_interpolator = BSplineInterpolatorType::New();
+    bs_interpolator->SetSplineOrder(3);    
 
     typename ResamplerType::Pointer resampler = ResamplerType::New();
     resampler->SetInput(image);
@@ -122,7 +128,10 @@ namespace otbgeo {
     resampler->SetOutputSpacing(outputImageSpacing);
     resampler->SetSize(outputImageSize);
     resampler->SetTransform(transform);
-    resampler->SetInterpolator(interpolator);
+    if (smooth)
+      resampler->SetInterpolator(bs_interpolator);
+    else
+      resampler->SetInterpolator(nn_interpolator);
     resampler->Update();
 
     return resampler->GetOutput();
@@ -136,7 +145,7 @@ namespace otbgeo {
    * @param spacing Spacing of the output image
    * @return Image that contains the image data.
    */
-  template <class TLabel> typename otb::VectorImage<TLabel, 2>::Pointer resampleImage(const GeoRegion& geoRegion, const typename otb::VectorImage<TLabel, 2>::Pointer image, double spacing) {
+  template <class TLabel> typename otb::VectorImage<TLabel, 2>::Pointer resampleImage(const GeoRegion& geoRegion, const typename otb::VectorImage<TLabel, 2>::Pointer image, double spacing, bool smooth=false) {
     typedef otb::Image<TLabel> BandType;
     typedef otb::VectorImage<TLabel> ImageType;
     
@@ -168,7 +177,9 @@ namespace otbgeo {
     // Create resample filter
     typedef otb::StreamingResampleImageFilter<BandType, BandType> ResamplerType;
     typedef itk::TranslationTransform<double, 2> TransformType;
-    typedef otb::BSplineInterpolateImageFunction<BandType> InterpolatorType;
+    typedef itk::NearestNeighborInterpolateImageFunction<BandType> NearestNeighbourInterpolatorType;
+    typedef itk::WindowedSincInterpolateImageFunction<BandType, 3> LanczosInterpolatorType;
+    typedef otb::BSplineInterpolateImageFunction<BandType> BSplineInterpolatorType;
     
     typename TransformType::OutputVectorType offset;
     offset[0] = (std::abs(image->GetSpacing()[0]) - spacing) * (image->GetSpacing()[0] < 0 ? 0.5 : -0.5);
@@ -177,15 +188,20 @@ namespace otbgeo {
     typename TransformType::Pointer transform = TransformType::New();
     transform->SetOffset(offset);
     
-    typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
-    interpolator->SetSplineOrder(3);
+    typename NearestNeighbourInterpolatorType::Pointer nn_interpolator = NearestNeighbourInterpolatorType::New();
+    //typename LanczosInterpolatorType::Pointer l_interpolator = LanczosInterpolatorType::New();
+    typename BSplineInterpolatorType::Pointer bs_interpolator = BSplineInterpolatorType::New();
+    bs_interpolator->SetSplineOrder(3);
 
     typename ResamplerType::Pointer resampler = ResamplerType::New();
     resampler->SetOutputOrigin(outputImageOrigin);
     resampler->SetOutputSpacing(outputImageSpacing);
     resampler->SetSize(outputImageSize);
     resampler->SetTransform(transform);
-    resampler->SetInterpolator(interpolator);
+    if (smooth)
+      resampler->SetInterpolator(bs_interpolator);
+    else
+      resampler->SetInterpolator(nn_interpolator);
 
     // Create per-band image filter
     typedef otb::PerBandVectorImageFilter<ImageType, ImageType, ResamplerType> PerBandResamplerType;
