@@ -357,30 +357,30 @@ static void* sint2sint(void *dest, void* src, int n_el,
   return dest;
 }
 
-static void* sint2uint16(void *b_int, void* b_float, int n_el,
+static void* sint2uint16(void *dest, void* src, int n_el,
        PFMConvert *func, float minval, float maxval)
 {
   int i;
   if (func)
     for (i=0; i<n_el; i++)
-      ((uint16*)b_float)[i]=(*func)(((int*)b_int)[i],minval,maxval);
+      ((uint16*)dest)[i]=(*func)(((int*)src)[i],minval,maxval);
   else
     for (i=0; i<n_el; i++)
-      ((uint16*)b_float)[i]=((int*)b_int)[i];
-  return b_float;
+      ((uint16*)dest)[i]=((int*)src)[i];
+  return dest;
 }
 
-static void* uint162sint(void *b_int, void* b_float, int n_el,
+static void* uint162sint(void *dest, void* src, int n_el,
       PFMConvert *func, float minval, float maxval)
 {
   int i;
   if (func)
     for (i=0; i<n_el; i++)
-      ((int*)b_int)[i]=(*func)(((uint16*)b_float)[i],minval,maxval);
+      ((int*)dest)[i]=(*func)(((uint16*)src)[i],minval,maxval);
   else
     for (i=0; i<n_el; i++)
-      ((int*)b_int)[i]=((uint16*)b_float)[i];
-  return b_int;
+      ((int*)dest)[i]=((uint16*)src)[i];
+  return dest;
 }
 
 static void* uint162float(void* b_float, void *b_int, int n_el,

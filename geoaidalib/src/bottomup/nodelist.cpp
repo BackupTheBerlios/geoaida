@@ -432,7 +432,6 @@ NodeList* NodeList::merge (bool newReg, QString outImgName) {
 	    merging_necessary=true;
 	    break;
 	  }
-	  oldFileName=node->filename();            
 	  ++it;
 	}
       }
