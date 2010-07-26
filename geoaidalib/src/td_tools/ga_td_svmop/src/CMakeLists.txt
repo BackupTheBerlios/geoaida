@@ -34,13 +34,11 @@ add_executable(svm_class ${sources} ${class_sources})
 add_executable(svm_train ${sources} ${train_sources})
 
 target_link_libraries(svm_class
-    tiff
     OTBCommon
     OTBIO
     OTBLearning
 )
 target_link_libraries(svm_train
-    tiff
     OTBCommon
     OTBIO
     OTBLearning
