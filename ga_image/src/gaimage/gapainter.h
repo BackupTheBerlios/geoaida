@@ -25,6 +25,7 @@
 //--- standard header --------------------------------------------------------//
 #include <list>
 #include <vector>
+#include <deque>
 
 //--- project header ---------------------------------------------------------//
 #include "gadraw.h"
@@ -54,6 +55,7 @@ class Painter
 
 		void drawPolygon(const PointArray&, double);
 		int fillPolygon(const PointArray&, double);
+		int fillPolygonWithHoles(const std::vector<PointArray>&, double);
 
 		void setImage(Image&, int channel=0);
 		void setChannel(int);

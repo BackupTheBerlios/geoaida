@@ -5,6 +5,7 @@
 ///
 /// \date		Jan. 2007
 /// \author		Torsten Büschenfeld (bfeld@tnt.uni-hannover.de)
+///				Karsten Vogt (vogt@tnt.uni-hannover.de)
 ///
 /// \note		Tabulator size 4 used
 ///
@@ -182,6 +183,180 @@ int Painter::fillPolygon(const PointArray& points, double val)
 		}
 
 	}
+	return ret_val;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+/// \brief method to draw a filled polygon with holes
+///
+/// \todo Eventually, concave polygons that are outside the image won't return
+///       -1, nevertheless they are not drawn.
+///
+/// \param points array of array of points defining the polygon, first index is the outer ring
+/// \param val value for pixels of polygon
+///
+/// \return Returns -1 if polygon is outside, -2 if polygon is partly outside
+///
+////////////////////////////////////////////////////////////////////////////////
+int Painter::fillPolygonWithHoles(const std::vector<PointArray>& points, double val)
+{
+	int ret_val = 0;
+	int ring_count = points.size();
+	
+	std::vector<IndexArray>				indices(ring_count);
+	std::vector<std::vector<Edge> >		edges(ring_count);
+
+	for (int j = 0; j < ring_count; j++)
+	{
+		// create index array
+		for (int i = 0; i < points[j].size(); i++)
+			indices[j].push_back(i);
+		
+		// sort points by their y coordinate
+		qSortPointsY(points[j], indices[j], 0, points[j].size()-1);
+	}
+
+	// Detect if the polygon is completely or partly outside the canvas
+	int minX = points[0][0].x();
+	int maxX = points[0][0].x();
+	int minY = points[0][indices[0].front()].y();
+	int maxY = points[0][indices[0].back()].y();
+	
+	for (int i = 0; i < points[0].size(); i++)
+	{
+		minX = std::min(minX, points[0][i].x());
+		maxX = std::max(maxX, points[0][i].x());
+	}
+	
+	if ((minX >= img_.sizeX()) || (maxX < 0) || (minY >= img_.sizeY()) || (maxY < 0))
+		return -1;
+	else if ((minX >= 0) && (maxX < img_.sizeX()) && (minY >= 0) && (maxY < img_.sizeY()))
+		ret_val = 0;
+	else
+		ret_val = -2;
+	
+	// create and sort edges by their topmost point
+	for (int j = 0; j < ring_count; j++)
+	{
+		for (int i = 0; i < indices[j].size() - 1; i++)
+		{
+			Point p = points[j][indices[j][i]];
+			Point prev(0,0);
+			Point next(0,0);
+
+			// catch overflow
+			if (indices[j][i] == 0)
+				prev = points[j].back();
+			else
+				prev = points[j][indices[j][i] - 1];
+			
+			if (indices[j][i] == points[j].size() - 1)
+				next = points[j][0];
+			else
+				next = points[j][indices[j][i] + 1];
+			
+			// insert edges in vector
+			if (next.y() >= p.y())
+			{
+				edges[j].push_back(Edge(p.y(), next.y(), static_cast<double>(next.x() - p.x()) / (next.y() - p.y())));
+				edges[j].back().x = p.x();
+			}
+			if (prev.y() >= p.y())
+			{
+				edges[j].push_back(Edge(p.y(), prev.y(), static_cast<double>(prev.x() - p.x()) / (prev.y() - p.y())));
+				edges[j].back().x = p.x();
+			}
+		}
+	}
+
+	// begin filling the polygon
+	for (int i = std::max(0, minY); i <= std::min(maxY, img_.sizeY() - 1); i++)
+	{
+		std::vector<std::deque<std::pair<int, int> > > spans(ring_count);
+		
+		for (int j = 0; j < ring_count; j++)
+		{
+			// select active edges
+			std::list<Edge> active_edges;
+			
+			for (int k = 0; k < edges[j].size(); k++)
+			{
+				if ((edges[j][k].y_min <= i) && (i < edges[j][k].y_max))
+				{
+					active_edges.push_back(edges[j][k]);
+					active_edges.back().x = static_cast<double>(i - edges[j][k].y_min) * active_edges.back().dx_dy + edges[j][k].x;
+				}
+			}
+
+			// sort active edges
+			active_edges.sort(EdgeSortX);
+
+			// create horizontal spans of filled pixels
+			std::list<Edge>::const_iterator ci = active_edges.begin();
+			while (ci != active_edges.end())
+			{
+				int x1 = static_cast<int>((*ci).x); ++ci;
+				int x2 = static_cast<int>((*ci).x);
+
+				spans[j].push_back(std::pair<int, int>(std::max(0, x1), std::min(x2, img_.sizeX()) - 1));
+
+				if (ci != active_edges.end()) ++ci;
+			}
+		}
+		
+		// Draw outer polygon spans and substract inner polygon spans
+		while (!spans[0].empty())
+		{
+			// Get next outer span
+			std::pair<int, int> outer_span = spans[0].front();
+			spans[0].pop_front();
+			
+			// Substract inner spans, split outer span if necessary
+			for (int k = 1; k < spans.size(); k++)
+			{
+				while (!spans[k].empty())
+				{
+					std::pair<int, int> inner_span = spans[k].front();
+					
+					if (inner_span.first > outer_span.second)
+					{
+						break;
+					}
+					else if (inner_span.second < outer_span.first)
+					{
+						spans[k].pop_front();
+						continue;
+					}
+					else if ((inner_span.first <= outer_span.first) && (inner_span.second >= outer_span.second))
+					{
+						outer_span.first = outer_span.second = -1;
+						break;
+					}
+					else if (inner_span.first <= outer_span.first)
+					{
+						outer_span.first = inner_span.second + 1;
+						continue;
+					}
+					else if (inner_span.second >= outer_span.second)
+					{
+						outer_span.second = inner_span.first - 1;
+						continue;
+					}
+					else
+					{
+						spans[0].push_front(std::pair<int, int>(inner_span.second + 1, outer_span.second));
+						outer_span.second = inner_span.first - 1;
+						continue;
+					}
+				}
+			}
+			
+			// Draw remaining outer span
+			img_.fillRow(i, outer_span.first, outer_span.second, val, 0, true);
+		}
+	}
+
 	return ret_val;
 }
 
