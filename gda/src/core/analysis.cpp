@@ -268,6 +268,7 @@ void Analysis::ready()
     emit message("Analysis aborted");
   }
   else {
+    taskTable.writeStatistics(0);
     if (!no_map_)
       prepareResultImage();
     iNodeRoot_->status(CI);

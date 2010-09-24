@@ -25,12 +25,18 @@
 
 #include "task.h"
 #include <sys/types.h>
+
 #include <sys/wait.h>
+#include <sys/times.h>
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
 #include <string.h>
 #include <qapplication.h>
+#include <qtextstream.h>
+#include <qfile.h>
+
 
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
@@ -40,6 +46,8 @@
 #include <qmessagebox.h>
 #endif
 #define DEBUG_MSG
+#include "cleanup.h"
+
 
 Task::Task(unsigned int maxJobs)
 {
@@ -56,6 +64,7 @@ Task::Task(unsigned int maxJobs)
   maxJobs_ = maxJobs;
   timerRunning_ = false;
   random_=true;
+  writeStatistics(0);
 }
 
 Task::~Task()
@@ -252,6 +261,7 @@ void Task::check()
       return;
     }
     p->status_=status;
+    writeStatistics(p);
     INode *iNode = p->node_;
     process_.remove(p->pid_);
     job_.remove(p->jid_);
@@ -396,4 +406,58 @@ bool Task::systemLoad()
 #else //WIN32
   return (process_.count() >= maxJobs_);
 #endif
+}
+
+
+/*!
+ * \brief write statistics about user and system time of process started by gda.
+ *
+ * First call of this function opens the statistic files.
+ * If called with 0 pointer writes the overall execution statistics.
+ *
+ * \param const ProcessEntry* pEntry - process which just finished to write data of
+ */
+void Task::writeStatistics(const ProcessEntry* pEntry)
+{
+  static QString filename=CleanUp::getTmpDirPID()+"/statistics.txt";
+  static QFile fp(filename);
+  static QTextStream ts;
+  static struct tms timeBefore;
+  if (!fp.isOpen()) {
+    fp.open(IO_WriteOnly | IO_Translate);
+    if (!fp.isOpen()) {
+      qWarning("Task::writeStatistics: Can't open statistics file");
+      return;
+    }
+    ts.setDevice(&fp);
+    ts << qSetW(10) << "utime" << "\t" << "stime" << "\t" << "cmd" << endl;
+    times(&timeBefore);
+    return;
+  }
+  if (pEntry) {
+    QString cmd=pEntry->cmd_;
+    struct tms timeAfter;
+    times(&timeAfter);
+    ts << qSetW(10) 
+       << timeAfter.tms_cutime-timeBefore.tms_cutime << "\t" 
+       << timeAfter.tms_cstime-timeBefore.tms_cstime << "\t" << cmd.replace('\n',' ')
+       << endl;
+    timeBefore=timeAfter;
+  }
+  else {
+    struct tms processTime;
+    times(&processTime);
+    ts << qSetW(10) 
+       << processTime.tms_utime  << "\t" 
+       << processTime.tms_stime << "\t" 
+       << "gda" << endl;
+    ts << qSetW(10) 
+       << processTime.tms_cutime  << "\t" 
+       << processTime.tms_cstime << "\t" 
+       << "total children" << endl;
+    ts << qSetW(10) 
+       << processTime.tms_utime + processTime.tms_cutime << "\t" 
+       << processTime.tms_stime + processTime.tms_cstime << "\t" 
+       << "total" << endl;
+  }
 }

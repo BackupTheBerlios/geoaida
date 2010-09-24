@@ -56,6 +56,7 @@ Q_OBJECT public:
   void setGuiPtr(ProcessEntry * pEntry, QListViewItem * ptr);
   /** return the system load on Linux-Systems */
   bool systemLoad();
+  void writeStatistics(const ProcessEntry* pEntry);
 protected slots:
   void check();
 public:

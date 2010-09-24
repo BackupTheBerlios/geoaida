@@ -183,6 +183,7 @@ MainGui::MainGui(int argc, char **argv)
   if (batchmode_)
 		QTimer::singleShot(3000, this, SLOT(analyze()));
   app.exec();
+  taskTable.writeStatistics(0);
   //semNet.write("./output.net");
 }
 
