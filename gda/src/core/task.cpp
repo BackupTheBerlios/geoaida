@@ -419,14 +419,14 @@ bool Task::systemLoad()
  */
 void Task::writeStatistics(const ProcessEntry* pEntry)
 {
-  static QString filename=CleanUp::getTmpDirPID()+"/statistics.txt";
+  static QString filename=CleanUp::getTmpDirPID()+"/cpu-usage.txt";
   static QFile fp(filename);
   static QTextStream ts;
   static struct tms timeBefore;
   if (!fp.isOpen()) {
     fp.open(IO_WriteOnly | IO_Translate);
     if (!fp.isOpen()) {
-      qWarning("Task::writeStatistics: Can't open statistics file");
+      qWarning("Task::writeStatistics: Can't open cpu-usage file");
       return;
     }
     ts.setDevice(&fp);
