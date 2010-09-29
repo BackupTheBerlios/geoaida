@@ -113,19 +113,19 @@ bool SVMClassifier::saveClassificationResult(const std::string& _strPrefix) cons
     saveImage(m_pLabelImage, oss.str());
     }
        
-//     for (int i=0; i<m_unNumberOfClasses; ++i)
-//     {
-//         std::ostringstream oss("");
-//         oss << _strPrefix << "_probability_c" << m_LabelMap[i] << ".tif";
-//         saveImage(m_Probabilities[i], oss.str());
-//     }
+    for (int i=0; i<m_unNumberOfClasses; ++i)
+    {
+        std::ostringstream oss("");
+        oss << _strPrefix << "_probability_c" << m_LabelMap[i] << ".tif";
+        saveImage(m_Probabilities[i], oss.str());
+    }
     
-//     if (m_pConfiguration->getStr("CalculateUncertainty") == "true")
-//     {
-//         std::ostringstream oss("");
-//         oss << _strPrefix << "_uncertainty.tif";
-//         saveImage(m_pUncertainty, oss.str());
-//     }
+    if (m_pConfiguration->getStr("CalculateUncertainty") == "true")
+    {
+        std::ostringstream oss("");
+        oss << _strPrefix << "_uncertainty.tif";
+        saveImage(m_pUncertainty, oss.str());
+    }
     
     METHOD_EXIT("SVMClassifier::saveClassificationResult");
     return true;
@@ -787,13 +787,6 @@ bool SVMClassifier::joinProbabilities(const std::string& _strP1, const std::stri
 {
     METHOD_ENTRY("SVMClassifier::joinProbabilities");
     
-//     typedef itk::ImageRegionConstIterator<ImageFloatType> ConstFloatImageIteratorType;
-//     typedef itk::ImageRegionIterator<ImageFloatType>      FloatImageIteratorType;
-    
-    // Define whole image as region, it's the same for all images
-//     ImageFloatType::RegionType Region;
-//     Region = m_Probabilities[0]->GetLargestPossibleRegion();
-    
     std::vector<ImageFloatType::Pointer> Probabilities1;
     std::vector<ImageFloatType::Pointer> Probabilities2;
     
@@ -986,55 +979,56 @@ bool SVMClassifier::classify()
     typedef itk::ImageRegionIterator<LabelImageType> OutputIteratorType;
     OutputIteratorType itOut(m_pLabelImage, m_pLabelImage->GetLargestPossibleRegion());
     itOut.GoToBegin();
+
+    m_Probabilities.clear();
+    
+    std::vector<itk::ImageRegionIterator<ImageFloatType> > itProb;
+    for (int i=0; i<m_unNumberOfClasses; ++i)
+    {
+        ImageFloatType::Pointer pProbabilityImage = ImageFloatType::New();
+        ImageFloatType::IndexType StartIndex;
+        ImageFloatType::SizeType Size;
+        ImageFloatType::RegionType Region;
+    
+        StartIndex[0]=0;
+        StartIndex[1]=0;
+        Region.SetIndex(StartIndex);
+        Region.SetSize(m_LabelImageSize);
+        
+        pProbabilityImage->SetRegions(Region);
+        pProbabilityImage->Allocate();
+        
+        m_Probabilities.push_back(pProbabilityImage);
+        
+        itk::ImageRegionIterator<ImageFloatType> itTmp(pProbabilityImage, pProbabilityImage->GetLargestPossibleRegion());
+        itProb.push_back(itTmp);
+    }
     
     FeaturesType::const_iterator ci = m_Features.begin();
     while ((ci != m_Features.end()) && (!itOut.IsAtEnd()))
     {
         itOut.Set(m_pModel->EvaluateLabel((*ci)));
+        
+        ModelType::ProbabilitiesVectorType vecProbabilities = m_pModel->EvaluateProbabilities((*ci));
+        
+        for (int i=0; i<m_unNumberOfClasses; ++i)
+        {
+            itProb[i].Set(vecProbabilities[i]);
+            ++itProb[i];
+        }
+        
         ++ci;
         ++itOut;
     }
     
-//     std::vector<std::vector<double> > Probabilities;
     int* pLabelMap;
-//     
-//     Probabilities = m_pClassifier->GetProbabilityEstimates();
     pLabelMap = m_pModel->GetLabels();
-//     m_Probabilities.clear();
+
     m_LabelMap.clear();
-    
     for (int i=0; i<m_unNumberOfClasses; ++i)
     {
         m_LabelMap.push_back(pLabelMap[i]);
     }
-    
-//     for (int i=0; i<m_unNumberOfClasses; ++i)
-//     {
-//         ImageFloatType::Pointer pProbabilityImage = ImageFloatType::New();
-//         ImageFloatType::IndexType StartIndex;
-//         ImageFloatType::SizeType Size;
-//         ImageFloatType::RegionType Region;
-//     
-//         StartIndex[0]=0;
-//         StartIndex[1]=0;
-//         Region.SetIndex(StartIndex);
-//         Region.SetSize(m_LabelImageSize);
-//         
-//         pProbabilityImage->SetRegions(Region);
-//         pProbabilityImage->Allocate();
-//         itk::ImageRegionIterator<ImageFloatType> itOut(pProbabilityImage, pProbabilityImage->GetLargestPossibleRegion());
-//         itOut.GoToBegin();
-//     
-//         std::vector<std::vector<double> >::const_iterator ciIn = Probabilities.begin();
-//         while (ciIn != Probabilities.end())
-//         {
-//             itOut.Set((*ciIn)[i]);
-//             ++ciIn;
-//             ++itOut;
-//         }
-//         
-//         m_Probabilities.push_back(pProbabilityImage);
-//     }
 
     INFO_MSG("SVM Classifier", "Classification done.")
 

@@ -413,6 +413,53 @@ void FeatureExtractor::setPyramidDecimationRate(const double& _fPDR)
     METHOD_EXIT("FeatureExtractor::setPyramidDecimationRate(const double&)");
 }
 
+// ///////////////////////////////////////////////////////////////////////////////
+// ///
+// /// \brief Applies local variance on given image
+// ///
+// /// \param _pImgIn Input image
+// /// \param _pImgOut Output image
+// /// \param _nR Radius for local operation
+// ///
+// ///////////////////////////////////////////////////////////////////////////////
+// void applyLocalVariance(const ImageType::Pointer _pImgIn, const ImageType::Pointer _pImgOut, const int& _nR)
+// {
+//     typedef itk::ConstNeighborhoodIterator<ImageType> NeighborhoodIteratorType;
+//     typedef itk::ImageRegionIterator<ImageType>       RegionIteratorType;
+//     
+//     NeighborhoodIteratorType::RadiusType radius;
+//     radius.Fill(_nR);
+//     NeighborhoodIteratorType ci(radius, _pImgIn, _pImgIn->GetRequestedRegion());
+// 
+//     _pImgOut->SetRegions(_pImgIn->GetRequestedRegion());
+//     RegionIteratorType it(_pImgOut,_pImgOut->GetRequestedRegion());
+//     
+//     for (ci.GoToBegin(), it.GoToBegin(); !it.IsAtEnd(); ++ci , ++it)
+//     {
+//         float fMean = 0.0f;
+//         float fVar = 0.0f;
+//         for (int i=-_nR; i<=_nR; ++i)
+//         {
+//             for (int j=-_nR; j<=_nR; ++j)
+//             {
+//                 NeighborhoodIteratorType::OffsetType offset={{i, j}};
+//                 fMean += ci.GetPixel(offset);
+//             }
+//         }
+//         fMean /= ((_nR*2+1)*(_nR*2+1));
+//         for (int i=-_nR; i<=_nR; ++i)
+//         {
+//             for (int j=-_nR; j<=_nR; ++j)
+//             {
+//                 NeighborhoodIteratorType::OffsetType offset={{i, j}};
+//                 fVar += ((ci.GetPixel(offset)-fMean) * (ci.GetPixel(offset)-fMean));
+//             }
+//         }
+//         fVar /= ((_nR*2+1)*(_nR*2+1));
+//         it.Set(fVar);
+//     }    
+// }
+
 ///////////////////////////////////////////////////////////////////////////////
 ///
 /// \brief Method to extract features from image incorporating label image.

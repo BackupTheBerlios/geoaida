@@ -125,50 +125,50 @@ int main(int argc, char *argv[])
             Classifier.classify();
             if (Config.getStr("CalculateDistanceMaps") == "true") Classifier.calculateDistanceMaps();
             if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
-//             Classifier.createLabelImageFromProbabilities();
+            Classifier.createLabelImageFromProbabilities();
             Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+5]);
 //             Classifier.applyUncertaintyOnLabelImage();
 
-//             if (Config.getStr("DoRefinementTraining") == "true")
-//             {
-//                 //--- Start the training process -----------------------------//
-//                 Extractor.setLabelImage(Classifier.getLabelImage());
-//                 if (!Extractor.extract(FEATURE_EXTRACTOR_USE_LABELS))
-//                     return EXIT_FAILURE;
-//                 Classifier.setLabelImageSize(Extractor.getImageSize());
-//                 Classifier.setLabels(Extractor.getLabels());
-//                 Classifier.setFeatures(Extractor.getFeatures());
-//                 Classifier.scaleFeatures(SVM_CLASSIFIER_CALCULATE_EXTREMA);
-//                 Classifier.train();
-//                 Classifier.saveModel(ArgvList[nNumberOfChannels+1]+ "/" +
-//                                      ArgvList[nNumberOfChannels+3]+ "_rt");
-//                 Classifier.saveScaling(ArgvList[nNumberOfChannels+1]+ "/" +
-//                                      ArgvList[nNumberOfChannels+4]+ "_rt");
-//             }
-//             if (Config.getStr("DoRefinementClassification") == "true")
-//             {
-//                 //--- Start the refinement process ---------------------------//
-//                 if (!Extractor.extract()) return EXIT_FAILURE;
-//                 Extractor.clearChannels(); // Free some memory!
-//                 Classifier.setFeatures(Extractor.getFeatures());
-//                 Classifier.scaleFeatures();
-//                 Classifier.classify();
-//                 if (Config.getStr("CalculateDistanceMaps") == "true") Classifier.calculateDistanceMaps();
-//                 if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
-//                 Classifier.createLabelImageFromProbabilities();
-//                 Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+5]+"_rt");
-//             }
-//             if (Config.getStr("DoProbabilityJoining") == "true")
-//             {
-//                 Classifier.joinProbabilities(ArgvList[nNumberOfChannels+5],
-//                                              ArgvList[nNumberOfChannels+1]+ "/" +
-//                                              ArgvList[nNumberOfChannels+3],
-//                                              ArgvList[nNumberOfChannels+5]+ "_rt",
-//                                              ArgvList[nNumberOfChannels+1]+ "/" +
-//                                              ArgvList[nNumberOfChannels+3]+ "_rt");
-//                 if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
-//                 Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+5]+"_jnt");
-//             }
+            if (Config.getStr("DoRefinementTraining") == "true")
+            {
+                //--- Start the training process -----------------------------//
+                Extractor.setLabelImage(Classifier.getLabelImage());
+                if (!Extractor.extract(FEATURE_EXTRACTOR_USE_LABELS))
+                    return EXIT_FAILURE;
+                Classifier.setLabelImageSize(Extractor.getImageSize());
+                Classifier.setLabels(Extractor.getLabels());
+                Classifier.setFeatures(Extractor.getFeatures());
+                Classifier.scaleFeatures(SVM_CLASSIFIER_CALCULATE_EXTREMA);
+                Classifier.train();
+                Classifier.saveModel(ArgvList[nNumberOfChannels+1]+ "/" +
+                                     ArgvList[nNumberOfChannels+3]+ "_rt");
+                Classifier.saveScaling(ArgvList[nNumberOfChannels+1]+ "/" +
+                                     ArgvList[nNumberOfChannels+4]+ "_rt");
+            }
+            if (Config.getStr("DoRefinementClassification") == "true")
+            {
+                //--- Start the refinement process ---------------------------//
+                if (!Extractor.extract()) return EXIT_FAILURE;
+                Extractor.clearChannels(); // Free some memory!
+                Classifier.setFeatures(Extractor.getFeatures());
+                Classifier.scaleFeatures();
+                Classifier.classify();
+                if (Config.getStr("CalculateDistanceMaps") == "true") Classifier.calculateDistanceMaps();
+                if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
+                Classifier.createLabelImageFromProbabilities();
+                Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+5]+"_rt");
+            }
+            if (Config.getStr("DoProbabilityJoining") == "true")
+            {
+                Classifier.joinProbabilities(ArgvList[nNumberOfChannels+5],
+                                             ArgvList[nNumberOfChannels+1]+ "/" +
+                                             ArgvList[nNumberOfChannels+3],
+                                             ArgvList[nNumberOfChannels+5]+ "_rt",
+                                             ArgvList[nNumberOfChannels+1]+ "/" +
+                                             ArgvList[nNumberOfChannels+3]+ "_rt");
+                if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
+                Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+5]+"_jnt");
+            }
         }
         else
         {
