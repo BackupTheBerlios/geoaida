@@ -30,7 +30,6 @@
 #include "otb_svmop_common.h"
 
 //--- Misc header ------------------------------------------------------------//
-#include "itkImageRegionConstIterator.h"
 
 const unsigned char FEATURE_EXTRACTOR_DEFAULT = 0;
 const unsigned char FEATURE_EXTRACTOR_USE_LABELS = 10;

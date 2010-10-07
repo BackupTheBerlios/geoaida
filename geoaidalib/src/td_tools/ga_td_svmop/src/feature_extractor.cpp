@@ -413,53 +413,6 @@ void FeatureExtractor::setPyramidDecimationRate(const double& _fPDR)
     METHOD_EXIT("FeatureExtractor::setPyramidDecimationRate(const double&)");
 }
 
-// ///////////////////////////////////////////////////////////////////////////////
-// ///
-// /// \brief Applies local variance on given image
-// ///
-// /// \param _pImgIn Input image
-// /// \param _pImgOut Output image
-// /// \param _nR Radius for local operation
-// ///
-// ///////////////////////////////////////////////////////////////////////////////
-// void applyLocalVariance(const ImageType::Pointer _pImgIn, const ImageType::Pointer _pImgOut, const int& _nR)
-// {
-//     typedef itk::ConstNeighborhoodIterator<ImageType> NeighborhoodIteratorType;
-//     typedef itk::ImageRegionIterator<ImageType>       RegionIteratorType;
-//     
-//     NeighborhoodIteratorType::RadiusType radius;
-//     radius.Fill(_nR);
-//     NeighborhoodIteratorType ci(radius, _pImgIn, _pImgIn->GetRequestedRegion());
-// 
-//     _pImgOut->SetRegions(_pImgIn->GetRequestedRegion());
-//     RegionIteratorType it(_pImgOut,_pImgOut->GetRequestedRegion());
-//     
-//     for (ci.GoToBegin(), it.GoToBegin(); !it.IsAtEnd(); ++ci , ++it)
-//     {
-//         float fMean = 0.0f;
-//         float fVar = 0.0f;
-//         for (int i=-_nR; i<=_nR; ++i)
-//         {
-//             for (int j=-_nR; j<=_nR; ++j)
-//             {
-//                 NeighborhoodIteratorType::OffsetType offset={{i, j}};
-//                 fMean += ci.GetPixel(offset);
-//             }
-//         }
-//         fMean /= ((_nR*2+1)*(_nR*2+1));
-//         for (int i=-_nR; i<=_nR; ++i)
-//         {
-//             for (int j=-_nR; j<=_nR; ++j)
-//             {
-//                 NeighborhoodIteratorType::OffsetType offset={{i, j}};
-//                 fVar += ((ci.GetPixel(offset)-fMean) * (ci.GetPixel(offset)-fMean));
-//             }
-//         }
-//         fVar /= ((_nR*2+1)*(_nR*2+1));
-//         it.Set(fVar);
-//     }    
-// }
-
 ///////////////////////////////////////////////////////////////////////////////
 ///
 /// \brief Method to extract features from image incorporating label image.
@@ -486,26 +439,21 @@ bool FeatureExtractor::extractWithLabels()
     
     typedef itk::MeanImageFilter<InputImageType,InputImageType> MeanFilterType;
     typedef itk::GradientMagnitudeImageFilter<InputImageType,InputImageType> GradientFilterType;
-    typedef otb::Functor::VarianceTextureFunctor<InputPixelType,InputPixelType> FunctorType;
-    typedef otb::TextureImageFunction<InputImageType,FunctorType> VarianceFilterType;
+    typedef VarianceImageFilter<InputImageType,InputImageType> VarianceFilterType;
     
     MeanFilterType::Pointer         pMeanFilter = MeanFilterType::New();
     GradientFilterType::Pointer     pGradientFilter = GradientFilterType::New();
-    VarianceFilterType::Pointer     TextureFilter = VarianceFilterType::New();
+    VarianceFilterType::Pointer     pVarianceFilter = VarianceFilterType::New();
         
     InputImageType::SizeType        nRadius;
     InputImageType::IndexType       nFeatureIndex;
-    InputImageType::OffsetType      nOffset;
     InputImageType::SizeType        nSize;
     LabelImageType::IndexType       nLabelIndex;
 
     nRadius[0] = m_nFilterRadius;
     nRadius[1] = m_nFilterRadius;
-    nOffset[0] = 5;
-    nOffset[1] = 0;
-    TextureFilter->SetRadius(nRadius);
-    TextureFilter->SetOffset(nOffset);
     pMeanFilter->SetRadius(nRadius);
+    pVarianceFilter->SetRadius(nRadius);
     
     m_pInputChannelList->Update();
     ImageListType::ConstIterator it = m_pInputChannelList->Begin();
@@ -538,8 +486,8 @@ bool FeatureExtractor::extractWithLabels()
     ImageListIterator itP = pPyramid->GetOutput()->Begin();
     
     pGradientFilter->SetInput(it.Get());
-    pGradientFilter->Update();
-    TextureFilter->SetInputImage(pGradientFilter->GetOutput());
+    pVarianceFilter->SetInput(pGradientFilter->GetOutput());
+    pVarianceFilter->Update();
     pMeanFilter->SetInput(it.Get());
     pMeanFilter->Update();
     
@@ -575,14 +523,13 @@ bool FeatureExtractor::extractWithLabels()
         saveImage(pGradientFilter->GetOutput(), oss.str());
     }
     );
-//     DEBUG(
-//     {
-//         std::ostringstream oss("");
-//         oss << "DEBUG_varianceofgradient_image_ch1"<< "_l" << nPyramidLevel << ".tif";
-//         saveImage(TextureFilter->GetOutput(), oss.str());
-//     }
-//     );
-
+    DEBUG(
+    {
+        std::ostringstream oss("");
+        oss << "DEBUG_variance_of_gradient_image_ch1" << "_l" << nPyramidLevel << ".tif";
+        saveImage(pVarianceFilter->GetOutput(), oss.str());
+    }
+    );
 
     //--------------------------------------------------------------------------
     // Store first feature vector component, build up list for further channels
@@ -639,7 +586,7 @@ bool FeatureExtractor::extractWithLabels()
             if (bValid)
             {
                 FeatureVectorType vecFeature;
-                vecFeature.push_back(TextureFilter->EvaluateAtIndex(nFeatureIndex));
+                vecFeature.push_back(pVarianceFilter->GetOutput()->GetPixel(nFeatureIndex));
                 vecFeature.push_back(pMeanFilter->GetOutput()->GetPixel(nFeatureIndex));
                 m_Features.push_back(vecFeature);
             
@@ -675,12 +622,10 @@ bool FeatureExtractor::extractWithLabels()
         //-----------------------------------------------
         // Create new filters due to changing image size
         //-----------------------------------------------
-        TextureFilter = VarianceFilterType::New();
-        TextureFilter->SetRadius(nRadius);
-        TextureFilter->SetOffset(nOffset);
-        
         pMeanFilter = MeanFilterType::New();
         pMeanFilter->SetRadius(nRadius);
+        pVarianceFilter = VarianceFilterType::New();
+        pVarianceFilter->SetRadius(nRadius);
         
         pGradientFilter = GradientFilterType::New();
         
@@ -690,8 +635,8 @@ bool FeatureExtractor::extractWithLabels()
         if (itP != pPyramid->GetOutput()->End())
         {           
             pGradientFilter->SetInput(itP.Get());
-            pGradientFilter->Update();
-            TextureFilter->SetInputImage(pGradientFilter->GetOutput());
+            pVarianceFilter->SetInput(pGradientFilter->GetOutput());
+            pVarianceFilter->Update();
             pMeanFilter->SetInput(itP.Get());
             pMeanFilter->Update();
             fPyramidLevelFactor *= 1/m_fPyramidDecimationRate;
@@ -708,8 +653,8 @@ bool FeatureExtractor::extractWithLabels()
             INFO_MSG("Image Feature Extractor", "Calculating features of channel " <<
                     nChannel)
             pGradientFilter->SetInput(it.Get());
-            pGradientFilter->Update();
-            TextureFilter->SetInputImage(pGradientFilter->GetOutput());
+            pVarianceFilter->SetInput(pGradientFilter->GetOutput());
+            pVarianceFilter->Update();
             pMeanFilter->SetInput(it.Get());
             pMeanFilter->Update();
             
@@ -743,13 +688,14 @@ bool FeatureExtractor::extractWithLabels()
             saveImage(pGradientFilter->GetOutput(), oss.str());
         }
         );
-//         DEBUG(
-//         {
-//             std::ostringstream oss("");
-//             oss << "DEBUG_varianceofgradient_image_" << nChannel << "_l" << nPyramidLevel << ".tif";
-//             saveImage(TextureFilter->GetOutput(), oss.str());
-//         }
-//         );
+        DEBUG(
+        {
+            std::ostringstream oss("");
+            oss << "DEBUG_variance_of_gradient_image_ch" << nChannel << "_l" << nPyramidLevel << ".tif";
+            saveImage(pVarianceFilter->GetOutput(), oss.str());
+        }
+        );
+
         //--------------------------------
         // Store feature vector component
         //--------------------------------
@@ -759,7 +705,7 @@ bool FeatureExtractor::extractWithLabels()
             InputImageType::IndexType Index;
             Index[0] = (*ciIndex)[0]*fPyramidLevelFactor;
             Index[1] = (*ciIndex)[1]*fPyramidLevelFactor;
-            m_Features[i].push_back(TextureFilter->EvaluateAtIndex(Index));
+            m_Features[i].push_back(pVarianceFilter->GetOutput()->GetPixel(Index));
             m_Features[i].push_back(pMeanFilter->GetOutput()->GetPixel(Index));
             ++i;
             ++ciIndex;
@@ -793,29 +739,21 @@ bool FeatureExtractor::extractWithoutLabels()
     
     typedef itk::MeanImageFilter<InputImageType,InputImageType> MeanFilterType;
     typedef itk::GradientMagnitudeImageFilter<InputImageType,InputImageType> GradientFilterType;
-    typedef otb::Functor::VarianceTextureFunctor<InputPixelType,InputPixelType> FunctorType;
-    typedef otb::UnaryFunctorNeighborhoodWithOffsetImageFilter< InputImageType,
-                                                            InputImageType,
-                                                            FunctorType>
-    VarianceFilterType;
+    typedef VarianceImageFilter<InputImageType,InputImageType> VarianceFilterType;
     
     GradientFilterType::Pointer pGradientFilter = GradientFilterType::New();
     MeanFilterType::Pointer     pMeanFilter = MeanFilterType::New();
-    VarianceFilterType::Pointer TextureFilter = VarianceFilterType::New();
+    VarianceFilterType::Pointer pVarianceFilter = VarianceFilterType::New();
     
     InputImageType::SizeType        nRadius;
     InputImageType::IndexType       nFeatureIndex;
-    InputImageType::OffsetType      nOffset;
     InputImageType::SizeType        nSize;
 
     nRadius[0] = m_nFilterRadius;
     nRadius[1] = m_nFilterRadius;
-    nOffset[0] = 5;
-    nOffset[1] = 0;
-    TextureFilter->SetRadius(nRadius);
-    TextureFilter->SetOffset(nOffset);
 
     pMeanFilter->SetRadius(nRadius);
+    pVarianceFilter->SetRadius(nRadius);
     
 //     m_pInputChannelList->Update();
     ImageListType::Iterator it = m_pInputChannelList->Begin();
@@ -845,10 +783,10 @@ bool FeatureExtractor::extractWithoutLabels()
     ImageListIterator itP = pPyramid->GetOutput()->Begin();
 
     pGradientFilter->SetInput(it.Get());
-    TextureFilter->SetInput(pGradientFilter->GetOutput());
-    TextureFilter->Update();
     pMeanFilter->SetInput(it.Get());
     pMeanFilter->Update();
+    pVarianceFilter->SetInput(pGradientFilter->GetOutput());
+    pVarianceFilter->Update();
     
     DOM_VAR(INFO_MSG("Image Feature Extractor", "New pyramid level, size: " <<
                       pMeanFilter->GetOutput()->GetLargestPossibleRegion().GetSize()))
@@ -871,8 +809,8 @@ bool FeatureExtractor::extractWithoutLabels()
     DEBUG(
     {
         std::ostringstream oss("");
-        oss << "DEBUG_varianceofgradient_image_ch1" << "_l" << nPyramidLevel << ".tif";
-        saveImage(TextureFilter->GetOutput(), oss.str());
+        oss << "DEBUG_variance_of_gradient_image_ch1" << "_l" << nPyramidLevel << ".tif";
+        saveImage(pVarianceFilter->GetOutput(), oss.str());
     }
     );
 
@@ -889,7 +827,7 @@ bool FeatureExtractor::extractWithoutLabels()
             nFeatureIndex[0] = nX;
             
             FeatureVectorType vecFeature;
-            vecFeature.push_back(TextureFilter->GetOutput()->GetPixel(nFeatureIndex));
+            vecFeature.push_back(pVarianceFilter->GetOutput()->GetPixel(nFeatureIndex));
             vecFeature.push_back(pMeanFilter->GetOutput()->GetPixel(nFeatureIndex));
             m_Features.push_back(vecFeature);
             
@@ -910,12 +848,10 @@ bool FeatureExtractor::extractWithoutLabels()
         //-----------------------------------------------
         // Create new filters due to changing image size
         //-----------------------------------------------
-        TextureFilter = VarianceFilterType::New();
-        TextureFilter->SetRadius(nRadius);
-        TextureFilter->SetOffset(nOffset);
-        
         pMeanFilter = MeanFilterType::New();
         pMeanFilter->SetRadius(nRadius);
+        pVarianceFilter = VarianceFilterType::New();
+        pVarianceFilter->SetRadius(nRadius);
         
         pGradientFilter = GradientFilterType::New();
         
@@ -925,8 +861,8 @@ bool FeatureExtractor::extractWithoutLabels()
         if (itP != pPyramid->GetOutput()->End())
         {
             pGradientFilter->SetInput(itP.Get());
-            TextureFilter->SetInput(pGradientFilter->GetOutput());
-            TextureFilter->Update();
+            pVarianceFilter->SetInput(pGradientFilter->GetOutput());
+            pVarianceFilter->Update();
             pMeanFilter->SetInput(itP.Get());
             pMeanFilter->Update();
             fPyramidLevelFactor *= 1/m_fPyramidDecimationRate;
@@ -943,8 +879,8 @@ bool FeatureExtractor::extractWithoutLabels()
             INFO_MSG("Image Feature Extractor", "Calculating features of channel " <<
                     nChannel)
             pGradientFilter->SetInput(it.Get());
-            TextureFilter->SetInput(pGradientFilter->GetOutput());
-            TextureFilter->Update();
+            pVarianceFilter->SetInput(pGradientFilter->GetOutput());
+            pVarianceFilter->Update();
             pMeanFilter->SetInput(it.Get());
             pMeanFilter->Update();
             
@@ -981,8 +917,8 @@ bool FeatureExtractor::extractWithoutLabels()
         DEBUG(
         {
             std::ostringstream oss("");
-            oss << "DEBUG_varianceofgradient_image_ch" << nChannel << "_l" << nPyramidLevel << ".tif";
-            saveImage(TextureFilter->GetOutput(), oss.str());
+            oss << "DEBUG_variance_of_gradient_image_ch" << nChannel << "_l" << nPyramidLevel << ".tif";
+            saveImage(pVarianceFilter->GetOutput(), oss.str());
         }
         );
 
@@ -998,7 +934,7 @@ bool FeatureExtractor::extractWithoutLabels()
             {
                 nFeatureIndex[0] = double(nX)*fPyramidLevelFactor;
                 
-                m_Features[i].push_back(TextureFilter->GetOutput()->GetPixel(nFeatureIndex));
+                m_Features[i].push_back(pVarianceFilter->GetOutput()->GetPixel(nFeatureIndex));
                 m_Features[i].push_back(pMeanFilter->GetOutput()->GetPixel(nFeatureIndex));
                 ++i;
                 

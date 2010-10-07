@@ -31,8 +31,6 @@
 #include "itkListSample.h"
 #include "itkMeanImageFilter.h"
 #include <itkMinimumMaximumImageFilter.h>
-#include "itkPointSet.h"
-#include "itkPointSetToListAdaptor.h"
 #include "itkRescaleIntensityImageFilter.h"
 
 #include "otbImage.h"
@@ -40,13 +38,11 @@
 #include "otbImageFileReader.h"
 #include "otbMorphologicalPyramidAnalysisFilter.h"
 #include "otbOpeningClosingMorphologicalFilter.h"
-#include "otbSFSTexturesImageFilter.h"
 #include "otbStreamingImageFileWriter.h"
 #include "otbSVMModel.h"
-#include "otbTextureFunctors.h"
 #include "otbUnaryFunctorNeighborhoodWithOffsetImageFilter.h"
-#include "otbTextureImageFunction.h"
-#include "otbVectorImage.h"
+
+#include "tnt_variance_image_filter.h"
 
 //--- Define input and output images ---//
 const unsigned int Dimension = 2;

@@ -330,6 +330,11 @@ bool SVMClassifier::loadScaling(const std::string& _strFilename)
 ///
 /// \brief Scales features to given interval
 ///
+/// Feature scaling is done separately for the basic features, i.e. mean and
+/// variance of gradient. The two basic features are alternating within the
+/// feature vector for the different channels and pyramid levels. Therefore,
+/// min/max values are filled by using "modulo 2".
+///
 /// \param _bCalc Calculate the minimum and maximum value
 /// \param _fLower Lower interval border
 /// \param _fUpper Upper interval border
@@ -358,7 +363,7 @@ bool SVMClassifier::scaleFeatures(const bool& _bCalc,
         DEBUG_MSG("SVM Classifier", "Determining extrema in feature vector.")
         
         int i;
-        for (i=0; i<m_Features.begin()->size(); ++i)
+        for (i=0; i<2/*m_Features.begin()->size()*/; ++i)
         {
             m_Min.push_back(1e300);
             m_Max.push_back(-1e300);
@@ -373,8 +378,8 @@ bool SVMClassifier::scaleFeatures(const bool& _bCalc,
             i  = 0;
             while (cj != ci->end())
             {
-                if ((*cj) < m_Min[i]) m_Min[i] = (*cj);
-                if ((*cj) > m_Max[i]) m_Max[i] = (*cj);
+                if ((*cj) < m_Min[i % 2]) m_Min[i % 2] = (*cj);
+                if ((*cj) > m_Max[i % 2]) m_Max[i % 2] = (*cj);
                 
                 ++cj;
                 ++i;
@@ -422,7 +427,7 @@ bool SVMClassifier::scaleFeatures(const bool& _bCalc,
         int i = 0;
         while (jt != (*it).end())
         {
-            (*jt) = _fLower + ((*jt) - m_Min[i]) * (_fUpper - _fLower)/(m_Max[i]-m_Min[i]);
+            (*jt) = _fLower + ((*jt) - m_Min[i % 2]) * (_fUpper - _fLower)/(m_Max[i % 2]-m_Min[i % 2]);
             
             DEBUG(of << (*jt) << " ";);
             
