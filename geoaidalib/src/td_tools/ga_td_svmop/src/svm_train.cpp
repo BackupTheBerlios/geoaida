@@ -130,6 +130,7 @@ int main(int argc, char *argv[])
             //--- Reclassification -------------------------------------------//
             if (Config.getStr("TrainingDoReclassification") == "true")
             {
+                Extractor.clearFeatures();
                 if (!Extractor.extract())
                     return EXIT_FAILURE;
                 Extractor.clearChannels(); // Free some memory!
