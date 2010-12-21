@@ -18,11 +18,12 @@
 
 
 #include "geoimage.h"
-#include <qcolor.h>
 #include <qdir.h>
 #include <assert.h>
 #include "fatalerror.h"
 #include "cleanup.h"
+
+#include <vector>
 
 GeoImageCache GeoImage::cache_;
 
@@ -122,6 +123,7 @@ void GeoImage::init()
   dataSize_=0;
   type_ = UNKNOWN;
   cols_ = rows_ = 0;
+  pixelaccessor_ = 0;
   //minval_ = maxval_ = 0.0;
   geoSouth_ = geoNorth_ = geoEast_ = geoWest_ = 0.0;
   resolutionX_ = 0;
@@ -301,6 +303,7 @@ const void *GeoImage::data()
   }
   int cols, rows;
   //float minval, maxval;
+  
   switch (type_) {
   case PFM_FLOAT:
   case PFM_UINT:
@@ -338,10 +341,59 @@ const void *GeoImage::data()
     fclose(fp);
     return 0;
   }
+  
   fclose(fp);
   if (data_) dataSize_=rows_*cols_*sizeOfData(type_);
   cache_.useImage(this);
   return data_;
+}
+
+PixelAccess_Base *GeoImage::pixelaccessor()
+{
+  if (!pixelaccessor_)
+  {
+    if (void *ldata = const_cast<void *>(data()))
+    {
+      switch (type_)
+      {
+        case PFM_FLOAT:
+          pixelaccessor_ = new PixelAccess_Simple<float>(ldata, cols_, rows_);
+          break;
+        case PFM_UINT:
+          pixelaccessor_ = new PixelAccess_Simple<unsigned int>(ldata, cols_, rows_);
+          break;
+        case PFM_SINT:
+          pixelaccessor_ = new PixelAccess_Simple<signed int>(ldata, cols_, rows_);
+          break;
+        case PFM_UINT16:
+          pixelaccessor_ = new PixelAccess_Simple<unsigned short>(ldata, cols_, rows_);
+          break;
+        case PFM_SINT16:
+          pixelaccessor_ = new PixelAccess_Simple<signed short>(ldata, cols_, rows_);
+          break;
+        case PFM_BYTE:
+          pixelaccessor_ = new PixelAccess_Simple<unsigned char>(ldata, cols_, rows_);
+          break;
+        case PFM_3BYTE:
+          pixelaccessor_ = new PixelAccess_PFM_3BYTE(ldata, cols_, rows_);
+          break;
+        case PBM:
+          pixelaccessor_ = new PixelAccess_Simple<bit>(ldata, cols_, rows_);
+          break;
+        case PGM:
+          pixelaccessor_ = new PixelAccess_Simple<gray>(ldata, cols_, rows_);
+          break;
+        case PPM:
+          pixelaccessor_ = new PixelAccess_PPM(ldata, cols_, rows_);
+          break;
+        default:
+          std::cout << "Could not create pixel accessor!" << std::endl;
+          break;
+      }
+    }
+  }
+  
+  return pixelaccessor_;
 }
 
 /** size of data */
@@ -378,6 +430,11 @@ void GeoImage::freeData()
     }
     data_ = 0;
     dataSize_=0;
+  }
+  
+  if (pixelaccessor_) {
+    delete pixelaccessor_;
+    pixelaccessor_ = 0;
   }
 }
 
@@ -747,48 +804,46 @@ bool GeoImage::mergeInto(GeoImage & img, int compareId, int id, int newId)
 #else
 #warning besser picBBox benutzen?
 #endif
-  llx = int (geo2picX(img.pic2geoX(0)));
-  lly = int (geo2picY(img.pic2geoY(img.rows())));
-  urx = int (geo2picX(img.pic2geoX(img.cols())));
-  ury = int (geo2picY(img.pic2geoY(0)));
-  if (llx < 0)
-    llx = 0;
-  if (lly >= rows_)
-    lly = rows_;
-  if (urx >= cols_)
-    urx = cols_;
-  if (ury < 0)
-    ury = 0;
+  llx = int(geo2picX(img.pic2geoX(0)));
+  lly = int(geo2picY(img.pic2geoY(img.rows())));
+  urx = int(geo2picX(img.pic2geoX(img.cols())));
+  ury = int(geo2picY(img.pic2geoY(0)));
+  
+  llx = std::max(llx, 0);
+  lly = std::min(lly, rows_);
+  urx = std::min(urx, cols_);
+  ury = std::max(ury, 0);
 
-  //! This loop should be optimized
+  int br_width1 = int(urx - llx);
+  int br_width2 = int(img.geo2picX(pic2geoX(urx)) - img.geo2picX(pic2geoX(llx)));
+  
+  if (!pixelaccessor() || !img.pixelaccessor())
+    return false;
+
   for (y = ury; y < lly; y++)
-    for (x = llx; x < urx; x++) {
-#if 0
-      assert(x >= 0);
-      assert(x < cols());
-      assert(y >= 0);
-      assert(y < rows());
-#endif
-      if (getId(x, y) != compareId)
-        continue;
-      float gx, gy;
-      gx = pic2geoX(x);
-      gy = pic2geoY(y);
-      int nx, ny;
-      nx = int (img.geo2picX(gx));
-      ny = int (img.geo2picY(gy));
-#if 0
-      assert(nx >= 0);
-      assert(nx < img.cols());
-      assert(ny >= 0);
-      assert(ny < img.rows());
-#endif
-      if (img.getId(nx, ny) == id) {
-//                              qDebug("GeoImage::mergeInto 1->(%d,%d)",x,y);
-        ((int *) data_)[y * cols_ + x] = newId;
+  {
+    pixelaccessor_->setStart(llx, y);
+    img.pixelaccessor_->setStart(int(img.geo2picX(pic2geoX(llx))), int(img.geo2picY(pic2geoY(y))));
+    
+    int br_error = -br_width2 / 2;
+    
+    for (x = llx; x < urx; x++, pixelaccessor_->next())
+    {
+      if ((pixelaccessor_->getInt() == compareId) && (img.pixelaccessor_->getInt() == id))
+      {
+        pixelaccessor_->setInt(newId);
         objectInserted = true;
       }
+      
+      br_error += br_width2;
+      while (br_error >= 0)
+      {
+        img.pixelaccessor_->next();
+        br_error -= br_width1;
+      }
     }
+  }
+  
   return objectInserted;
 }
 

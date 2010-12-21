@@ -34,6 +34,7 @@
 #include <qshared.h>
 #include <qpoint.h>
 #include <qfile.h>
+#include <qcolor.h>
 #include "MLParser.h"
 #include "geoimagecache.h"
 
@@ -65,6 +66,164 @@ extern "C"
 #ifndef NAN
 #define NAN sqrt(-1)
 #endif
+
+#include <iostream>
+
+/// Some abstractions for pixel access (by Karsten Vogt)
+class PixelAccess_Base
+{
+  public:
+    virtual void setStart(int x, int y) = 0;
+    virtual void next() = 0;
+    virtual int getInt() = 0;
+    virtual void setInt(int value) = 0;
+    
+    virtual int getInt(int x, int y)
+    {
+      setStart(x, y);
+      return getInt();
+    }
+    
+    virtual void setInt(int x, int y, int value)
+    {
+      setStart(x, y);
+      setInt(value);
+    }
+};
+
+template<class PixelType>
+class PixelAccess_Simple : public PixelAccess_Base
+{
+  public:
+    PixelAccess_Simple(void *data, int width, int height)
+      : _data(data), _width(width), _height(height)
+    {
+      setStart(0, 0);
+    }
+    
+    virtual void setStart(int x, int y)
+    {
+      int index = y * _width + x;
+      _position = (PixelType *)(_data) + index;
+    }
+    
+    virtual void next()
+    {
+      _position++;
+    }
+    
+    virtual int getInt()
+    {
+      return (int)(*_position);
+    }
+    
+    virtual void setInt(int value)
+    {
+      *_position = (PixelType)(value);
+    }
+  
+  private:
+    void *_data;
+    PixelType *_position;
+    int _width;
+    int _height;
+};
+
+class PixelAccess_PFM_3BYTE : public PixelAccess_Base
+{
+  public:
+    PixelAccess_PFM_3BYTE(void *data, int width, int height)
+      : _data(data), _width(width), _height(height)
+    {
+      setStart(0, 0);
+    }
+    
+    virtual void setStart(int x, int y)
+    {
+      int index = y * _width + x;
+      PFM3Byte *p = (PFM3Byte *)_data;
+      
+      _position_r = (p->r) + index;
+      _position_g = (p->g) + index;
+      _position_b = (p->b) + index;
+    }
+    
+    virtual void next()
+    {
+      _position_r++;
+      _position_g++;
+      _position_b++;
+    }
+    
+    virtual int getInt()
+    {
+      return qRgb(*_position_r, *_position_g, *_position_b);
+    }
+    
+    virtual void setInt(int value)
+    {
+      *_position_r = qRed(value);
+      *_position_g = qGreen(value);
+      *_position_b = qBlue(value);
+    }
+
+  private:
+    void *_data;
+    unsigned char *_position_r;
+    unsigned char *_position_g;
+    unsigned char *_position_b;
+    int _width;
+    int _height;
+};
+
+class PixelAccess_PPM : public PixelAccess_Base
+{
+  public:
+    PixelAccess_PPM(void *data, int width, int height)
+      : _data(data), _width(width), _height(height)
+    {
+      setStart(0, 0);
+    }
+    
+    virtual void setStart(int x, int y)
+    {
+      _x = x;
+      _y = y;
+    }
+    
+    virtual void next()
+    {
+      if (++_x >= _width)
+      {
+        _x = 0;
+        _y++;
+      }
+    }
+    
+    virtual int getInt()
+    {
+      pixel **p = (pixel **)_data;
+      pixel v = p[_y][_x];
+      return qRgb(PPM_GETR(v), PPM_GETG(v), PPM_GETB(v));
+    }
+    
+    virtual void setInt(int value)
+    {
+      pixel v;
+      PPM_ASSIGN(v, qRed(value), qGreen(value), qBlue(value));
+      
+      pixel **p = (pixel **)_data;
+      p[_y][_x] = v;
+    }
+
+  private:
+    void *_data;
+    int _x;
+    int _y;
+    int _width;
+    int _height;
+};
+
 /**class to handel the infos for one image
   *@author Jürgen Bückner
   */
@@ -113,6 +272,7 @@ public:
 
   /** return data */
   const void *data();
+  PixelAccess_Base *pixelaccessor();
   /** write a scrap of the data.
   * return the filename.
   * if the file exist do nothing .
@@ -217,8 +377,10 @@ public:
   GeoImage *unlink();
   /** returns a pointer to this image and increments the reference counter */
   GeoImage *shallowCopy();
+  
   /** Merge the region with the id from labelimage img into this image with the newId, if the previous id in this image is compareId */
   bool mergeInto(GeoImage & img, int compareId, int id, int newId);
+  
   /** gets the id at the picture coordinatex gx, gy */
   int getId(int x, int y);
   /** gets the id at the geo coordinatex gx, gy */
@@ -254,6 +416,7 @@ protected:                     // Protected attributes
   int dataSize_;
   IMGTYPE type_;
   int cols_, rows_;
+  PixelAccess_Base *pixelaccessor_;
   float geoNorth_, geoSouth_, geoEast_, geoWest_;
   float minval_, maxval_;
   float resolutionX_, resolutionY_;
