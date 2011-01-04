@@ -214,6 +214,11 @@ namespace otbgeo {
     return perbandresampler->GetOutput();
   }
 
+  template <class T>
+  T Abs(const T &a)
+  {
+    return (a < 0) ? -a : a;
+  }
 }
 
 

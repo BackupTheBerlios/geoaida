@@ -797,13 +797,8 @@ GeoImage *GeoImage::unlink()
 bool GeoImage::mergeInto(GeoImage & img, int compareId, int id, int newId)
 {
   int llx, lly, urx, ury;
-  int x, y;
   bool objectInserted = false;
-#ifdef WIN32
-#pragma message ("besser picBBox benutzen?")
-#else
-#warning besser picBBox benutzen?
-#endif
+
   llx = int(geo2picX(img.pic2geoX(0)));
   lly = int(geo2picY(img.pic2geoY(img.rows())));
   urx = int(geo2picX(img.pic2geoX(img.cols())));
@@ -820,14 +815,14 @@ bool GeoImage::mergeInto(GeoImage & img, int compareId, int id, int newId)
   if (!pixelaccessor() || !img.pixelaccessor())
     return false;
 
-  for (y = ury; y < lly; y++)
+  for (int y = ury; y < lly; y++)
   {
     pixelaccessor_->setStart(llx, y);
     img.pixelaccessor_->setStart(int(img.geo2picX(pic2geoX(llx))), int(img.geo2picY(pic2geoY(y))));
     
     int br_error = -br_width2 / 2;
     
-    for (x = llx; x < urx; x++, pixelaccessor_->next())
+    for (int x = llx; x < urx; x++)
     {
       if ((pixelaccessor_->getInt() == compareId) && (img.pixelaccessor_->getInt() == id))
       {
@@ -841,6 +836,8 @@ bool GeoImage::mergeInto(GeoImage & img, int compareId, int id, int newId)
         img.pixelaccessor_->next();
         br_error -= br_width1;
       }
+      
+      pixelaccessor_->next();
     }
   }
   

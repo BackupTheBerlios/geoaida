@@ -60,9 +60,9 @@ namespace otbgeo {
     GeoRegion::SizeType region_size;
     GeoRegion::IndexType region_index;
     
-#ifdef DEBUG
+#ifndef NDEBUG
     {
-      const typename ImageType::IndexType index = image->GetLargestPossibleRegion().GetIndex();
+      const ImageType::IndexType index = image->GetLargestPossibleRegion().GetIndex();
       std::clog << "###################" << std::endl;
       std::clog << "CreateGeoRegion" << std::endl;
       std::clog << "Image Origin: " << origin[0] << ", " << origin[1] << std::endl;
@@ -73,12 +73,20 @@ namespace otbgeo {
     }
 #endif
     
-    region_size[0]  = size[0] * abs(spacing[0]);
-    region_size[1]  = size[1] * abs(spacing[1]);
+    region_size[0]  = size[0] * Abs(spacing[0]);
+    region_size[1]  = size[1] * Abs(spacing[1]);
     region_index[0] = origin[0] - (spacing[0]<0 ? region_size[0] : 0);
     region_index[1] = origin[1] - (spacing[1]<0 ? region_size[1] : 0);;
     region.SetSize(region_size);
     region.SetOrigin(region_index);
+    
+#ifndef NDEBUG
+    {
+      std::clog << "Image Region Origin: " << region_index[0] << ", " << region_index[1] << std::endl;
+      std::clog << "Image Region Size: " << region_size[0] << ", " << region_size[1] << std::endl;
+      std::clog << "###################" << std::endl;
+    }
+#endif
     
     return region;
   };
@@ -98,7 +106,7 @@ namespace otbgeo {
 		  &&
 		  (geoSize[0] == imageSize[0]) && (geoSize[1] == imageSize[1]));
     
-#ifdef DEBUG
+#ifndef NDEBUG
     {
       std::clog << "###################" << std::endl;
       std::clog << "GeocutImage" << std::endl;
@@ -120,18 +128,18 @@ namespace otbgeo {
     ImageType::RegionType::SizeType imageRegionSize;
     {
       
-      double s0 = abs(geoSize[0]/imageSpacing[0]);
-      double s1 = abs(geoSize[1]/imageSpacing[1]);
+      double s0 = Abs(geoSize[0]/imageSpacing[0]);
+      double s1 = Abs(geoSize[1]/imageSpacing[1]);
       imageRegionSize[0]=s0;
       imageRegionSize[1]=s1;
       
-      double i0  = abs((geoOrigin[0] - imageOrigin[0])/imageSpacing[0]);
-      double i1 = abs((geoOrigin[1] - imageOrigin[1])/imageSpacing[1]) - s1 ;
+      double i0  = Abs((geoOrigin[0] - imageOrigin[0])/imageSpacing[0]);
+      double i1 = Abs((geoOrigin[1] - imageOrigin[1])/imageSpacing[1]) - s1 ;
       imageRegionIndex[0] = i0;
       imageRegionIndex[1] = i1;
       
       
-#ifdef DEBUG
+#ifndef NDEBUG
       {
 	ImageType::IndexType mrIndex = image->GetLargestPossibleRegion().GetIndex();
 	ImageType::SizeType mrSize = image->GetLargestPossibleRegion().GetSize();
@@ -156,7 +164,7 @@ namespace otbgeo {
   GeoRegion findCommonRegion(ImageBaseListType::Pointer images){
     typedef ImageBase2DType ImageType;
     typedef ImageBaseListType ImageList;
-#ifdef DEBUG
+#ifndef NDEBUG
       {
 	std::clog << "####################" << std::endl;
 	std::clog << "findCommonRegion" << std::endl;
@@ -171,7 +179,7 @@ namespace otbgeo {
 	ImageType::Pointer image = iter.Get();
 	GeoRegion currentRegion = createGeoRegion(image);
 	
-#ifdef DEBUG
+#ifndef NDEBUG
 	{      
 	  GeoRegion::IndexType index = region.GetOrigin();
 	  GeoRegion::SizeType size = region.GetSize();
@@ -195,7 +203,7 @@ namespace otbgeo {
 	*/
 	region = cropGeoRegion(region, currentRegion);
 	
-#ifdef DEBUG
+#ifndef NDEBUG
 	{
 	  GeoRegion::IndexType index = region.GetOrigin();
 	  GeoRegion::SizeType size = region.GetSize();
@@ -214,7 +222,7 @@ namespace otbgeo {
   GeoRegion findEnclosingRegion(ImageBaseListType::Pointer images){
     typedef ImageBase2DType ImageType;
     typedef otb::ImageList<ImageType> ImageList;
-#ifdef DEBUG
+#ifndef NDEBUG
       {
 	std::clog << "####################" << std::endl;
 	std::clog << "findEnclosingRegion" << std::endl;
@@ -229,7 +237,7 @@ namespace otbgeo {
 	ImageType::Pointer image = iter.Get();
 	GeoRegion currentRegion = createGeoRegion(image);
 	
-#ifdef DEBUG
+#ifndef NDEBUG
 	{      
 	  GeoRegion::IndexType index = region.GetOrigin();
 	  GeoRegion::SizeType size = region.GetSize();
@@ -253,7 +261,7 @@ namespace otbgeo {
 	*/
 	region = joinGeoRegion(region, currentRegion);
 	
-#ifdef DEBUG
+#ifndef NDEBUG
 	{
 	  GeoRegion::IndexType index = region.GetOrigin();
 	  GeoRegion::SizeType size = region.GetSize();
