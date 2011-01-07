@@ -69,6 +69,9 @@ extern "C"
 
 #include <iostream>
 
+#include <vector>
+#include <list>
+
 /// Some abstractions for pixel access (by Karsten Vogt)
 class PixelAccess_Base
 {
@@ -222,6 +225,37 @@ class PixelAccess_PPM : public PixelAccess_Base
     int _y;
     int _width;
     int _height;
+};
+
+/// Run length encoding for label images
+class RunLengthLabelImage
+{
+  public:
+    struct RLElement
+    {
+      int start;
+      int length;
+      
+      RLElement(int start, int length)
+        : start(start), length(length)
+      {
+      }
+    };
+    
+    RunLengthLabelImage(int width, int height)
+    {
+      _data.resize(height);
+      for (int i = 0; i < height; i++)
+        _data[i].push_back(RLElement(0, width));
+    }
+    
+    std::list<RLElement> &GetLine(int nr)
+    {
+      return _data[nr];
+    }
+    
+  private:
+    std::vector<std::list<RLElement> > _data;
 };
 
 /**class to handel the infos for one image
@@ -380,6 +414,7 @@ public:
   
   /** Merge the region with the id from labelimage img into this image with the newId, if the previous id in this image is compareId */
   bool mergeInto(GeoImage & img, int compareId, int id, int newId);
+  bool mergeInto(GeoImage & img, int compareId, int id, int newId, RunLengthLabelImage &rlelabelimage);
   
   /** gets the id at the picture coordinatex gx, gy */
   int getId(int x, int y);

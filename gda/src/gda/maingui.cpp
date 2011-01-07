@@ -442,7 +442,8 @@ void MainGui::loadPrjFile(QString fname)
         treeEditor->connectSlots();
         sceneViewer->rootNode(iNode_);
         sceneViewer->connectSlots();
-        if (iNode_) {
+        
+        if (iNode_ && !no_map_) {
           float gN=iNode_->attributeFloat("geoNorth");
           float gE=iNode_->attributeFloat("geoEast");
           float gS=iNode_->attributeFloat("geoSouth");
@@ -480,7 +481,7 @@ void MainGui::loadPrjFile(QString fname)
         treeEditor->connectSlots();
         sceneViewer->rootNode(iNode_);
         sceneViewer->connectSlots();
-        if (iNode_) {
+        if (iNode_ && !no_map_) {
           float gN=iNode_->attributeFloat("geoNorth");
           float gE=iNode_->attributeFloat("geoEast");
           float gS=iNode_->attributeFloat("geoSouth");

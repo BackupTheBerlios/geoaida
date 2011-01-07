@@ -660,40 +660,45 @@ QString GeoImage::mask(float west, float north, float east, float south,
 {
 
 #define GenMaskBlockStorage(T) \
-{ \
-	T* iptr; \
-	bit *optr; \
-	int x,y; \
-	for (y = 0; y < dy; y++) { \
-	  if (y<-ry1 || y>=rows_-ry1) iptr=0; \
-	  else iptr = ((T*)data_p)+(y + ry1)*cols_+rx1; \
-	 	optr = dat_b_out[y]; \
-	  for (x = 0; x < dx; x++) { \
-	    if (!iptr || x<-rx1 || x>=cols_-rx1) *optr=0; \
-	  	else *optr=(*iptr==(T)id?1:0); \
-	   	optr ++; \
-	    if (iptr) iptr ++; \
-	  } \
-	} \
-}
-
-#define GenMaskRowStorage(T) \
-{ \
-	T* iptr; \
-	bit *optr; \
-	int x,y; \
-	for (y = 0; y < dy; y++) { \
-	  if (y<-ry1 || y>=rows_-ry1) iptr=0; \
-	  else iptr = (((T**)data_p)[y + ry1]) + rx1; \
-	 	optr = dat_b_out[y]; \
-	  for (x = 0; x < dx; x++) { \
-	    if (!iptr || x<-rx1 || x>=cols_-rx1) *optr=0; \
-	  	else *optr=(*iptr==(T)id?1:0); \
-	   	optr ++; \
-	    if (iptr) iptr ++; \
-	  } \
-	} \
-}
+  { \
+    for (int y = 0; y < dy; y++) \
+    { \
+      bit *optr = dat_b_out[y]; \
+      if (y < -ry1 || y >= rows_ - ry1) \
+      { \
+        for (int x = 0; x < dx; x++) \
+          *(optr++) = 0; \
+      } \
+      else \
+      { \
+        T *iptr = ((T*)data_p) + (y + ry1) * cols_ + rx1; \
+        int left = std::max(0, -rx1); \
+        int right = std::min(dx, cols_ - rx1); \
+        for (int x = 0; x < left; x++) \
+          *(optr++) = 0; \
+        for (int x = right; x < dx; x++) \
+          *(optr++) = 0; \
+        for (int x = left; x < right; x++) \
+          *(optr++) = (*(iptr++) == (T)id); \
+      } \
+    } \
+  }
+// { \
+// 	T* iptr; \
+// 	bit *optr; \
+// 	int x,y; \
+// 	for (y = 0; y < dy; y++) { \
+// 	  if (y<-ry1 || y>=rows_-ry1) iptr=0; \
+// 	  else iptr = ((T*)data_p)+(y + ry1)*cols_+rx1; \
+// 	 	optr = dat_b_out[y]; \
+// 	  for (x = 0; x < dx; x++) { \
+// 	    if (!iptr || x<-rx1 || x>=cols_-rx1) *optr=0; \
+// 	  	else *optr=(*iptr==(T)id?1:0); \
+// 	   	optr ++; \
+// 	    if (iptr) iptr ++; \
+// 	  } \
+// 	} \
+// }
 
   if (fname.isEmpty()) {        //create output filname
     ASSERT(find("key"));
@@ -709,6 +714,7 @@ QString GeoImage::mask(float west, float north, float east, float south,
 
   const void *data_p = data();        //get pointer to data
   ASSERT(data_p);
+  
   if (type_ == UNKNOWN)
     return 0;
   int dx, dy, rx1, ry1, rx2, ry2;
@@ -757,7 +763,6 @@ QString GeoImage::mask(float west, float north, float east, float south,
         }
       }
     }
-//              GenMaskRowStorage(bit);
     break;
   case PFM_BYTE:
     GenMaskBlockStorage(unsigned char);
@@ -774,7 +779,6 @@ QString GeoImage::mask(float west, float north, float east, float south,
   fclose(of);
   return fname;
 #undef GenMaskBlockStorage
-#undef GenMaskRowStorage
 }
 
 /** returns a pointer to this image and increments the reference counter */
@@ -796,6 +800,8 @@ GeoImage *GeoImage::unlink()
 /** Merge the region with the id from labelimage img into this image with the newId, if the previous id in this image is compareId */
 bool GeoImage::mergeInto(GeoImage & img, int compareId, int id, int newId)
 {
+  std::cout << "Merge image (" << cols() << ", " << rows() << ") with image (" << img.cols() << ", " << img.rows() << ")" << std::endl;
+  
   int llx, lly, urx, ury;
   bool objectInserted = false;
 
@@ -838,6 +844,87 @@ bool GeoImage::mergeInto(GeoImage & img, int compareId, int id, int newId)
       }
       
       pixelaccessor_->next();
+    }
+  }
+  
+  return objectInserted;
+}
+
+/** Merge the region with the id from labelimage img into this image with the newId, if the previous id in this image is compareId */
+bool GeoImage::mergeInto(GeoImage & img, int compareId, int id, int newId, RunLengthLabelImage &rlelabelimage)
+{
+  int llx, lly, urx, ury;
+  bool objectInserted = false;
+
+  llx = int(geo2picX(img.pic2geoX(0)));
+  lly = int(geo2picY(img.pic2geoY(img.rows())));
+  urx = int(geo2picX(img.pic2geoX(img.cols())));
+  ury = int(geo2picY(img.pic2geoY(0)));
+  
+  llx = std::max(llx, 0);
+  lly = std::min(lly, rows_);
+  urx = std::min(urx, cols_);
+  ury = std::max(ury, 0);
+
+  int br_width1 = int(urx - llx);
+  int br_width2 = int(img.geo2picX(pic2geoX(urx)) - img.geo2picX(pic2geoX(llx)));
+  
+  if (!pixelaccessor() || !img.pixelaccessor())
+    return false;
+
+  for (int y = ury; y < lly; y++)
+  {
+    std::list<RunLengthLabelImage::RLElement> &line = rlelabelimage.GetLine(y);
+    for (std::list<RunLengthLabelImage::RLElement>::iterator iter = line.begin(); iter != line.end(); )
+    {
+      int left = iter->start;
+      int right = iter->start + iter->length;
+      
+      left = std::max(left, llx);
+      right = std::min(right, urx);
+      
+      if (right - left <= 0)
+      {
+        ++iter;
+        continue;
+      }
+      
+      RunLengthLabelImage::RLElement element(left, right - left);
+      
+      pixelaccessor_->setStart(element.start, y);
+      img.pixelaccessor_->setStart(int(img.geo2picX(pic2geoX(element.start))), int(img.geo2picY(pic2geoY(y))));
+      
+      int br_error = -br_width2 / 2;
+      int run = 0;
+      
+      for (int x = element.start; x < (element.start + element.length); x++)
+      {
+        if (img.pixelaccessor_->getInt() == id)
+        {
+          pixelaccessor_->setInt(newId);
+          objectInserted = true;
+          run++;
+        }
+        else if (run > 0)
+        {
+          line.insert(iter, RunLengthLabelImage::RLElement(x - run, run));
+          run = 0;
+        }
+        
+        br_error += br_width2;
+        while (br_error >= 0)
+        {
+          img.pixelaccessor_->next();
+          br_error -= br_width1;
+        }
+        
+        pixelaccessor_->next();
+      }
+      
+      if (run > 0)
+        line.insert(iter, RunLengthLabelImage::RLElement(element.start + element.length - run, run));
+      
+      iter = line.erase(iter);
     }
   }
   

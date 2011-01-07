@@ -127,6 +127,7 @@ public:
   int setNewID(int id);
   /** merge inodes labelimage into the result image */
   void mergeResultImage(GeoImage & resultImg);
+  void mergeResultImage(GeoImage & resultImg, RunLengthLabelImage &rlelabelimage);
   /** returns the path to this inode */
   QString path();
   /** set flag to handle min and max restriction of snode definition */

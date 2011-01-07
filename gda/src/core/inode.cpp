@@ -858,6 +858,45 @@ void INode::mergeResultImage(GeoImage & resultImg)
   }
 }
 
+/** merge inodes labelimage into the result image */
+void INode::mergeResultImage(GeoImage & resultImg, RunLengthLabelImage &rlelabelimage)
+{
+  qDebug("INode::mergeResultImage: name=%s", name_.latin1());
+  QListIterator < INode > it = QListIterator < INode > (children());
+  for (; it.current(); ++it)
+  {
+    INode *node = it.current();
+    
+    if (node->status() == TRASH)
+      continue;
+    
+    RunLengthLabelImage copylabelimage = rlelabelimage;
+    
+    if (node->labelImage() && node->attributeInt("id"))
+    {
+      // id==0 is background and should not be merged into the result image
+      if (!resultImg.mergeInto(*(node->labelImage()), attributeInt("IDStart"),
+                                node->attributeInt("id"), node->attributeInt("IDStart"), copylabelimage))
+        node->attribute("status", "deleted");
+    }
+    else
+    {
+      node->attribute("status", "no labelimage");
+      qDebug("INode::mergeResultImage: %s ommitted", (const char *) node->name());
+    }
+    
+    if (node->attributeInt("id"))
+    {
+      // id==0 is background and should not be merged into the result image
+      node->mergeResultImage(resultImg, copylabelimage);
+    }
+    else
+    {
+      qDebug("INode::mergeResultImage: %s ommitted", (const char *) node->name());
+    }
+  }
+}
+
 /** returns the path to this inode */
 QString INode::path()
 {

@@ -338,12 +338,15 @@ void Analysis::prepareResultImage()
                                geoImageList_->geoNorth(),
                                geoImageList_->geoEast(),
                                geoImageList_->geoSouth());
+  RunLengthLabelImage rlelabelimage(size_x, size_y);
   if (!img->mergeInto(*(iNodeRoot_->labelImage()), 0,
                       iNodeRoot_->attributeInt("id"),
-                      iNodeRoot_->attributeInt("IDStart"))) {
+                      iNodeRoot_->attributeInt("IDStart"), rlelabelimage)) {
     iNodeRoot_->attribute("status", "deleted");
   }
-  iNodeRoot_->mergeResultImage(*img);
+  
+  iNodeRoot_->mergeResultImage(*img, rlelabelimage);
+  
   img->write();
   map_ = img;
   emit sigMapView(iNodeRoot_, map_);
