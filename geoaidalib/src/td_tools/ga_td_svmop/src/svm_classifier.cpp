@@ -1014,13 +1014,13 @@ bool SVMClassifier::classify()
     {
         itOut.Set(m_pModel->EvaluateLabel((*ci)));
         
-        ModelType::ProbabilitiesVectorType vecProbabilities = m_pModel->EvaluateProbabilities((*ci));
-        
+//         ModelType::ProbabilitiesVectorType vecProbabilities = m_pModel->EvaluateProbabilities((*ci));
+       /* 
         for (int i=0; i<m_unNumberOfClasses; ++i)
         {
             itProb[i].Set(vecProbabilities[i]);
             ++itProb[i];
-        }
+        }*/
         
         ++ci;
         ++itOut;
