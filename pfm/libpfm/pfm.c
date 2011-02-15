@@ -531,6 +531,7 @@ void *pfm_readpfm_type(FILE *fp,
   void *ret_val;
   char buffer[1024];
   char     *data=0;
+  char     *ptr=0;
   float    *floatbuffer=0;
   double   *doublebuffer=0;
   int      *intbuffer=0;
@@ -748,16 +749,18 @@ void *pfm_readpfm_type(FILE *fp,
         ret_val=0;
         goto exit_read_pfm;
       }
+      ptr=data;
       for (r=0; r<*rows; r++)  {
         for (c=0; c<*cols; c++) {
           fscanf(fp,"%f",&(floatbuffer[c]));
         }
-        float2[storageType](&data[r*(*cols)*storage_size[storageType]],
+        float2[storageType](ptr,
                             floatbuffer,
                             *cols,
                             convFunc,
                             *minval,
                             *maxval);
+	ptr+=(*cols)*storage_size[storageType];
       }
       free(floatbuffer);
       break;
@@ -773,16 +776,17 @@ void *pfm_readpfm_type(FILE *fp,
         ret_val=0;
         goto exit_read_pfm;
       }
+      ptr=data;
       for (r=0; r<*rows; r++) {
         fread(floatbuffer,sizeof(float),*cols,fp);
         swapfloat(floatbuffer,*cols,byte_order);
-        float2[storageType](&data[r*(*cols)*storage_size[storageType]],
+        float2[storageType](ptr,
                             floatbuffer,
                             *cols,
                             convFunc,
                             *minval,
                             *maxval);
-  
+	ptr+=(*cols)*storage_size[storageType];
       }
       free(floatbuffer);
       break;      
@@ -798,16 +802,18 @@ void *pfm_readpfm_type(FILE *fp,
         ret_val=0;
         goto exit_read_pfm;
       }
+      ptr=data;
       for (r=0; r<*rows; r++)  {
         for (c=0; c<*cols; c++) {
           fscanf(fp,"%lf",&(doublebuffer[c]));
         }
-        double2[storageType](&data[r*(*cols)*storage_size[storageType]],
+        double2[storageType](ptr,
                             doublebuffer,
                             *cols,
                             convFunc,
                             *minval,
                             *maxval);
+	ptr+=(*cols)*storage_size[storageType];
       }
       free(doublebuffer);
       break;
@@ -823,15 +829,17 @@ void *pfm_readpfm_type(FILE *fp,
         ret_val=0;
         goto exit_read_pfm;
       }
+      ptr=data;
       for (r=0; r<*rows; r++) {
         fread(doublebuffer,sizeof(double),*cols,fp);
         swapdouble(doublebuffer,*cols,byte_order);
-        double2[storageType](&data[r*(*cols)*storage_size[storageType]],
+        double2[storageType](ptr,
                             doublebuffer,
                             *cols,
                             convFunc,
                             *minval,
                             *maxval);
+	ptr+=(*cols)*storage_size[storageType];
   
       }
       free(doublebuffer);
@@ -849,16 +857,18 @@ void *pfm_readpfm_type(FILE *fp,
         ret_val=0;
         goto exit_read_pfm;
       }
+      ptr=data;
       for (r=0; r<*rows; r++)  {
         for (c=0; c<*cols; c++) {
           fscanf(fp,"%d",&(intbuffer[c]));
         }
-        sint2[storageType](&data[r*(*cols)*storage_size[storageType]],
+        sint2[storageType](ptr,
                             intbuffer,
                             *cols,
                             convFunc,
                             *minval,
                             *maxval);
+	ptr+=(*cols)*storage_size[storageType];
 
       }
       free(intbuffer);
@@ -875,15 +885,17 @@ void *pfm_readpfm_type(FILE *fp,
         ret_val=0;
         goto exit_read_pfm;
       }
+      ptr=data;
       for (r=0; r<*rows; r++)  {
         fread(intbuffer,sizeof(int),*cols,fp);
         swapint(intbuffer,*cols,byte_order);
-        sint2[storageType](&data[r*(*cols)*storage_size[storageType]],
+        sint2[storageType](ptr,
                           intbuffer,
                           *cols,
                           convFunc,
                           *minval,
                           *maxval);
+	ptr+=(*cols)*storage_size[storageType];
       }
       free(intbuffer);
       break;
@@ -899,16 +911,18 @@ void *pfm_readpfm_type(FILE *fp,
         ret_val=0;
         goto exit_read_pfm;
       }
+      ptr=data;
       for (r=0; r<*rows; r++)  {
         for (c=0; c<*cols; c++) {
           fscanf(fp,"%hd",&(int16buffer[c])); /* "%d" -> "%hd" (T. Wiebesiek, 31.3.2005) */
         }
-        uint162[storageType](&data[r*(*cols)*storage_size[storageType]],
+        uint162[storageType](ptr,
                             int16buffer,
                             *cols,
                             convFunc,
                             *minval,
                             *maxval);
+	ptr+=(*cols)*storage_size[storageType];
 
       }
       free(int16buffer);
@@ -925,15 +939,17 @@ void *pfm_readpfm_type(FILE *fp,
         ret_val=0;
         goto exit_read_pfm;
       }
+      ptr=data;
       for (r=0; r<*rows; r++) {
         fread(int16buffer,sizeof(uint16),*cols,fp);
         swapint16(int16buffer,*cols,byte_order);
-        uint162[storageType](&data[r*(*cols)*storage_size[storageType]],
+        uint162[storageType](ptr,
                             int16buffer,
                             *cols,
                             convFunc,
                             *minval,
                             *maxval);
+	ptr+=(*cols)*storage_size[storageType];
       }
       free(int16buffer);
       break;
@@ -954,14 +970,16 @@ void *pfm_readpfm_type(FILE *fp,
         ret_val=0;
         goto exit_read_pfm;
       }
+      ptr=data;
       for (r=0; r<*rows; r++) {
         fread(greybuffer,sizeof(grey),*cols,fp);
-        pgm2[storageType](&data[r*(*cols)*storage_size[storageType]],
-                            greybuffer,
-                            *cols,
-                            convFunc,
-                            *minval,
-                            *maxval);
+        pgm2[storageType](ptr,
+			  greybuffer,
+			  *cols,
+			  convFunc,
+			  *minval,
+			  *maxval);
+	ptr+=(*cols)*storage_size[storageType];
       }
       free(greybuffer);
       break;
@@ -985,14 +1003,16 @@ void *pfm_readpfm_type(FILE *fp,
         ret_val=0;
         goto exit_read_pfm;
       }
+      ptr=data;
       for (r=0; r<*rows; r++) {
         fread(greybuffer,sizeof(grey),*cols,fp);
-        pgm2[storageType](&data[r*(*cols)*storage_size[storageType]],
+        pgm2[storageType](ptr,
                             greybuffer,
                             *cols,
                             convFunc,
                             *minval,
                             *maxval);
+	ptr+=(*cols)*storage_size[storageType];
       }
       free(greybuffer);
       break;
