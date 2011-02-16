@@ -172,50 +172,51 @@ namespace otbgeo {
 #endif
       int i=0;      
       ImageList::ConstIterator iter = images->Begin();
+      assert(iter != image->End());
+
       ImageType::Pointer image = iter.Get();
       GeoRegion region = createGeoRegion(image);
-      GeoRegion::IndexType index = region.GetOrigin();
-      for (++iter; iter != images->End();++iter){    
-	ImageType::Pointer image = iter.Get();
-	GeoRegion currentRegion = createGeoRegion(image);
-	
-#ifndef NDEBUG
-	{      
-	  GeoRegion::IndexType index = region.GetOrigin();
-	  GeoRegion::SizeType size = region.GetSize();
-	  GeoRegion::IndexType currentIndex = currentRegion.GetOrigin();
-	  GeoRegion::SizeType currentSize = currentRegion.GetSize();
-	  
-	  std::clog << "Region Check:" << std::endl;
-	  std::clog << "Region Index Until Now: " << index[0] << ", " << index[1] << std::endl;
-	  std::clog << "Region Size Until Now: " << size[0] << ", " << size[1] << std::endl;
-	  std::clog << "Region Index To Check: " << currentIndex[0] << ", " << currentIndex[1] << std::endl;
-	  std::clog << "Region Size To Check: " << currentSize[0] << ", " << currentSize[1] << std::endl;
-	  
-	  std::clog << "--" << std::endl;
-	}
-#endif
-	/*
-	  if (!region.Crop(currentRegion)){
-	  std::cerr << "Error: Images do not overlap." << std::endl;
-	  exit(1);
-	  };
-	*/
-	region = cropGeoRegion(region, currentRegion);
-	
-#ifndef NDEBUG
-	{
-	  GeoRegion::IndexType index = region.GetOrigin();
-	  GeoRegion::SizeType size = region.GetSize();
-	  std::clog << "After Crop:" << std::endl;    
-	  std::clog << "Common Region Origin:" << index[0] << ", " << index[1] << std::endl;    
-	  std::clog << "Common Region Size:" << size[0] << ", " << size[1] << std::endl;    
-	  std::clog << "####################" << std::endl;
-	}
-#endif
-	
-      }
       
+      if (iter != images->End()){
+	for (++iter; iter != images->End();++iter){    
+	  ImageType::Pointer image = iter.Get();
+	  GeoRegion currentRegion = createGeoRegion(image);
+	  
+#ifndef NDEBUG
+	  {      
+	    GeoRegion::IndexType index = region.GetOrigin();
+	    GeoRegion::SizeType size = region.GetSize();
+	    GeoRegion::IndexType currentIndex = currentRegion.GetOrigin();
+	    GeoRegion::SizeType currentSize = currentRegion.GetSize();
+	    
+	    std::clog << "Region Check:" << std::endl;
+	    std::clog << "Region Index Until Now: " << index[0] << ", " << index[1] << std::endl;
+	    std::clog << "Region Size Until Now: " << size[0] << ", " << size[1] << std::endl;
+	    std::clog << "Region Index To Check: " << currentIndex[0] << ", " << currentIndex[1] << std::endl;
+	    std::clog << "Region Size To Check: " << currentSize[0] << ", " << currentSize[1] << std::endl;
+	    
+	    std::clog << "--" << std::endl;
+	  }
+#endif
+	  /*
+	    if (!region.Crop(currentRegion)){
+	    std::cerr << "Error: Images do not overlap." << std::endl;
+	    exit(1);
+	    };
+	  */
+	  region = cropGeoRegion(region, currentRegion);
+	}
+      }      	  
+#ifndef NDEBUG
+      {
+	GeoRegion::IndexType index = region.GetOrigin();
+	GeoRegion::SizeType size = region.GetSize();
+	std::clog << "After Crop:" << std::endl;    
+	std::clog << "Common Region Origin:" << index[0] << ", " << index[1] << std::endl;    
+	std::clog << "Common Region Size:" << size[0] << ", " << size[1] << std::endl;    
+	std::clog << "####################" << std::endl;
+      }
+#endif	      
       return region;
   };
     
@@ -230,50 +231,52 @@ namespace otbgeo {
 #endif
       int i=0;     
       ImageList::ConstIterator iter = images->Begin();
+      assert(iter != image->End());
+
       ImageType::Pointer image = iter.Get();
       GeoRegion region = createGeoRegion(image);
-      GeoRegion::IndexType index = region.GetOrigin();
-      for (++iter; iter != images->End();++iter){    
-	ImageType::Pointer image = iter.Get();
-	GeoRegion currentRegion = createGeoRegion(image);
-	
-#ifndef NDEBUG
-	{      
-	  GeoRegion::IndexType index = region.GetOrigin();
-	  GeoRegion::SizeType size = region.GetSize();
-	  GeoRegion::IndexType currentIndex = currentRegion.GetOrigin();
-	  GeoRegion::SizeType currentSize = currentRegion.GetSize();
+
+
+      if (iter != images->End()){
+	for (++iter; iter != images->End();++iter){    
+	  ImageType::Pointer image = iter.Get();
+	  GeoRegion currentRegion = createGeoRegion(image);
 	  
-	  std::clog << "Region Check:" << std::endl;
-	  std::clog << "Region Index Until Now: " << index[0] << ", " << index[1] << std::endl;
-	  std::clog << "Region Size Until Now: " << size[0] << ", " << size[1] << std::endl;
-	  std::clog << "Region Index To Check: " << currentIndex[0] << ", " << currentIndex[1] << std::endl;
-	  std::clog << "Region Size To Check: " << currentSize[0] << ", " << currentSize[1] << std::endl;
-	  
-	  std::clog << "--" << std::endl;
-	}
-#endif
-	/*
-	  if (!region.Crop(currentRegion)){
-	  std::cerr << "Error: Images do not overlap." << std::endl;
-	  exit(1);
-	  };
-	*/
-	region = joinGeoRegion(region, currentRegion);
-	
 #ifndef NDEBUG
-	{
-	  GeoRegion::IndexType index = region.GetOrigin();
-	  GeoRegion::SizeType size = region.GetSize();
-	  std::clog << "After Join:" << std::endl;    
-	  std::clog << "Common Region Origin:" << index[0] << ", " << index[1] << std::endl;    
-	  std::clog << "Common Region Size:" << size[0] << ", " << size[1] << std::endl;    
-	  std::clog << "####################" << std::endl;
-	}
+	  {      
+	    GeoRegion::IndexType index = region.GetOrigin();
+	    GeoRegion::SizeType size = region.GetSize();
+	    GeoRegion::IndexType currentIndex = currentRegion.GetOrigin();
+	    GeoRegion::SizeType currentSize = currentRegion.GetSize();
+	    
+	    std::clog << "Region Check:" << std::endl;
+	    std::clog << "Region Index Until Now: " << index[0] << ", " << index[1] << std::endl;
+	    std::clog << "Region Size Until Now: " << size[0] << ", " << size[1] << std::endl;
+	    std::clog << "Region Index To Check: " << currentIndex[0] << ", " << currentIndex[1] << std::endl;
+	    std::clog << "Region Size To Check: " << currentSize[0] << ", " << currentSize[1] << std::endl;
+	    
+	    std::clog << "--" << std::endl;
+	  }
 #endif
-	
+	  /*
+	    if (!region.Crop(currentRegion)){
+	    std::cerr << "Error: Images do not overlap." << std::endl;
+	    exit(1);
+	    };
+	  */
+	  region = joinGeoRegion(region, currentRegion);	
+	}
+      }	
+#ifndef NDEBUG
+      {
+	GeoRegion::IndexType index = region.GetOrigin();
+	GeoRegion::SizeType size = region.GetSize();
+	std::clog << "After Join:" << std::endl;    
+	std::clog << "Common Region Origin:" << index[0] << ", " << index[1] << std::endl;    
+	std::clog << "Common Region Size:" << size[0] << ", " << size[1] << std::endl;    
+	std::clog << "####################" << std::endl;
       }
-      
+#endif	     
       return region;
   };
 
