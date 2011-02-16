@@ -172,7 +172,7 @@ namespace otbgeo {
 #endif
       int i=0;      
       ImageList::ConstIterator iter = images->Begin();
-      assert(iter != image->End());
+      assert(iter != images->End());
 
       ImageType::Pointer image = iter.Get();
       GeoRegion region = createGeoRegion(image);
@@ -231,7 +231,7 @@ namespace otbgeo {
 #endif
       int i=0;     
       ImageList::ConstIterator iter = images->Begin();
-      assert(iter != image->End());
+      assert(iter != images->End());
 
       ImageType::Pointer image = iter.Get();
       GeoRegion region = createGeoRegion(image);
