@@ -37,6 +37,76 @@ Painter::Painter(Image& img, int channel) : img_(img), channel_(channel)
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
+/// \brief Draws a filled circle
+///
+/// \param center center point of the circle
+/// \param radius radius of the circle
+/// \param val value of the circle
+///
+////////////////////////////////////////////////////////////////////////////////
+int Painter::fillCircle(Ga::Point center, int radius, double val)
+{
+  #define fill_line(a, b, c)\
+    line_y = a;\
+    line_xl = b;\
+    line_xr = c;\
+    if (line_y < 0 || line_y >= img_.sizeY()) { is_outside = true; }\
+    else if (line_xr < 0 || line_xl >= img_.sizeX()) { is_outside = true; }\
+    else {\
+      is_inside = true;\
+      if (line_xl < 0) { line_xl = 0; is_outside = true; }\
+      if (line_xr >= img_.sizeX()) { line_xr = img_.sizeX()-1; is_outside = true; }\
+      img_.fillRow(line_y, line_xl, line_xr, val);\
+    }
+  
+  int x0 = center.x();
+  int y0 = center.y();
+  
+  int f = 1 - radius;
+  int ddF_x = 1;
+  int ddF_y = -2 * radius;
+  int x = 0;
+  int y = radius;
+ 
+  int line_y, line_xl, line_xr;
+  bool is_inside = false;
+  bool is_outside = false;
+  
+  fill_line(y0, x0 - radius, x0 + radius);
+  fill_line(y0 - radius, x0, x0);
+  fill_line(y0 + radius, x0, x0);
+  
+  while(x < y)
+  {
+    if(f >= 0) 
+    {
+      y--;
+      ddF_y += 2;
+      f += ddF_y;
+    }
+    
+    x++;
+    ddF_x += 2;
+    f += ddF_x;
+    
+    fill_line(y0 + y, x0 - x, x0 + x);
+    fill_line(y0 - y, x0 - x, x0 + x);
+    fill_line(y0 + x, x0 - y, x0 + y);
+    fill_line(y0 - x, x0 - y, x0 + y);
+  }
+  
+  if (!is_inside)
+    return -1;
+  else if (is_inside && is_outside)
+    return -2;
+  else
+    return 0;
+  
+  #undef fill_line
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
 /// \brief Draws a line with the Bresenham-algorithm using pointers (fast!), with range-check
 ///
 /// \param x1 x coordinate of the starting point
