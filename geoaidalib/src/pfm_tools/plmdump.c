@@ -77,9 +77,9 @@ int main(int argc, char **argv)
   }
   else {
     if ( optind>=argc)  Usage();
-    printf("%s\n",argv[optind+1]);
+    fprintf(stderr,"%s\n",argv[optind+1]);
     if (strcmp(argv[optind+1],"-")==0) {
-      printf("to stdout\n");
+      fprintf(stderr,"to stdout\n");
       outfile=stdout;
     }
     else
