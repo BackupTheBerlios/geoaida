@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
                 Classifier.classify();
                 
                 if (Config.getStr("CalculateDistanceMaps") == "true") Classifier.calculateDistanceMaps();
-                if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
+//                 if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
 //                 Classifier.createLabelImageFromProbabilities();
 //                 Classifier.applyUncertaintyOnLabelImage();
                 Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+6]);
