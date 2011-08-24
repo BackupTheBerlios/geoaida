@@ -804,7 +804,7 @@ GeoImage *GeoImage::unlink()
 /** Merge the region with the id from labelimage img into this image with the newId, if the previous id in this image is compareId */
 bool GeoImage::mergeInto(GeoImage & img, int compareId, int id, int newId)
 {
-  std::cout << "Merge image (" << cols() << ", " << rows() << ") with image (" << img.cols() << ", " << img.rows() << ")" << std::endl;
+  //std::cout << "Merge image (" << cols() << ", " << rows() << ") with image (" << img.cols() << ", " << img.rows() << ")" << std::endl;
   
   int llx, lly, urx, ury;
   bool objectInserted = false;
@@ -830,7 +830,7 @@ bool GeoImage::mergeInto(GeoImage & img, int compareId, int id, int newId)
     pixelaccessor_->setStart(llx, y);
     img.pixelaccessor_->setStart(int(img.geo2picX(pic2geoX(llx))), int(img.geo2picY(pic2geoY(y))));
     
-    int br_error = -br_width2 / 2;
+    int br_error = -br_width1 / 2;
     
     for (int x = llx; x < urx; x++)
     {
@@ -857,6 +857,8 @@ bool GeoImage::mergeInto(GeoImage & img, int compareId, int id, int newId)
 /** Merge the region with the id from labelimage img into this image with the newId, if the previous id in this image is compareId */
 bool GeoImage::mergeInto(GeoImage & img, int compareId, int id, int newId, RunLengthLabelImage &rlelabelimage)
 {
+  //std::cout << "Merge image (" << cols() << ", " << rows() << ") with image (" << img.cols() << ", " << img.rows() << ")" << std::endl;
+  
   int llx, lly, urx, ury;
   bool objectInserted = false;
 
@@ -898,7 +900,7 @@ bool GeoImage::mergeInto(GeoImage & img, int compareId, int id, int newId, RunLe
       pixelaccessor_->setStart(element.start, y);
       img.pixelaccessor_->setStart(int(img.geo2picX(pic2geoX(element.start))), int(img.geo2picY(pic2geoY(y))));
       
-      int br_error = -br_width2 / 2;
+      int br_error = -br_width1 / 2;
       int run = 0;
       
       for (int x = element.start; x < (element.start + element.length); x++)

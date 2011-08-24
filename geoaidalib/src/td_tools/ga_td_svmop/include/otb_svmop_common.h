@@ -36,6 +36,7 @@
 #include "otbImage.h"
 #include "otbImageList.h"
 #include "otbImageFileReader.h"
+#include "otbImageFileWriter.h"
 #include "otbMorphologicalPyramidAnalysisFilter.h"
 #include "otbOpeningClosingMorphologicalFilter.h"
 #include "otbStreamingImageFileWriter.h"
@@ -80,7 +81,7 @@ typedef PyramidFilterType::OutputImageListType::Iterator ImageListIterator;
 //--- Define Pipes ---//
 typedef otb::ImageFileReader<InputImageType> ReaderType;
 typedef otb::ImageFileReader<LabelImageType> LabelReaderType;
-typedef otb::StreamingImageFileWriter<Image8BitType> Writer8BitType;
+typedef otb::ImageFileWriter<Image8BitType> Writer8BitType;
 typedef otb::StreamingImageFileWriter<Image16BitType> Writer16BitType;
 typedef otb::StreamingImageFileWriter<ImageFloatType> WriterFloatType;
 typedef otb::StreamingImageFileWriter<LabelImageType> LabelWriterType;

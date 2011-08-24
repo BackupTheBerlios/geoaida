@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
             Classifier.scaleFeatures();
             Classifier.classify();
             if (Config.getStr("CalculateDistanceMaps") == "true") Classifier.calculateDistanceMaps();
-            if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
+//             if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
 //             Classifier.createLabelImageFromProbabilities();
             Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+5]);
 //             Classifier.applyUncertaintyOnLabelImage();
@@ -154,8 +154,8 @@ int main(int argc, char *argv[])
                 Classifier.scaleFeatures();
                 Classifier.classify();
                 if (Config.getStr("CalculateDistanceMaps") == "true") Classifier.calculateDistanceMaps();
-                if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
-                Classifier.createLabelImageFromProbabilities();
+//                 if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
+//                 Classifier.createLabelImageFromProbabilities();
                 Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+5]+"_rt");
             }
             if (Config.getStr("DoProbabilityJoining") == "true")
@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
                                              ArgvList[nNumberOfChannels+5]+ "_rt",
                                              ArgvList[nNumberOfChannels+1]+ "/" +
                                              ArgvList[nNumberOfChannels+3]+ "_rt");
-                if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
+//                 if (Config.getStr("CalculateUncertainty")  == "true") Classifier.calculateUncertainty();
                 Classifier.saveClassificationResult(ArgvList[nNumberOfChannels+5]+"_jnt");
             }
         }

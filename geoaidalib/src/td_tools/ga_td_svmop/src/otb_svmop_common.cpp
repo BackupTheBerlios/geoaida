@@ -104,20 +104,20 @@ void saveImage(const ImageFloatType::Pointer _pImg,
 {
     METHOD_ENTRY("FeatureExtractor::saveImage");
     
-//     typedef itk::RescaleIntensityImageFilter<ImageFloatType,Image16BitType> FilterType;
+    typedef itk::RescaleIntensityImageFilter<ImageFloatType,Image8BitType> FilterType;
 //     typedef itk::MinimumMaximumImageFilter<ImageFloatType> MaxFilterType;
-//     
-//     FilterType::Pointer pFilter = FilterType::New();
+    
+    FilterType::Pointer pFilter = FilterType::New();
 //     MaxFilterType::Pointer pMaxFilter = MaxFilterType::New();
 //     pMaxFilter->SetInput(_pImg);
 //     pMaxFilter->Update();
-//     pFilter->SetOutputMinimum(0);
-//     pFilter->SetOutputMaximum(pMaxFilter->GetMaximum());
-//     pFilter->SetInput(_pImg);
+    pFilter->SetOutputMinimum(0);
+    pFilter->SetOutputMaximum(255/*pMaxFilter->GetMaximum()*/);
+    pFilter->SetInput(_pImg);
     DOM_FIO(INFO_MSG("Image Feature Extractor", "Writing float image " << _Filename))
-    WriterFloatType::Pointer pWriter = WriterFloatType::New();
+    Writer8BitType::Pointer pWriter = Writer8BitType::New();
     pWriter->SetFileName(_Filename);
-    pWriter->SetInput(_pImg);
+    pWriter->SetInput(pFilter->GetOutput());
     pWriter->Update();
     
     METHOD_EXIT("FeatureExtractor::saveImage");
