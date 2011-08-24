@@ -475,8 +475,10 @@ QString
   if (fname.isEmpty()) {        //create output filname
     ASSERT(find("key"));
     QString dir = CleanUp::getTmpDir();
-    fname.sprintf("%s/%s_%f_%f_%f_%f", dir.latin1(), find("key")->latin1(),
+    fname.sprintf("%s/%s-%f-%f-%f-%f", dir.latin1(), find("key")->latin1(),
                   west, north, east, south);
+    fname.replace('.',"_");
+    fname +=".pnm";
   }
   qDebug("#  GeoImage::part %s (%f, %f, %f, %f)", (const char *) fname, west,
          north, east, south);
@@ -703,8 +705,10 @@ QString GeoImage::mask(float west, float north, float east, float south,
   if (fname.isEmpty()) {        //create output filname
     ASSERT(find("key"));
     QString dir = CleanUp::mkdir(CleanUp::getTmpDirPID(), prefixDir);
-    fname.sprintf("%s/%f_%f_%f_%f.pbm", dir.latin1(),
+    fname.sprintf("%s/%f-%f-%f-%f", dir.latin1(),
                   west, north, east, south);
+    fname.replace('.',"_");
+    fname += ".pbm";
   }
   qDebug("#  GeoImage::mask %s (%f, %f, %f, %f)", (const char *) fname,
          west, north, east, south);
