@@ -150,7 +150,7 @@ bool SVMClassifier::saveScaling(const std::string& _strFilename) const
                     "you are about to save default values. ")
     }
 
-    ofstream outfile;
+    std::ofstream outfile;
     outfile.open(_strFilename.c_str());
     if (outfile.fail())
     {
@@ -284,7 +284,7 @@ bool SVMClassifier::loadScaling(const std::string& _strFilename)
     {
         NOTICE_MSG("SVM Classifier", "SVM scaling already exists. Replacing.")
     }
-    ifstream infile;
+    std::ifstream infile;
     infile.open(_strFilename.c_str());
     if (infile.fail())
     {
