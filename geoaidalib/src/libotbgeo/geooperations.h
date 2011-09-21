@@ -196,7 +196,7 @@ namespace otbgeo {
     typename ResamplerType::Pointer resampler = ResamplerType::New();
     resampler->SetOutputOrigin(outputImageOrigin);
     resampler->SetOutputSpacing(outputImageSpacing);
-    resampler->SetSize(outputImageSize);
+    resampler->SetOutputSize(outputImageSize);
     resampler->SetTransform(transform);
     if (smooth)
       resampler->SetInterpolator(bs_interpolator);
